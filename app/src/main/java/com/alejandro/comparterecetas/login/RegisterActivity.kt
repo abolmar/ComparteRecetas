@@ -57,7 +57,7 @@ class RegisterActivity : AppCompatActivity() {
                                     usersModel.name = et_reg_name.text.toString()
                                     usersModel.passwd = et_reg_passwd.text.toString()
                                     usersModel.login = 1
-                                    usersModel.image = "123"
+                                    usersModel.imagePath = "123"
                                     usersModel.imageName = "0"
 
                                     successUsers = dbHandler!!.addUserTableUserLogin(usersModel)

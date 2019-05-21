@@ -46,7 +46,7 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
         auth = FirebaseAuth.getInstance()
 
         Glide.with(context)
-            .load(dbHandler!!.getImageuserProfile(auth.currentUser!!.uid))
+            .load(dbHandler!!.getImageUserProfilePath(auth.currentUser!!.uid))
             .fitCenter()
             .centerCrop()
             .into(holder.imgUser)

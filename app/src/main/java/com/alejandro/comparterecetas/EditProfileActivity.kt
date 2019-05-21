@@ -45,11 +45,11 @@ class EditProfileActivity : AppCompatActivity() {
         getFile("Images/profile/${dbHandler!!.getUserId()}")
 
         try {
-            if (dbHandler!!.getImageuserProfile(dbHandler!!.getUserId()) != "") {
+            if (dbHandler!!.getImageUserProfilePath(dbHandler!!.getUserId()) != "") {
                 //  Saca la imagen de perfil de la carpeta local
                 try {
                     Glide.with(this)
-                        .load(dbHandler!!.getImageuserProfile(dbHandler!!.getUserId()))
+                        .load(dbHandler!!.getImageUserProfilePath(dbHandler!!.getUserId()))
                         .fitCenter()
                         .centerCrop()
                         .into(img_edit_profile)
@@ -75,7 +75,7 @@ class EditProfileActivity : AppCompatActivity() {
 //            val myF = File("${this.cacheDir}")
 //            myF.deleteRecursively()
 
-            val myProfile = File("${this.filesDir}/Images/profile/${dbHandler!!.getUserId()}")
+            val myProfile = File("${this.filesDir}/Images/profiles/${dbHandler!!.getUserId()}")
 
             for (i in myProfile.listFiles()) {
                 i.delete()
@@ -110,6 +110,8 @@ class EditProfileActivity : AppCompatActivity() {
                 .load(stream.toByteArray())
                 .into(img_edit_profile)
 
+        } else {
+            Log.d("RegisterActivity", "Foto no seleccionada")
         }
     }
 
@@ -128,7 +130,7 @@ class EditProfileActivity : AppCompatActivity() {
     private fun saveFile(pictureBitmap: Bitmap, name: String) {
         val fOut: OutputStream?
 
-        val file = File(this.filesDir.toString() + "/Images/profile/${dbHandler!!.getUserId()}", "$name.png")
+        val file = File(this.filesDir.toString() + "/Images/profiles/${dbHandler!!.getUserId()}", "$name.png")
         fOut = FileOutputStream(file)
 
         pictureBitmap.compress(Bitmap.CompressFormat.PNG, 80, fOut)
@@ -144,17 +146,13 @@ class EditProfileActivity : AppCompatActivity() {
 
             val bitmap = (img_edit_profile.drawable as BitmapDrawable).bitmap
             saveFile(bitmap, date)
-            dbHandler!!.updateImageUser(
-                dbHandler!!.getUserId(),
-                "${this.filesDir}/Images/profile/${dbHandler!!.getUserId()}/$date.png"
-            )
+            dbHandler!!.updateImageUserPath(dbHandler!!.getUserId(), "${this.filesDir}/Images/profiles/${dbHandler!!.getUserId()}/$date.png")
             dbHandler!!.updateImageUserName(dbHandler!!.getUserId(), date)
 
             //  Sube las imágenes selecionadas a firebase
             if (isNetworkConnected()) {
-
                 // Guarda la imagen de perfil en FIrestore
-                val ref = FirebaseStorage.getInstance().getReference("/Images/profile/${dbHandler!!.getUserId()}/$date.png")
+                val ref = FirebaseStorage.getInstance().getReference("/Images/profiles/${dbHandler!!.getUserId()}/$date.png")
                 val baos = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 80, baos)
                 val data = baos.toByteArray()
@@ -162,6 +160,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                 // Actualiza la base de datos de Firebase
                 usersLogin.document(dbHandler!!.getUserId()).update("imageName", date)
+                usersLogin.document(dbHandler!!.getUserId()).update("imagePath", "${this.filesDir}/Images/profiles/${dbHandler!!.getUserId()}/$date.png")
 
                 // Si ya hay una imagen guardada en Firestore, se elimina la antigua
                 if (oldImageName != "0") {

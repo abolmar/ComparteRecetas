@@ -5,7 +5,7 @@ data class UsersModel (
     var email:String = "",
     var name:String = "",
     var passwd:String = "",
-    var image:String = "",
+    var imagePath:String = "",
     var imageName:String = "",
     var login:Int = 0
 )

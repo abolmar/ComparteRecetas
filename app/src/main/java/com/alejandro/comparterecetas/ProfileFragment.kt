@@ -1,22 +1,13 @@
 package com.alejandro.comparterecetas
 
 
-import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.*
-import android.view.View.inflate
-import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import com.alejandro.comparterecetas.adapters.MyRecipesAdapter
@@ -25,7 +16,6 @@ import com.alejandro.comparterecetas.login.LoginActivity
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -119,28 +109,28 @@ class PerfilFragment : Fragment() {
 //
 //                        var insertImage: Boolean = true
 //                        var countImages:Int = 0
-//                        for ((addImage, image) in userImages.withIndex()){
+//                        for ((addImage, imagePath) in userImages.withIndex()){
 //                            for (imageF in userImagesFirebase){
-//                                if (image.id == imageF.id && image.date != imageF.date){ // Si la imagen ha sido actualizada
+//                                if (imagePath.id == imageF.id && imagePath.date != imageF.date){ // Si la imagen ha sido actualizada
 //
-//                                    imagesFirebase.document("image$countImages-${image.id}").set(userImages[countImages])
+//                                    imagesFirebase.document("imagePath$countImages-${imagePath.id}").set(userImages[countImages])
 //
-//                                    updateSaveImage(image.imagePath, image.recipeId, image.name)
+//                                    updateSaveImage(imagePath.imagePath, imagePath.recipeId, imagePath.name)
 //
 //                                    countImages++
 //
-//                                } else if (image.id == imageF.id && image.date == imageF.date) { // Si no, no se hace nada
+//                                } else if (imagePath.id == imageF.id && imagePath.date == imageF.date) { // Si no, no se hace nada
 //                                    insertImage = false
 //                                    countImages++
 //                                }
 //                            }
 //
 //                            if (insertImage){ // Si la imagen no existe, se inserta
-//                                Log.d("imagen", "Añadir imagen numero: $addImage con id: ${image.id}")
+//                                Log.d("imagen", "Añadir imagen numero: $addImage con id: ${imagePath.id}")
 //
-//                                imagesFirebase.document(image.id).set(userImages[addImage])
+//                                imagesFirebase.document(imagePath.id).set(userImages[addImage])
 //
-//                                updateSaveImage(image.imagePath, image.recipeId, image.name)
+//                                updateSaveImage(imagePath.imagePath, imagePath.recipeId, imagePath.name)
 //                            }
 //
 //                            insertImage = true
@@ -165,9 +155,9 @@ class PerfilFragment : Fragment() {
 //                            dbHandler!!.removeIngredient(ingredient.id)
 //                        }
 //
-//                        for (image in userImages) {
+//                        for (imagePath in userImages) {
 //                            // Elimina las imágenes de la receta
-//                            imagesFirebase.document(image.id).delete()
+//                            imagesFirebase.document(imagePath.id).delete()
 //                            //******************************************************************************************
 //                            // NO ELIMINA LOS ARCHIVOS DE NINGUN LADO***************************************************
 //                            val storage = FirebaseStorage.getInstance()
@@ -175,14 +165,14 @@ class PerfilFragment : Fragment() {
 //                            // Create a storage reference from our app
 //                            val storageRef = storage.reference
 //                            // Create a reference to the file to delete
-//                            val desertRef = storageRef.child("Images/recipes/${image.recipeId}/${image.name}.png")
+//                            val desertRef = storageRef.child("Images/recipes/${imagePath.recipeId}/${imagePath.name}.png")
 //                            // Delete the file
 //                            desertRef.delete().addOnSuccessListener {
-//                                imagesFirebase.document(image.id).delete()
-//                                val myFile = File(image.imagePath)
+//                                imagesFirebase.document(imagePath.id).delete()
+//                                val myFile = File(imagePath.imagePath)
 //                                myFile.delete()
 //
-//                                dbHandler!!.removeImage(image.id)
+//                                dbHandler!!.removeImage(imagePath.id)
 //                            }.addOnFailureListener {
 //                                // Uh-oh, an error occurred!
 //                            }
@@ -241,10 +231,10 @@ class PerfilFragment : Fragment() {
 
 
         try {
-            if (dbHandler!!.getImageuserProfile(dbHandler!!.getUserId()) != ""){
+            if (dbHandler!!.getImageUserProfilePath(dbHandler!!.getUserId()) != ""){
                 //  Saca la imagen de perfil de la carpeta local
                 Glide.with(this)
-                    .load(dbHandler!!.getImageuserProfile(dbHandler!!.getUserId()))
+                    .load(dbHandler!!.getImageUserProfilePath(dbHandler!!.getUserId()))
                     .fitCenter()
                     .centerCrop()
                     .into(view.profile_image)

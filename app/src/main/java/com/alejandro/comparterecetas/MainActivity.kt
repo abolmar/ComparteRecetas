@@ -11,6 +11,7 @@ import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.ImagesModel
 import com.alejandro.comparterecetas.models.IngredientsModel
 import com.alejandro.comparterecetas.models.RecipesModel
+import com.alejandro.comparterecetas.models.UsersModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var recipesFirebase = dbFirebase.collection("recipes")
     private var ingredientsFirebase = dbFirebase.collection("ingredients")
     private var imagesFirebase = dbFirebase.collection("images")
+    private var usersLoginFirebase = dbFirebase.collection("usersLogin")
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -115,10 +117,35 @@ class MainActivity : AppCompatActivity() {
     fun updateFirebase(){
         auth = FirebaseAuth.getInstance()
 
-        recipesFirebase.whereEqualTo("userId", auth.currentUser!!.uid).get().addOnSuccessListener { documentSnapshot ->
-            val userRecipesRemove: ArrayList<RecipesModel> = dbHandler!!.getAllMyRecipesRemoved(dbHandler!!.getUserId()) // Recetas del usuario actual
+        usersLoginFirebase.whereEqualTo("id", auth.currentUser!!.uid).get().addOnSuccessListener {
+            val userLoginF = it.toObjects(UsersModel::class.java)
+            val userLoginImageName = dbHandler!!.getImageUserName(auth.currentUser!!.uid)
+            val userImagePath = dbHandler!!.getImageUserProfilePath(auth.currentUser!!.uid)
+
+            for (i in userLoginF){
+                val oldImageName = i.imageName
+
+                if (i.imageName != "0"){
+                    if (userLoginImageName != i.imageName){
+
+                        usersLoginFirebase.document(auth.currentUser!!.uid).update("imageName", userLoginImageName)
+
+                        updateSaveImageUserProfile(userImagePath, auth.currentUser!!.uid, userLoginImageName)
+
+                        val storage = FirebaseStorage.getInstance()
+                        val storageRef = storage.reference
+                        val desertRef = storageRef.child("Images/profiles/${auth.currentUser!!.uid}/$oldImageName.png")
+                        desertRef.delete()
+
+                    }
+                }
+            }
+        }
+
+        recipesFirebase.whereEqualTo("userId", auth.currentUser!!.uid).get().addOnSuccessListener {
+            val userRecipesRemove: ArrayList<RecipesModel> = dbHandler!!.getAllMyRecipesRemoved(dbHandler!!.getUserId()) // Recetas "eliminadas" del usuario actual
             val userRecipes: ArrayList<RecipesModel> = dbHandler!!.getAllMyRecipes(dbHandler!!.getUserId()) // Recetas del usuario actual
-            val userRecipesFirebase = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas del usuario actual
+            val userRecipesFirebase = it.toObjects(RecipesModel::class.java) // Recetas del usuario actual
 
             var insertRecipe:Boolean = true
             var countRecipe:Int = 0
@@ -140,8 +167,8 @@ class MainActivity : AppCompatActivity() {
                 insertRecipe = true
 
                 ingredientsFirebase.whereEqualTo("idRecipe", recipe.id).get().addOnSuccessListener {
-                    val userIngredientsFirebase = it.toObjects(IngredientsModel::class.java)
                     val userIngredients: ArrayList<IngredientsModel> = dbHandler!!.getAllMyIngredients(recipe.id)
+                    val userIngredientsFirebase = it.toObjects(IngredientsModel::class.java)
 
                     var insertIngredient: Boolean = true
                     var countIngredient:Int = 0
@@ -166,8 +193,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 imagesFirebase.whereEqualTo("recipeId", recipe.id).get().addOnSuccessListener {
-                    val recipeImagesFirebase = it.toObjects(ImagesModel::class.java)
                     val recipeImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipe.id)
+                    val recipeImagesFirebase = it.toObjects(ImagesModel::class.java)
 
                     Log.d("imagen", "Total imagenes en receta, ${recipe.name}: ${recipeImagesFirebase.size} - En sqlite: ${recipeImages.size}")
 
@@ -177,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                         for (imageF in recipeImagesFirebase){
                             if (image.id == imageF.id && image.date != imageF.date){ // Si la imagen ha sido actualizada
 
-                                imagesFirebase.document("image$countImages-${image.id}").set(recipeImages[countImages])
+                                imagesFirebase.document("imagePath$countImages-${image.id}").set(recipeImages[countImages])
 
                                 updateSaveImage(image.imagePath, image.recipeId, image.name)
 
@@ -201,7 +228,6 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
-
             }
 
             for (recipe in userRecipesRemove){
@@ -244,6 +270,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Actualiza o inserta imágenes en la carpeta de las recetas
     private fun updateSaveImage(imagePath: String, recipeId: String, imageName: String){
         try{
             val ref = FirebaseStorage.getInstance().getReference("/Images/recipes/$recipeId/$imageName.png")
@@ -261,4 +288,21 @@ class MainActivity : AppCompatActivity() {
         } catch (e: ClassCastException){}
     }
 
+    // Actualiza o inserta imágenes en la carpeta del perfil
+    private fun updateSaveImageUserProfile(imagePath: String, userId: String, imageName: String){
+        try{
+            val ref = FirebaseStorage.getInstance().getReference("/Images/profiles/$userId/$imageName.png")
+
+            val stream = FileInputStream(File(imagePath))
+
+            val uploadTask: UploadTask
+
+            uploadTask = ref.putStream(stream)
+
+            uploadTask
+                .addOnFailureListener {}
+                .addOnSuccessListener {}
+
+        } catch (e: ClassCastException){}
+    }
 }

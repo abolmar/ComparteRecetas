@@ -459,7 +459,7 @@ class CRUDActivity : AppCompatActivity() {
         }
 
         for ((count, i) in savedImagePath.withIndex()) {
-            image.id = "image$count-$date"
+            image.id = "imagePath$count-$date"
             image.recipeId = dbHandler!!.getRecipeId(dbHandler!!.getUserId(),et_recipe_name.text.toString())
             image.imagePath = i
             image.name = "$count"
@@ -468,7 +468,7 @@ class CRUDActivity : AppCompatActivity() {
             dbHandler!!.addImageTableImages(image)
 
             if (isNetworkConnected()){
-                imagesFirebase.document("image$count-$date").set(image)
+                imagesFirebase.document("imagePath$count-$date").set(image)
             }
 
         }

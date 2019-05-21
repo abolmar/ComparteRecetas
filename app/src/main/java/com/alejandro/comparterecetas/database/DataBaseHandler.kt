@@ -175,7 +175,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
 //        values.put(usersEmail, usersModel.email)
 //        values.put(usersName, usersModel.name)
 //        values.put(usersPasswd, usersModel.passwd)
-//        values.put(usersImage, usersModel.image)
+//        values.put(usersImage, usersModel.imagePath)
 //
 //        val success = db.insert(tableUsers, null, values)
 //
@@ -692,7 +692,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
     }
 
     //*Por desarrollar**************************************************************************************************
-    fun updateImageUser(id: String, imagePath: String){
+    fun updateImageUserPath(id: String, imagePath: String){
         val db = writableDatabase
         val values = ContentValues()
 
@@ -734,7 +734,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return imageUserName
     }
 
-    fun getImageuserProfile(id: String):String {
+    fun getImageUserProfilePath(id: String):String {
         var imagePath = ""
         val db = readableDatabase
         val selectQuery = "SELECT $usersLoginImage FROM $tableUsersLogin WHERE $usersLoginId = '$id'"

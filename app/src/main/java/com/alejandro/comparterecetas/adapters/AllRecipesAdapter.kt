@@ -11,6 +11,7 @@ import android.widget.ImageView
 import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.RecipesModel
+import com.alejandro.comparterecetas.models.UsersModel
 import com.alejandro.comparterecetas.models.VotesModel
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.adapter_all_recipes.view.*
@@ -31,6 +32,7 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
     private var dbFirebase = FirebaseFirestore.getInstance()
     private var dbHandler: DataBaseHandler? = null
     private var recipesFirebase = dbFirebase.collection("recipes")
+    private var usersFirebase = dbFirebase.collection("usersLogin")
 
     override fun getItemId(position: Int): Long {
         return items[position].id.hashCode().toLong()
@@ -54,7 +56,6 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
             // Saca la imagen de la receta de firebase
             ref.child("/Images/recipes/${items[position].id}/0.png").downloadUrl
                 .addOnSuccessListener {
-
                         Glide.with(context)
                             .load(it)
                             .fitCenter()
@@ -62,27 +63,29 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
                             .into(holder.imgMain)
                 }
 
-            // Saca la imagen de perfil del usuario de firebase
-            ref.child("/Images/profile/${items[position].userId}/${dbHandler!!.getImageUserName(items[position].userId)}.png").downloadUrl
-                .addOnSuccessListener {
-                    try {
-                        Glide.with(context)
-                            .load(it)
-                            .fitCenter()
-                            .centerCrop()
-                            .into(holder.imgUser)
-                    } catch (e: StorageException ){ }
+            usersFirebase.whereEqualTo("id", items[position].userId).get().addOnSuccessListener {
+                val userImageProfile = it.toObjects(UsersModel::class.java)
+                for (i in userImageProfile){
+                    // Saca la imagen de perfil del usuario de firebase
+                    ref.child("/Images/profiles/${items[position].userId}/${i.imageName}.png").downloadUrl //dbHandler!!.getImageUserName(items[position].userId)
+                        .addOnSuccessListener {
+                            try {
+                                Glide.with(context)
+                                    .load(it)
+                                    .fitCenter()
+                                    .centerCrop()
+                                    .into(holder.imgUser)
+                            } catch (e: StorageException ){ }
+                        }
                 }
+            }
         } catch (e: IllegalArgumentException){}
 
         holder.tvName.text = items[position].name
         holder.tvPositiveV.text = items[position].positive.toString()
         holder.tvNegativeV.text = items[position].negative.toString()
 
-        if (dbHandler!!.getPositiveVote(
-                items[position].id,
-                dbHandler!!.getUserId()
-            ) == 0 && dbHandler!!.getNegativeVote(items[position].id, dbHandler!!.getUserId()) == 0
+        if (dbHandler!!.getPositiveVote(items[position].id, dbHandler!!.getUserId()) == 0 && dbHandler!!.getNegativeVote(items[position].id, dbHandler!!.getUserId()) == 0
         ) {
             holder.btnPositiveV.setColorFilter(Color.BLACK)
             holder.btnNegativeV.setColorFilter(Color.BLACK)
