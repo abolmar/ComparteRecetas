@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "81951771709",
+    "firebase_url": "https://comperte-recetas.firebaseio.com",
+    "project_id": "comperte-recetas",
+    "storage_bucket": "comperte-recetas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81951771709:android:313ddebd7645c60f",
+        "android_client_info": {
+          "package_name": "com.alejandro.comparterecetas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81951771709-u2tvfc7bbsniijhhl7fthri45lmmglps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmnd7k8WrKLikcOSjogZdNFYZ93LBH9dM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81951771709-u2tvfc7bbsniijhhl7fthri45lmmglps.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

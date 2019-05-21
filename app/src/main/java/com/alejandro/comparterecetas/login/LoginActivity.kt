@@ -1,0 +1,118 @@
+package com.alejandro.comparterecetas.login
+
+import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Toast
+import com.alejandro.comparterecetas.MainActivity
+import com.alejandro.comparterecetas.R
+import com.alejandro.comparterecetas.database.DataBaseHandler
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_login.*
+
+class LoginActivity : AppCompatActivity() {
+
+    private var dbHandler: DataBaseHandler? = null
+    private lateinit var auth: FirebaseAuth
+    private var dbFirebase = FirebaseFirestore.getInstance()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
+
+        // Inicializa Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
+        // init db
+        dbHandler = DataBaseHandler(this)
+
+
+        if (dbHandler!!.getLoginTableUserLogin()) {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+
+            //  Modifica la transicion de un activity a otro
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        } else {
+            btn_login.setOnClickListener {
+                if (validation()) {
+                    if (isNetworkConnected()) {
+                        auth.signInWithEmailAndPassword(et_login_email.text.toString(), et_login_passwd.text.toString())
+                            .addOnCompleteListener(this) { task ->
+                                if (task.isSuccessful) {
+
+                                    val user = auth.currentUser
+
+                                    user?.let {
+
+                                        val uid = user.uid
+
+                                        // Actualizar la tabla usersLogin con login = 1 cuando se inicie sesion
+                                        dbFirebase.collection("usersLogin").document(uid)
+                                            .update("login", 1)
+                                            .addOnSuccessListener { documentReference ->
+                                                // Loguea al usuario e inicia sesion, la cuenta seguirá abierta hasta que el usuario la cierre
+                                                dbHandler!!.updateLoginTableUserLogin(et_login_email.text.toString())
+
+                                                val intent = Intent(this, MainActivity::class.java)
+                                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                startActivity(intent)
+                                            }
+                                    }
+
+                                } else {
+                                    Toast.makeText(baseContext, "Error en la autentificación.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                    } else {
+                        Toast.makeText(baseContext, "Debes tener conexión a internet para iniciar sesión.", Toast.LENGTH_SHORT).show()
+                    }
+//                        if (dbHandler!!.getUserEmailFromTableUsers(et_login_email.text.toString(), et_login_passwd.text.toString())){ // Si el usuario está registrado
+//
+//                            dbHandler!!.updateLoginTableUserLogin(et_login_email.text.toString()) // Loguea al usuario e inicia sesion, la cuenta seguirá abierta hasta que el usuario la cierre
+//
+//                            val intent = Intent(this, MainActivity::class.java)
+//                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                            startActivity(intent)
+//
+//                        } else {
+//                            Toast.makeText(this, "El usuario no existe", Toast.LENGTH_SHORT).show()
+//                        }
+                }
+            }
+
+            tv_login_to_register.setOnClickListener {
+                val intent = Intent(this, RegisterActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+        }
+
+
+    }
+
+    private fun validation(): Boolean {
+        val validate: Boolean
+
+        if (!et_login_email.text.toString().equals("") && !et_login_passwd.text.toString().equals("")) {
+            validate = true
+        } else {
+            validate = false
+            Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_LONG).show()
+        }
+
+        return validate
+    }
+
+    // Comprueba la conexión a internet
+    private fun isNetworkConnected(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo != null
+    }
+
+}

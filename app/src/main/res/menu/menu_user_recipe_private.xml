@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:title="Privada"
+            android:id="@+id/my_recipe_private"/>
+    <item
+            android:title="Editar"
+            android:id="@+id/my_recipe_edit"/>
+    <item
+            android:title="Eliminar"
+            android:id="@+id/my_recipe_delete"/>
+</menu>
