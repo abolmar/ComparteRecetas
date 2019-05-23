@@ -36,17 +36,17 @@ class MainActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_recetas -> {
-                recetas()
+                recipes()
                 return@OnNavigationItemSelectedListener true
             }
 
             R.id.navigation_favoritas -> {
-                favoritas()
+                favourites()
                 return@OnNavigationItemSelectedListener true
             }
 
             R.id.navigation_perfil -> {
-                perfil()
+                profile()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -61,29 +61,33 @@ class MainActivity : AppCompatActivity() {
         dbHandler = DataBaseHandler(this)
 
         val intent = intent
-        val perfil = intent.getBooleanExtra("USER_PROFILE", false)
+        val profile = intent.getBooleanExtra("USER_PROFILE", false)
 
-        if (perfil){
-            perfil()
+        if (profile){
+            profile()
             navigation.selectedItemId = R.id.navigation_perfil
         } else {
-            recetas()
+            recipes()
         }
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
     }
 
-    private fun recetas(){
-//        if (isNetworkConnected()){
-//            updateFirebase()
-//        }
+    //*****Elimina la cache*****************Lo dejo o lo quito??????????????????????????????????????????????????????????
+    // En teoría con la cache las imágenes cargarían más rápido
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        val file = File("${this.cacheDir}")
+//        file.deleteRecursively()
+//    }
+
+    private fun recipes(){
         val transaction = manager.beginTransaction()
         val fragment = RecetasFragment()
 
         transaction.replace(R.id.fragment_container, fragment).commit()
     }
 
-    private fun favoritas(){
+    private fun favourites(){
         val transaction = manager.beginTransaction()
         val fragment = FavoritasFragment()
 
@@ -91,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit()
     }
 
-    private fun perfil(){
+    private fun profile(){
         if (isNetworkConnected()){
             updateFirebase()
         }
@@ -108,12 +112,13 @@ class MainActivity : AppCompatActivity() {
         return cm.activeNetworkInfo != null
     }
 
-    // Al pulsar el botón de retroceso, siempre se marcara el botón recetas
+    // Al pulsar el botón de retroceso, siempre se marcara el botón recipes
     override fun onBackPressed() {
         super.onBackPressed()
         navigation.selectedItemId = R.id.navigation_recetas
     }
 
+    // Actualiza el contenido de Firebase en caso de que se haya creado, modificado o eliminado alguna receta estando sin conexión
     fun updateFirebase(){
         auth = FirebaseAuth.getInstance()
 
@@ -121,6 +126,7 @@ class MainActivity : AppCompatActivity() {
             val userLoginF = it.toObjects(UsersModel::class.java)
             val userLoginImageName = dbHandler!!.getImageUserName(auth.currentUser!!.uid)
             val userImagePath = dbHandler!!.getImageUserProfilePath(auth.currentUser!!.uid)
+            val userLoginName = dbHandler!!.getUserName()
 
             for (i in userLoginF){
                 val oldImageName = i.imageName
@@ -138,6 +144,10 @@ class MainActivity : AppCompatActivity() {
                         desertRef.delete()
 
                     }
+                }
+
+                if (i.name != userLoginName){
+                    usersLoginFirebase.document(auth.currentUser!!.uid).update("name", userLoginName)
                 }
             }
         }
@@ -206,7 +216,7 @@ class MainActivity : AppCompatActivity() {
 
                                 imagesFirebase.document("imagePath$countImages-${image.id}").set(recipeImages[countImages])
 
-                                updateSaveImage(image.imagePath, image.recipeId, image.name)
+                                updateSaveImageRecipe(image.imagePath, image.recipeId, image.name)
 
                                 countImages++
 
@@ -221,7 +231,7 @@ class MainActivity : AppCompatActivity() {
 
                             imagesFirebase.document(image.id).set(recipeImages[addImage])
 
-                            updateSaveImage(image.imagePath, image.recipeId, image.name)
+                            updateSaveImageRecipe(image.imagePath, image.recipeId, image.name)
                         }
 
                         insertImage = true
@@ -270,8 +280,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Actualiza o inserta imágenes en la carpeta de las recetas
-    private fun updateSaveImage(imagePath: String, recipeId: String, imageName: String){
+    // Actualiza o inserta imágenes en la carpeta de las recipes
+    private fun updateSaveImageRecipe(imagePath: String, recipeId: String, imageName: String){
         try{
             val ref = FirebaseStorage.getInstance().getReference("/Images/recipes/$recipeId/$imageName.png")
 
@@ -288,10 +298,10 @@ class MainActivity : AppCompatActivity() {
         } catch (e: ClassCastException){}
     }
 
-    // Actualiza o inserta imágenes en la carpeta del perfil
+    // Actualiza o inserta imágenes en la carpeta del profile
     private fun updateSaveImageUserProfile(imagePath: String, userId: String, imageName: String){
         try{
-            val ref = FirebaseStorage.getInstance().getReference("/Images/profiles/$userId/$imageName.png")
+            val ref = FirebaseStorage.getInstance().getReference("/Images/profile/$userId/$imageName.png")
 
             val stream = FileInputStream(File(imagePath))
 

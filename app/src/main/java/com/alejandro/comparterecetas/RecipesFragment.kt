@@ -16,6 +16,8 @@ import com.alejandro.comparterecetas.models.UsersModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_recipes.view.*
+import android.support.v4.widget.SwipeRefreshLayout
+import io.grpc.android.AndroidChannelBuilder
 
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,7 +53,37 @@ class RecetasFragment : Fragment() {
             //init db
             dbHandler = DataBaseHandler(this.context!!)
 
-            val recipes: ArrayList<RecipesModel> = dbHandler!!.getAllUsersRecipes()
+            //**********************************************************************************************************
+            // *******************************Funciona pero...**********************************************************
+            //     ***** (Esta función se encuentra en fragment_recipes.xml encerrando al recycler view) *****
+            view.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.design_default_color_primary)
+            view.swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorAccent)
+
+            view.swipeRefreshLayout.setOnRefreshListener {
+                recipesFirebase.whereEqualTo("type", 1).get().addOnSuccessListener { documentSnapshot ->
+                    val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
+
+                    try {
+                        view.rv_all_users_recipes.layoutManager = LinearLayoutManager(context)
+                        view.rv_all_users_recipes.layoutManager = GridLayoutManager(context, 1)
+                        view.rv_all_users_recipes?.adapter = AllRecipesAdapter(usersRecipesFirebase, context!!)
+
+                        view.swipeRefreshLayout.isRefreshing = false
+
+                    } catch (e: KotlinNullPointerException){
+                        Log.d("capullo", "Algo falla en RecipesFragment -->: $e")
+                    }
+                    // Lineas de prueba
+                    view.rv_all_users_recipes.setHasFixedSize(true)
+                    view.rv_all_users_recipes.setItemViewCacheSize(20)
+                }
+            }
+            // *******************************Funciona pero...**********************************************************
+            //**********************************************************************************************************
+
+
+
+//            val recipes: ArrayList<RecipesModel> = dbHandler!!.getAllUsersRecipes()
             recipesFirebase.whereEqualTo("type", 1).get().addOnSuccessListener { documentSnapshot ->
                 val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
 

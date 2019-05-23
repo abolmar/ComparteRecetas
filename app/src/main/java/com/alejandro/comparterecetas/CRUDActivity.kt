@@ -413,10 +413,7 @@ class CRUDActivity : AppCompatActivity() {
         fOut.close()
     }
 
-
-    //*************************************************************************************************************************************************************************************************************
-    //*************************************************************************************************************************************************************************************************************
-    //  Guarda las rutas hacia las imágenes (del directorio local), en la base de datos
+    //  Guarda las rutas hacia las imágenes en la base de datos
     private fun saveImagesTable() {
         val idRecipe = dbHandler!!.getRecipeId(dbHandler!!.getUserId(),et_recipe_name.text.toString())
         getFile("Images/recipes/$idRecipe")

@@ -1,14 +1,19 @@
 package com.alejandro.comparterecetas.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
+import com.alejandro.comparterecetas.EditProfileActivity
 import com.alejandro.comparterecetas.R
+import com.alejandro.comparterecetas.ShowRecipeActivity
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.alejandro.comparterecetas.models.UsersModel
@@ -23,6 +28,7 @@ import com.bumptech.glide.annotation.GlideModule
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageException
+import kotlinx.android.synthetic.main.fragment_recipes.view.*
 
 
 class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val context: Context) :
@@ -52,40 +58,67 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
 
         val ref = FirebaseStorage.getInstance().reference
 
-        try {
-            // Saca la imagen de la receta de firebase
-            ref.child("/Images/recipes/${items[position].id}/0.png").downloadUrl
-                .addOnSuccessListener {
-                        Glide.with(context)
-                            .load(it)
-                            .fitCenter()
-                            .centerCrop()
-                            .into(holder.imgMain)
+        // Saca la imagen de la receta de firebase
+        ref.child("/Images/recipes/${items[position].id}/0.png").downloadUrl
+            .addOnSuccessListener {
+                try {
+                    Glide.with(context)
+                        .load(it)
+                        .fitCenter()
+                        .centerCrop()
+                        .into(holder.imgMain)
+                } catch (e: IllegalArgumentException) {
                 }
+            }
 
-            usersFirebase.whereEqualTo("id", items[position].userId).get().addOnSuccessListener {
-                val userImageProfile = it.toObjects(UsersModel::class.java)
-                for (i in userImageProfile){
-                    // Saca la imagen de perfil del usuario de firebase
-                    ref.child("/Images/profiles/${items[position].userId}/${i.imageName}.png").downloadUrl //dbHandler!!.getImageUserName(items[position].userId)
-                        .addOnSuccessListener {
+
+        usersFirebase.whereEqualTo("id", items[position].userId).get().addOnSuccessListener {
+            val userImageProfile = it.toObjects(UsersModel::class.java)
+            for (i in userImageProfile) {
+                // Saca la imagen de perfil del usuario de firebase
+                ref.child("/Images/profile/${items[position].userId}/${i.imageName}.png")
+                    .downloadUrl //dbHandler!!.getImageUserName(items[position].userId)
+                    .addOnSuccessListener {
+                        try {
                             try {
                                 Glide.with(context)
                                     .load(it)
                                     .fitCenter()
                                     .centerCrop()
                                     .into(holder.imgUser)
-                            } catch (e: StorageException ){ }
+                            } catch (e: StorageException) {
+                            }
+                        } catch (e: IllegalArgumentException) {
                         }
-                }
+                    }
+
             }
-        } catch (e: IllegalArgumentException){}
+        }
+
 
         holder.tvName.text = items[position].name
         holder.tvPositiveV.text = items[position].positive.toString()
         holder.tvNegativeV.text = items[position].negative.toString()
 
-        if (dbHandler!!.getPositiveVote(items[position].id, dbHandler!!.getUserId()) == 0 && dbHandler!!.getNegativeVote(items[position].id, dbHandler!!.getUserId()) == 0
+        holder.container.setOnClickListener {
+            val intent = Intent(context, ShowRecipeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            intent.putExtra("recipeName", items[position].name)
+            intent.putExtra("recipeCategory", items[position].category)
+            intent.putExtra("recipeHour", items[position].timeH)
+            intent.putExtra("recipeminute", items[position].timeM)
+            intent.putExtra("recipePreparation", items[position].preparation)
+            intent.putExtra("recipeId", items[position].id)
+
+            context.startActivity(intent)
+        }
+
+        // O SE MEJORA O SE ELIMINA*************************************************************************************
+        if (dbHandler!!.getPositiveVote(
+                items[position].id,
+                dbHandler!!.getUserId()
+            ) == 0 && dbHandler!!.getNegativeVote(items[position].id, dbHandler!!.getUserId()) == 0
         ) {
             holder.btnPositiveV.setColorFilter(Color.BLACK)
             holder.btnNegativeV.setColorFilter(Color.BLACK)
@@ -248,6 +281,7 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
 
             dbHandler!!.close()
         }
+        // O SE MEJORA O SE ELIMINA*************************************************************************************
     }
 }
 
@@ -260,5 +294,7 @@ class ViewHolderAllRecipes(view: View) : RecyclerView.ViewHolder(view) {
     val btnNegativeV = view.img_adapter_all_recipe_negative!!
     var imgMain = view.img_adapter_all_recipe_main!!
     var imgUser = view.img_adapter_all_recipe_user!!
+
+    var container = view.cv_all_recipes!!
 
 }

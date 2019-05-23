@@ -258,7 +258,7 @@ class PerfilFragment : Fragment() {
 
             popupMenu.setOnMenuItemClickListener {
                 when(it.itemId){
-                    R.id.sesion -> {
+                    R.id.session -> {
                         if ((activity as MainActivity).isNetworkConnected()){
 
                             val userFirebase = auth.currentUser
@@ -286,15 +286,11 @@ class PerfilFragment : Fragment() {
                         true
                     }
 
-                    R.id.nombre -> {
-
-
-
-                        true
-                    }
-                    R.id.foto -> {
-                        Toast.makeText(context, "Botón foto pulsado!!!", Toast.LENGTH_SHORT).show()
-
+//                    R.id.nombre -> {
+//
+//                        true
+//                    }
+                    R.id.profile -> {
                         val intent = Intent(context, EditProfileActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)

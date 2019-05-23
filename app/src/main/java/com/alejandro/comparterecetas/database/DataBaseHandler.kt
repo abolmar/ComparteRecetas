@@ -691,7 +691,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         db.close()
     }
 
-    //*Por desarrollar**************************************************************************************************
+    // Actualiza la ruta hacia la imágen de perfil del usuario
     fun updateImageUserPath(id: String, imagePath: String){
         val db = writableDatabase
         val values = ContentValues()
@@ -702,6 +702,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         db.close()
     }
 
+    // Actualiza el nombre de la imágen de perfil del usuario
     fun updateImageUserName(id: String, imageName: String) {
         val db = writableDatabase
         val values = ContentValues()
@@ -712,6 +713,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         db.close()
     }
 
+    // Devuelve el nombre de la imágen de perfil del usuario
     fun getImageUserName(id: String): String {
         var imageUserName = ""
         val db = readableDatabase
@@ -734,6 +736,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return imageUserName
     }
 
+    // Devuelve la ruta hacia la imágen de perfil del usuario
     fun getImageUserProfilePath(id: String):String {
         var imagePath = ""
         val db = readableDatabase
@@ -756,7 +759,16 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return imagePath
     }
 
-    //*Por desarrollar**************************************************************************************************
+    // Actualiza el nombre de perfil del usuario
+    fun updateUserLoginName(id: String, userName: String){
+        val db = writableDatabase
+        val values = ContentValues()
+
+        values.put(usersLoginName, userName)
+
+        db.update(tableUsersLogin, values, "$usersLoginId = '$id'", null)
+        db.close()
+    }
 
     //  Actualiza el tipo de receta (Privada = 0 / Pública = 1)
     fun updateUserRecipeType(id: String, type:Int, date: String){

@@ -1,6 +1,12 @@
 package com.alejandro.comparterecetas.adapters
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.net.ConnectivityManager
+import android.support.v4.content.ContextCompat.getSystemService
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -30,6 +36,7 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
     private var recipesFirebase = dbFirebase.collection("recipes")
     private val date = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault()).format(Date())
 
+
     override fun getItemCount(): Int {
         return items.size
     }
@@ -55,18 +62,18 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
         holder.tvPositiveV.text = items[position].positive.toString()
         holder.tvNegativeV.text = items[position].negative.toString()
 
-
-        if (items.get(position).type == 0){
+        if (items[position].type == 0) {
             holder.imgType.setImageResource(R.drawable.ic_lock_outline_black_24dp)
             holder.btnMenu.setOnClickListener {
-                notifyItemChanged(position)
                 val popupMenu = PopupMenu(context, it)
-                notifyItemChanged(position)
                 popupMenu.setOnMenuItemClickListener {
-                    when(it.itemId){
+                    when (it.itemId) {
                         R.id.my_recipe_public -> {
-                            dbHandler!!.updateUserRecipeType(items[position].id, 1, date)
+                            uploadItem(position, 1)
                             notifyItemChanged(position)
+                            dbHandler!!.updateUserRecipeType(items[position].id, 1, date)
+                            recipesFirebase.document(items[position].id).update("type", 1)
+                            recipesFirebase.document(items[position].id).update("date", date)
                             true
                         }
                         R.id.my_recipe_edit -> {
@@ -74,30 +81,29 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
                             true
                         }
                         R.id.my_recipe_delete -> {
-                            Toast.makeText(context, "Receta eliminada", Toast.LENGTH_SHORT).show()
-                            dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
-                            removeItem(position)
+                            removeRecipe(position)
                             true
                         }
                         else -> false
                     }
                 }
 
-                notifyItemChanged(position)
                 popupMenu.inflate(R.menu.menu_user_recipe_public)
                 popupMenu.show()
             }
-
-       } else {
+        } else {
             holder.imgType.setImageResource(R.drawable.ic_public_black_24dp)
             holder.btnMenu.setOnClickListener {
                 val popupMenu = PopupMenu(context, it)
 
                 popupMenu.setOnMenuItemClickListener {
-                    when(it.itemId){
+                    when (it.itemId) {
                         R.id.my_recipe_private -> {
-                            dbHandler!!.updateUserRecipeType(items[position].id, 0, date)
+                            uploadItem(position, 0)
                             notifyItemChanged(position)
+                            dbHandler!!.updateUserRecipeType(items[position].id, 0, date)
+                            recipesFirebase.document(items[position].id).update("type", 0)
+                            recipesFirebase.document(items[position].id).update("date", date)
                             true
                         }
                         R.id.my_recipe_edit -> {
@@ -105,9 +111,7 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
                             true
                         }
                         R.id.my_recipe_delete -> {
-                            Toast.makeText(context, "Receta eliminada", Toast.LENGTH_SHORT).show()
-                            dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
-                            removeItem(position)
+                            removeRecipe(position)
                             true
                         }
                         else -> false
@@ -116,11 +120,54 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
 
                 popupMenu.inflate(R.menu.menu_user_recipe_private)
                 popupMenu.show()
-
             }
         }
 
         dbHandler!!.close()
+    }
+
+    private fun uploadItem(position: Int, type: Int) {
+        try {
+            items[position] = RecipesModel(
+                items[position].id,
+                items[position].name,
+                items[position].userId,
+                items[position].preparation,
+                items[position].timeH,
+                items[position].timeM,
+                items[position].positive,
+                items[position].negative,
+                items[position].category,
+                type,
+                items[position].date,
+                items[position].remove
+            )
+        } catch (e: IndexOutOfBoundsException) {
+        }
+    }
+
+    // Para eliminar una receta de la base de datos
+    private fun removeRecipe(position: Int) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Eliminar la receta?")
+
+        builder.setPositiveButton("Eliminar", object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+                dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
+                removeItem(position)
+                Toast.makeText(context, "Receta eliminada", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+        builder.setNegativeButton("Cancelar", object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+            }
+
+        })
+
+        val alert = builder.create()
+        alert.show()
     }
 
     // Para eliminar una receta del recyclerView
@@ -132,7 +179,6 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
         } catch (e: IndexOutOfBoundsException) {
         }
     }
-
 
 }
 

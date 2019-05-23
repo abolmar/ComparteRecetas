@@ -4,16 +4,20 @@
     <!--<item android:id="@+id/grupo" android:title="Ajustes" android:icon="@drawable/ic_settings_black_24dp">-->
 
     <!--<menu>-->
-    <item
-            android:id="@+id/nombre"
-            android:title="Cambiar nombre"/>
+    <!--<item-->
+            <!--android:id="@+id/nombre"-->
+            <!--android:title="Cambiar nombre"/>-->
+
+    <!--<item-->
+            <!--android:id="@+id/foto"-->
+            <!--android:title="Cambiar foto"/>-->
 
     <item
-            android:id="@+id/foto"
-            android:title="Cambiar foto"/>
+            android:id="@+id/profile"
+            android:title="Editar perfil"/>
 
     <item
-            android:id="@+id/sesion"
+            android:id="@+id/session"
             android:title="Cerrar sesión"/>
     <!--</menu>-->
     <!--</item>-->

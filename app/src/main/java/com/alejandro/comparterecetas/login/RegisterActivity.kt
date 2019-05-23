@@ -12,6 +12,7 @@ import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.UsersModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_register.*
 
@@ -66,20 +67,11 @@ class RegisterActivity : AppCompatActivity() {
 
 //                                    // Actualiza el nombre a mostrar del usuario
 //                                    val profileUpdates = UserProfileChangeRequest.Builder()
+//                                        .setDisplayName(et_reg_name.text.toString())
 //                                        .build()
-////                                        .setDisplayName(et_reg_name.text.toString())
-//
 //
 //                                    user.updateProfile(profileUpdates)
-//                                        .addOnCompleteListener { task ->
-//                                            if (!task.isSuccessful) {
-//                                                Toast.makeText(
-//                                                    this,
-//                                                    "Hubo un error durante el proceso de creado del usuario",
-//                                                    Toast.LENGTH_LONG
-//                                                ).show()
-//                                            }
-//                                        }
+
 
                                     if (successUsers) {
                                         val intent = Intent(this, MainActivity::class.java)
