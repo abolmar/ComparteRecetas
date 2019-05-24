@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_recipes.view.*
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AppCompatActivity
 import io.grpc.android.AndroidChannelBuilder
 
 
@@ -82,8 +83,6 @@ class RecetasFragment : Fragment() {
             //**********************************************************************************************************
 
 
-
-//            val recipes: ArrayList<RecipesModel> = dbHandler!!.getAllUsersRecipes()
             recipesFirebase.whereEqualTo("type", 1).get().addOnSuccessListener { documentSnapshot ->
                 val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
 
@@ -110,6 +109,5 @@ class RecetasFragment : Fragment() {
         }
 
     }
-
 
 }

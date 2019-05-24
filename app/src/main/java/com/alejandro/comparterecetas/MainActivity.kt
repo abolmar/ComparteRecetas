@@ -115,6 +115,11 @@ class MainActivity : AppCompatActivity() {
     // Al pulsar el botón de retroceso, siempre se marcara el botón recipes
     override fun onBackPressed() {
         super.onBackPressed()
+
+        if (navigation.selectedItemId == R.id.navigation_recetas){
+            finish()
+        }
+
         navigation.selectedItemId = R.id.navigation_recetas
     }
 
