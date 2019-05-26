@@ -11,19 +11,9 @@ import android.view.ViewGroup
 import com.alejandro.comparterecetas.adapters.AllRecipesAdapter
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.RecipesModel
-import com.alejandro.comparterecetas.models.UsersModel
-
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_recipes.view.*
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import io.grpc.android.AndroidChannelBuilder
-
-
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -39,6 +29,8 @@ class RecetasFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase() //?????????????
     }
 
     override fun onCreateView(
@@ -56,7 +48,7 @@ class RecetasFragment : Fragment() {
 
             //**********************************************************************************************************
             // *******************************Funciona pero...**********************************************************
-            //     ***** (Esta función se encuentra en fragment_recipes.xml encerrando al recycler view) *****
+            // TODO:  ***** (Esta función se encuentra en fragment_recipes.xml encerrando al recycler view) *****
             view.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.design_default_color_primary)
             view.swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorAccent)
 

@@ -545,8 +545,8 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return data
     }
 
-    //  Retorna todas los ingredientes de un usuario
-    fun getAllMyIngredients(recipeid: String): ArrayList<IngredientsModel> {
+    //  Retorna todas los ingredientes de una receta
+    fun getAllMyIngredients(recipeid: String?): ArrayList<IngredientsModel> {
         val data: ArrayList<IngredientsModel> = ArrayList()
         val db = readableDatabase
         val selectALLQuery = "SELECT * FROM $tableIngredients WHERE $ingredientRecipeId = '$recipeid'"
@@ -575,8 +575,8 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return data
     }
 
-    //  Retorna todas las imagenes de un usuario
-    fun getAllMyImages (recipeid: String): ArrayList<ImagesModel> {
+    //  Retorna todas las imagenes de una receta
+    fun getAllMyImages (recipeid: String?): ArrayList<ImagesModel> {
         val data: ArrayList<ImagesModel> = ArrayList()
         val db = readableDatabase
         val selectALLQuery = "SELECT * FROM $tableImages WHERE $imageRecipeId = '$recipeid'"

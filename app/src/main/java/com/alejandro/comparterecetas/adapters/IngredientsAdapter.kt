@@ -2,7 +2,6 @@ package com.alejandro.comparterecetas.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,12 +22,12 @@ class IngredientsAdapter(private val items: ArrayList<Ingredients>, private val 
         return items.size
     }
 
-    override fun onBindViewHolder(p0: ViewHolderIngredient, p1: Int) {
-        p0.tvIngredient.text = items[p1].ingredient
+    override fun onBindViewHolder(holder: ViewHolderIngredient, position: Int) {
+        holder.tvIngredient.text = items[position].ingredient
 
-        p0.btnDelete.setOnClickListener {
-            removeItem(p1)
-            ingredients.removeAt(p1) //  Elimina ingrediente del ArrayList de la tabla "ingredients"
+        holder.btnDelete.setOnClickListener {
+            removeItem(position)
+            ingredients.removeAt(position) //  Elimina ingrediente del ArrayList de la tabla "ingredients"
         }
     }
 

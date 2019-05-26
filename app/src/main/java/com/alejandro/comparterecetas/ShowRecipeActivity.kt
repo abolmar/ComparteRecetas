@@ -4,16 +4,31 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import com.alejandro.comparterecetas.adapters.ShowImagesAdapter
+import com.alejandro.comparterecetas.adapters.ShowIngredientsAdapter
+import com.alejandro.comparterecetas.database.DataBaseHandler
+import com.alejandro.comparterecetas.models.ImagesModel
+import com.alejandro.comparterecetas.models.IngredientsModel
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.circleCropTransform
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_show_recipe.*
+import java.io.LineNumberReader
 
 class ShowRecipeActivity : AppCompatActivity() {
+
+    private var dbHandler: DataBaseHandler? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_recipe)
+
+        //init db
+        dbHandler = DataBaseHandler(this)
 
         var recipeName: String? = ""
         var recipeCategory: String? = ""
@@ -39,19 +54,15 @@ class ShowRecipeActivity : AppCompatActivity() {
         tv_minute.text = "$recipeMinute m"
         tv_preparation_content.text = recipePreparation
 
-        val ref = FirebaseStorage.getInstance().reference
+        val ingredients: ArrayList<IngredientsModel> = dbHandler!!.getAllMyIngredients(recipeId)
+        val images: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
 
-        // Saca la imagen de la receta de firebase
-        ref.child("/Images/recipes/$recipeId/0.png").downloadUrl
-            .addOnSuccessListener {
-                try {
-                    Glide.with(this)
-                        .load(it)
-                        .fitCenter()
-                        .centerCrop()
-                        .into(img_main)
-                } catch (e: IllegalArgumentException){}
-            }
+        rv_images.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rv_images.adapter = ShowImagesAdapter(images, this)
+
+        rv_ingredients.layoutManager = LinearLayoutManager(this)
+        rv_ingredients.layoutManager = GridLayoutManager(this, 1)
+        rv_ingredients.adapter = ShowIngredientsAdapter(ingredients, this)
 
         btn_show_recipe_back.setOnClickListener {
             backRecipes()

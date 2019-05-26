@@ -2,6 +2,7 @@ package com.alejandro.comparterecetas.adapters
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Context.CONNECTIVITY_SERVICE
 import android.content.DialogInterface
 import android.net.ConnectivityManager
 import android.support.v4.content.ContextCompat.getSystemService
@@ -151,20 +152,31 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Eliminar la receta?")
 
-        builder.setPositiveButton("Eliminar", object : DialogInterface.OnClickListener {
-            override fun onClick(dialog: DialogInterface?, which: Int) {
-                dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
-                removeItem(position)
-                Toast.makeText(context, "Receta eliminada", Toast.LENGTH_SHORT).show()
-            }
+//      Antes***********************************************************************************************************
+//        builder.setPositiveButton("Eliminar", object : DialogInterface.OnClickListener {
+//            override fun onClick(dialog: DialogInterface?, which: Int) {
+//                dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
+//                removeItem(position)
+//                Toast.makeText(context, "Receta eliminada", Toast.LENGTH_SHORT).show()
+//            }
+//
+//        })
+//
+//        builder.setNegativeButton("Cancelar", object : DialogInterface.OnClickListener {
+//            override fun onClick(dialog: DialogInterface?, which: Int) {
+//            }
+//
+//        })
 
-        })
+//      Despues*********************************************************************************************************
+        builder.setPositiveButton("Eliminar") { dialog, which ->
+            dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
+            removeItem(position)
+            Toast.makeText(context, "Receta eliminada", Toast.LENGTH_SHORT).show()
+        }
 
-        builder.setNegativeButton("Cancelar", object : DialogInterface.OnClickListener {
-            override fun onClick(dialog: DialogInterface?, which: Int) {
-            }
-
-        })
+        builder.setNegativeButton("Cancelar") { dialog, which -> }
+//      ****************************************************************************************************************
 
         val alert = builder.create()
         alert.show()

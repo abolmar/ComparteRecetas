@@ -105,7 +105,7 @@ class CRUDActivity : AppCompatActivity() {
                     if (et_hours.text.toString() != "" && et_minutes.text.toString() != "") {
                         //  Guarda la receta
 
-                        recipe.id = "recipe-" + date
+                        recipe.id = "recipe-$date"
                         recipe.name = et_recipe_name.text.toString()
                         recipe.userId = dbHandler!!.getUserId()
                         recipe.timeH = et_hours.text.toString().toInt()
