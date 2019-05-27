@@ -24,7 +24,6 @@ import com.alejandro.comparterecetas.models.Ingredients
 import com.alejandro.comparterecetas.models.IngredientsModel
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_crud.*
@@ -37,7 +36,7 @@ import kotlin.collections.ArrayList
 class CRUDActivity : AppCompatActivity() {
 
     private var dbFirebase = FirebaseFirestore.getInstance()
-    private lateinit var auth: FirebaseAuth
+//    private lateinit var auth: FirebaseAuth
     private var recipesFirebase = dbFirebase.collection("recipes") //  Crea una nueva colección en Firebase
     private var ingredientsFirebase = dbFirebase.collection("ingredients") //  Crea una nueva colección en Firebase
     private var imagesFirebase = dbFirebase.collection("images")
@@ -54,17 +53,15 @@ class CRUDActivity : AppCompatActivity() {
     private val savedImagePath: ArrayList<String> = ArrayList() // Contiene las rutas a las imágenes guardadas en el directorio "Images/recipes" del proyecto
     private val savedIngredients: ArrayList<String> = ArrayList() //  Contiene los ingredientes de la receta
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crud)
 
         // Inicializa Firebase Auth
-        auth = FirebaseAuth.getInstance()
+//        auth = FirebaseAuth.getInstance()
 
         //  Crea un directorio para las imagenes si no existe
 //        getFile("Images/recipes")
-
 
         spinnerCategory()
 
@@ -78,8 +75,36 @@ class CRUDActivity : AppCompatActivity() {
             backProfile()
         }
 
+        btn_del_imageView_I.setOnClickListener {
+            if (selectedPhotoUri0 != null){
+                selectedPhotoUri0 = null
+                Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_I)
+            }
+        }
+
+        btn_del_imageView_II.setOnClickListener {
+            if (selectedPhotoUri1 != null){
+                selectedPhotoUri1 = null
+                Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_II)
+            }
+        }
+
+        btn_del_imageView_III.setOnClickListener {
+            if (selectedPhotoUri2 != null){
+                selectedPhotoUri2 = null
+                Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_III)
+            }
+        }
+
+        btn_del_imageView_IV.setOnClickListener {
+            if (selectedPhotoUri3 != null){
+                selectedPhotoUri3 = null
+                Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_IV)
+            }
+        }
+
         //  Añade ingredientes a la receta
-        btn_add.setOnClickListener {
+        btn_add_ingredient.setOnClickListener {
             if (et_ingredient.text.toString() != "") {
                 val reg = Ingredients(et_ingredient.text.toString())
 
@@ -97,7 +122,7 @@ class CRUDActivity : AppCompatActivity() {
         }
 
         btn_crud_save.setOnClickListener {
-            if (this.validation()!!) {
+            if (this.validation()!! && imageSelected()) {
                 if (!selectedCategory.contentEquals(" -- Elije una categoría -- ")) {
                     val recipe = RecipesModel()
                     val successRecipe: Boolean
@@ -114,7 +139,6 @@ class CRUDActivity : AppCompatActivity() {
                         recipe.category = selectedCategory
                         recipe.type = rButtonchecked
                         recipe.date = date
-
 
                         successRecipe = dbHandler!!.addRecipe(recipe)
 
@@ -139,7 +163,7 @@ class CRUDActivity : AppCompatActivity() {
 
                     } else if (et_hours.text.toString() == "") {
 
-                        recipe.id = "recipe-" + date
+                        recipe.id = "recipe-$date"
                         recipe.name = et_recipe_name.text.toString()
                         recipe.userId = dbHandler!!.getUserId()
                         recipe.timeM = et_minutes.text.toString().toInt()
@@ -172,7 +196,7 @@ class CRUDActivity : AppCompatActivity() {
 
                     } else if (et_minutes.text.toString() == "") {
 
-                        recipe.id = "recipe-" + date
+                        recipe.id = "recipe-$date"
                         recipe.name = et_recipe_name.text.toString()
                         recipe.userId = dbHandler!!.getUserId()
                         recipe.timeH = et_hours.text.toString().toInt()
@@ -237,6 +261,7 @@ class CRUDActivity : AppCompatActivity() {
 
     }
 
+
     //  Muestra las imágenes seleccionadas de la galería en sus respectivos ImagenView
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -251,7 +276,6 @@ class CRUDActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(stream.toByteArray())
                 .into(imageView_I)
-
 
         } else if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri1 = data.data
@@ -314,22 +338,35 @@ class CRUDActivity : AppCompatActivity() {
 
         } else if (et_recipe_name.text.toString() == "" && et_preparation.text.toString() == "") {
             validate = false
-            Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show()
 
         } else if (et_recipe_name.text.toString() == "") {
             validate = false
-            Toast.makeText(this, "Rellena el campo nombre", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Rellena el campo nombre", Toast.LENGTH_SHORT).show()
 
         } else if (et_preparation.text.toString() == "") {
             validate = false
-            Toast.makeText(this, "Rellena el campo preparacion", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Rellena el campo preparacion", Toast.LENGTH_SHORT).show()
 
         } else if (selectedIngredients.size < 4) {
             validate = false
-            Toast.makeText(this, "Número de ingredientes insuficiente", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Número de ingredientes insuficiente", Toast.LENGTH_SHORT).show()
         }
 
         return validate
+    }
+
+    //  Comprueba que se elija al menos una imagen de la galería
+    private fun imageSelected(): Boolean {
+        var validate: Boolean? = null
+        if (selectedPhotoUri0 == null && selectedPhotoUri1 == null && selectedPhotoUri2 == null && selectedPhotoUri3 == null ){
+            validate = false
+            Toast.makeText(this, "Selecciona al menos una imágen para la receta", Toast.LENGTH_LONG).show()
+        } else {
+            validate = true
+        }
+
+        return  validate
     }
 
     private fun spinnerCategory() {
@@ -379,6 +416,7 @@ class CRUDActivity : AppCompatActivity() {
 
     }
 
+    //  Comprueba si la receta es privada o pública
     private fun radioButtonChecked() {
         rb_public.setOnClickListener {
             rb_private.isChecked = false
@@ -391,7 +429,7 @@ class CRUDActivity : AppCompatActivity() {
         }
     }
 
-    //  Crea un directorio para las imagesView si no existe
+    //  Crea un directorio para las imágenes si no existe
     private fun getFile(name: String): File {
         val file = File(this.filesDir, name)
         if (!file.mkdirs()) {
@@ -400,11 +438,11 @@ class CRUDActivity : AppCompatActivity() {
         return File(this.filesDir, name)
     }
 
-    //  Guarda las imagesView en el directorio ya creado
+    //  Guarda las imágenes en el directorio ya creado
     @Throws(IOException::class)
-    private fun saveFile(pictureBitmap: Bitmap, fileName: String, iDrecipe: String) {
+    private fun saveFile(pictureBitmap: Bitmap, fileName: String, idRecipe: String) {
         val fOut: OutputStream?
-        val file = File(this.filesDir.toString() + "/Images/recipes/$iDrecipe", "$fileName.png")
+        val file = File(this.filesDir.toString() + "/Images/recipes/$idRecipe", "$fileName.png")
         fOut = FileOutputStream(file)
 
         pictureBitmap.compress(Bitmap.CompressFormat.PNG, 80, fOut)
@@ -419,10 +457,18 @@ class CRUDActivity : AppCompatActivity() {
         getFile("Images/recipes/$idRecipe")
         val image = ImagesModel()
 
-        imagesView.add(imageView_I)
-        imagesView.add(imageView_II)
-        imagesView.add(imageView_III)
-        imagesView.add(imageView_IV)
+        if (selectedPhotoUri0 != null){
+            imagesView.add(imageView_I)
+        }
+        if (selectedPhotoUri1 != null){
+            imagesView.add(imageView_II)
+        }
+        if (selectedPhotoUri2 != null){
+            imagesView.add(imageView_III)
+        }
+        if (selectedPhotoUri3 != null){
+            imagesView.add(imageView_IV)
+        }
 
         var countImage = 0
         for (i in imagesView) {
@@ -454,6 +500,7 @@ class CRUDActivity : AppCompatActivity() {
             }
 
         }
+
 
         for ((count, i) in savedImagePath.withIndex()) {
             image.id = "imagePath$count-$date"

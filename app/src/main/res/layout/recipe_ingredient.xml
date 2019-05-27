@@ -17,7 +17,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_delete_ingredient"
             android:layout_marginEnd="8dp"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageButton
             android:id="@+id/btn_delete_ingredient"
@@ -28,7 +30,7 @@
             app:srcCompat="@drawable/ic_clear_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>

@@ -14,12 +14,12 @@ import java.util.ArrayList
 class IngredientsAdapter(private val items: ArrayList<Ingredients>, private val ingredients: ArrayList<String>, val context: Context) :
     RecyclerView.Adapter<ViewHolderIngredient>() {
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolderIngredient {
-        return ViewHolderIngredient(LayoutInflater.from(context).inflate(R.layout.recipe_ingredient, p0, false))
-    }
-
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolderIngredient {
+        return ViewHolderIngredient(LayoutInflater.from(context).inflate(R.layout.recipe_ingredient, p0, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolderIngredient, position: Int) {
@@ -27,14 +27,14 @@ class IngredientsAdapter(private val items: ArrayList<Ingredients>, private val 
 
         holder.btnDelete.setOnClickListener {
             removeItem(position)
-            ingredients.removeAt(position) //  Elimina ingrediente del ArrayList de la tabla "ingredients"
         }
     }
 
-    // Para eliminar un ingrediente del recyclerView
+    // Para eliminar un ingrediente del recyclerView y del ArrayList perteneciente a la tabla "ingredients"
     private fun removeItem(position: Int) {
         try {
             items.removeAt(position)
+            ingredients.removeAt(position) //  Elimina ingrediente del ArrayList de la tabla "ingredients"
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, itemCount)
         } catch (e: IndexOutOfBoundsException) {

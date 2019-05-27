@@ -188,7 +188,7 @@
                         android:layout_marginStart="16dp"/>
 
                 <TextView
-                        android:text="TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView"
+                        android:text="TextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_preparation_content"

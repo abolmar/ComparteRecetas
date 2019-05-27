@@ -45,6 +45,6 @@ class ShowImagesAdapter(
 
 
 class ViewHolderShowImages(view: View) : RecyclerView.ViewHolder(view) {
-    val imgShowImage = view.img_show_image
+    val imgShowImage = view.img_show_image!!
 }
 
