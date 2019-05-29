@@ -39,7 +39,7 @@ class CRUDActivity : AppCompatActivity() {
 //    private lateinit var auth: FirebaseAuth
     private var recipesFirebase = dbFirebase.collection("recipes") //  Crea una nueva colección en Firebase
     private var ingredientsFirebase = dbFirebase.collection("ingredients") //  Crea una nueva colección en Firebase
-    private var imagesFirebase = dbFirebase.collection("images")
+    private var imagesFirebase = dbFirebase.collection("images") //  Crea una nueva colección en Firebase
     private val date: String = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault()).format(Date())
     private var dbHandler: DataBaseHandler? = null
     private val selectedIngredients: ArrayList<Ingredients> = ArrayList()
@@ -57,12 +57,6 @@ class CRUDActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crud)
 
-        // Inicializa Firebase Auth
-//        auth = FirebaseAuth.getInstance()
-
-        //  Crea un directorio para las imagenes si no existe
-//        getFile("Images/recipes")
-
         spinnerCategory()
 
         radioButtonChecked()
@@ -72,35 +66,31 @@ class CRUDActivity : AppCompatActivity() {
 
         //  Regresa al menú "perfil"
         btn_crud_back.setOnClickListener {
-            backProfile()
+            backtoProfile()
         }
 
         btn_del_imageView_I.setOnClickListener {
-            if (selectedPhotoUri0 != null){
-                selectedPhotoUri0 = null
-                Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_I)
-            }
+            selectedPhotoUri0 = null
+            Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_I)
+            btn_del_imageView_I.visibility = View.INVISIBLE
         }
 
         btn_del_imageView_II.setOnClickListener {
-            if (selectedPhotoUri1 != null){
-                selectedPhotoUri1 = null
-                Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_II)
-            }
+            selectedPhotoUri1 = null
+            Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_II)
+            btn_del_imageView_II.visibility = View.INVISIBLE
         }
 
         btn_del_imageView_III.setOnClickListener {
-            if (selectedPhotoUri2 != null){
-                selectedPhotoUri2 = null
-                Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_III)
-            }
+            selectedPhotoUri2 = null
+            Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_III)
+            btn_del_imageView_III.visibility = View.INVISIBLE
         }
 
         btn_del_imageView_IV.setOnClickListener {
-            if (selectedPhotoUri3 != null){
-                selectedPhotoUri3 = null
-                Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_IV)
-            }
+            selectedPhotoUri3 = null
+            Glide.with(this).load(R.drawable.ic_add_a_new_photo_100dp).into(imageView_IV)
+            btn_del_imageView_IV.visibility = View.INVISIBLE
         }
 
         //  Añade ingredientes a la receta
@@ -154,7 +144,7 @@ class CRUDActivity : AppCompatActivity() {
                             } else {
                                 Toast.makeText(this, "Sin conexión - NO FIREBASE DB", Toast.LENGTH_LONG).show()
                             }
-                            backProfile()
+                            backtoProfile()
                         }
 
                     } else if (et_hours.text.toString() == "" && et_minutes.text.toString() == "") {
@@ -191,7 +181,7 @@ class CRUDActivity : AppCompatActivity() {
                                     .show()
                             }
 
-                            backProfile()
+                            backtoProfile()
                         }
 
                     } else if (et_minutes.text.toString() == "") {
@@ -221,10 +211,10 @@ class CRUDActivity : AppCompatActivity() {
                                     .show()
                             }
 
-                            backProfile()
+                            backtoProfile()
                         }
                     }
-
+                    
                 } else {
                     Toast.makeText(this, "Selecciona una categoría", Toast.LENGTH_SHORT).show()
                 }
@@ -277,6 +267,8 @@ class CRUDActivity : AppCompatActivity() {
                 .load(stream.toByteArray())
                 .into(imageView_I)
 
+            btn_del_imageView_I.visibility = View.VISIBLE
+
         } else if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri1 = data.data
 
@@ -287,6 +279,8 @@ class CRUDActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(stream.toByteArray())
                 .into(imageView_II)
+
+            btn_del_imageView_II.visibility = View.VISIBLE
 
         } else if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri2 = data.data
@@ -299,6 +293,8 @@ class CRUDActivity : AppCompatActivity() {
                 .load(stream.toByteArray())
                 .into(imageView_III)
 
+            btn_del_imageView_III.visibility = View.VISIBLE
+
         } else if (requestCode == 3 && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri3 = data.data
 
@@ -310,6 +306,8 @@ class CRUDActivity : AppCompatActivity() {
                 .load(stream.toByteArray())
                 .into(imageView_IV)
 
+            btn_del_imageView_IV.visibility = View.VISIBLE
+
         } else {
             Toast.makeText(this, "Acepta los permisos para acceder a la galeria de imagesView", Toast.LENGTH_LONG)
                 .show()
@@ -318,10 +316,10 @@ class CRUDActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        backProfile()
+        backtoProfile()
     }
 
-    private fun backProfile() {
+    private fun backtoProfile() {
         dbHandler!!.close()
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -358,7 +356,7 @@ class CRUDActivity : AppCompatActivity() {
 
     //  Comprueba que se elija al menos una imagen de la galería
     private fun imageSelected(): Boolean {
-        var validate: Boolean? = null
+        val validate: Boolean
         if (selectedPhotoUri0 == null && selectedPhotoUri1 == null && selectedPhotoUri2 == null && selectedPhotoUri3 == null ){
             validate = false
             Toast.makeText(this, "Selecciona al menos una imágen para la receta", Toast.LENGTH_LONG).show()

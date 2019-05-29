@@ -1,14 +1,12 @@
 package com.alejandro.comparterecetas
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.PopupMenu
-import android.widget.Toast
 import com.alejandro.comparterecetas.adapters.MyRecipesAdapter
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.login.LoginActivity
@@ -16,10 +14,11 @@ import com.alejandro.comparterecetas.models.RecipesModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_profile.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 import com.bumptech.glide.Glide
+import android.support.v7.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_profile.*
+
 
 /**
  * A simple [Fragment] subclass.
@@ -75,6 +74,23 @@ class PerfilFragment : Fragment() {
         view.rv_user_recipes.layoutManager = GridLayoutManager(context, 1)
         view.rv_user_recipes.adapter = MyRecipesAdapter(user, context!!)
 
+        view.rv_user_recipes.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    // Scroll Down
+                    if (fab_new_recipe.isShown) {
+                        fab_new_recipe.hide()
+                    }
+                } else if (dy < 0) {
+                    // Scroll Up
+                    if (!fab_new_recipe.isShown) {
+                        fab_new_recipe.show()
+                    }
+                }
+            }
+        })
+
         //  Pone el nombre del usuario con sesion iniciada
         view.tv_nombre.text = dbHandler!!.getUserName()
 
@@ -82,8 +98,8 @@ class PerfilFragment : Fragment() {
         view.imageButton_threeDots.setOnClickListener {
             val popupMenu = PopupMenu(context, it)
 
-            popupMenu.setOnMenuItemClickListener {
-                when(it.itemId){
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when(menuItem.itemId){
 
                     R.id.profile -> {
                         val intent = Intent(context, EditProfileActivity::class.java)
@@ -132,7 +148,7 @@ class PerfilFragment : Fragment() {
         }
 
         //  Crear una nueva receta
-        view.fab_nueva_receta.setOnClickListener {
+        view.fab_new_recipe.setOnClickListener {
             val intent = Intent(context, CRUDActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)

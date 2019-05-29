@@ -29,7 +29,7 @@
                     app:civ_border_width="2dp"
                     app:civ_border_color="#FF000000"
                     android:id="@+id/img_adapter_all_recipe_user"
-                    android:src="@mipmap/huevo"
+                    android:src="@drawable/egg"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_adapter_all_recipe_name"
                     app:layout_constraintTop_toTopOf="@+id/tv_adapter_all_recipe_name"
                     android:layout_marginStart="8dp"

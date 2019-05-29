@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
+import android.view.View
 import com.alejandro.comparterecetas.adapters.ShowImagesAdapter
 import com.alejandro.comparterecetas.adapters.ShowIngredientsAdapter
 import com.alejandro.comparterecetas.database.DataBaseHandler
@@ -59,6 +61,46 @@ class ShowRecipeActivity : AppCompatActivity() {
 
         rv_images.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rv_images.adapter = ShowImagesAdapter(images, this)
+
+        count_images.text = " / ${images.size}"
+
+        if (images.size > 1){
+            var count = 0
+
+            if (count == 0){
+                back_image.isEnabled = false
+            }
+
+            next_image.setOnClickListener {
+                count++
+                rv_images.smoothScrollToPosition(count)
+                image_position.text = "${count+1}"
+                if (count == images.size-1){
+                    back_image.isEnabled = true
+                    next_image.isEnabled = false
+                }else {
+                    back_image.isEnabled = true
+                    next_image.isEnabled = true
+                }
+            }
+
+            back_image.setOnClickListener {
+                count--
+                rv_images.smoothScrollToPosition(count)
+                image_position.text = "${count+1}"
+                if (count == 0){
+                    back_image.isEnabled = false
+                    next_image.isEnabled = true
+                } else {
+                    back_image.isEnabled = true
+                    next_image.isEnabled = true
+                }
+            }
+        } else {
+            next_image.visibility = View.INVISIBLE
+            back_image.visibility = View.INVISIBLE
+        }
+
 
         rv_ingredients.layoutManager = LinearLayoutManager(this)
         rv_ingredients.layoutManager = GridLayoutManager(this, 1)
