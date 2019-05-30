@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        tools:context=".FavoritasFragment">
+
+    <!--<android.support.design.widget.TabLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/menu_options">-->
+
+    <!--<android.support.design.widget.TabItem-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@android:color/holo_blue_bright"-->
+    <!--android:text="Todas"-->
+    <!--android:id="@+id/recetas_todas"/>-->
+
+    <!--<android.support.design.widget.TabItem-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@android:color/holo_orange_dark"-->
+    <!--android:text="Comida"-->
+    <!--android:id="@+id/recetas_comida"/>-->
+
+    <!--<android.support.design.widget.TabItem-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@android:color/holo_purple"-->
+    <!--android:text="Cena"-->
+    <!--android:id="@+id/recetas_cena"/>-->
+
+    <!--<android.support.design.widget.TabItem-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@android:color/holo_purple"-->
+    <!--android:text="Merienda"-->
+    <!--android:id="@+id/recetas_merienda"/>-->
+
+    <!--<android.support.design.widget.TabItem-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@android:color/holo_purple"-->
+    <!--android:text="Postre"-->
+    <!--android:id="@+id/recetas_postre"/>-->
+    <!--</android.support.design.widget.TabLayout>-->
+
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <Button
+                    android:text="Todas"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/btn_all_recipes"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="16dp"/>
+
+            <Button
+                    android:text="Comidas"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/btn_lunch_recipes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_all_recipes"/>
+
+            <Button
+                    android:text="Cenas"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/btn_dinner_recipes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_afternoonSnack_recipes"/>
+
+            <Button
+                    android:text="Meriendas"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/btn_afternoonSnack_recipes"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_lunch_recipes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"/>
+
+            <Button
+                    android:text="Postres"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/btn_dessert_recipes"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_dinner_recipes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

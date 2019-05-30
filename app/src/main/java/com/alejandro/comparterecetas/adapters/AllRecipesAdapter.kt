@@ -39,7 +39,6 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
     private lateinit var auth: FirebaseAuth
     private var dbFirebase = FirebaseFirestore.getInstance()
     private var dbHandler: DataBaseHandler? = null
-    private var recipesFirebase = dbFirebase.collection("recipes")
     private var usersFirebase = dbFirebase.collection("usersLogin")
     private val date: String = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault()).format(Date())
 
@@ -99,7 +98,6 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
                         } catch (e: IllegalArgumentException) {
                         }
                     }
-
             }
         }
 

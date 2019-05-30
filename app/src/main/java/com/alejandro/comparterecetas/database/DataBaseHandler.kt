@@ -281,8 +281,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return (Integer.parseInt("$success") != -1)
     }
 
-    //******************************************************************************************************************
-    //*******************************Por desarrollar...*****************************************************************
+    //  Inserta datos en la tabla "favorites"
     fun addFavoriteRecipe(favoritesModel: FavoritesModel): Boolean {
         val db = writableDatabase
         val values = ContentValues()
@@ -300,43 +299,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
 
         return (Integer.parseInt("$success") != -1)
     }
-
-    //  Comprueba si el usuario tiene una receta en favoritos
-    fun getFavoriteRecipe(userId: String, recipeid: String?): Int{
-        var favorite = 0
-        val db = readableDatabase
-        val selectQuery = "SELECT $favoriteBoolean FROM $tableFavorites WHERE $favoriteUserId = '$userId' AND $favoriteRecipeId = '$recipeid'"
-        val cursor = db.rawQuery(selectQuery, null)
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    val data = cursor.getInt(cursor.getColumnIndex(favoriteBoolean))
-                    favorite = data
-
-                } while (cursor.moveToNext())
-            }
-        }
-
-        cursor.close()
-        db.close()
-
-        return favorite
-    }
-
-    //  Actualiza el tipo de receta (Privada = 0 / Pública = 1)
-    fun updateFavoriteRecipe(userId: String, recipeid: String?, favorite: Int, date: String){
-        val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(favoriteBoolean, favorite)
-        values.put(favoriteDate, date)
-
-        db.update(tableFavorites, values, "$favoriteUserId = '$userId' AND $favoriteRecipeId = '$recipeid'", null)
-        db.close()
-    }
-
-    //*******************************Por desarrollar...*****************************************************************
-    //******************************************************************************************************************
 
 
 //    //  Comprueba que el usuario exista
@@ -498,7 +460,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
     fun getAllMyRecipes(userid: String): ArrayList<RecipesModel> {
         val data: ArrayList<RecipesModel> = ArrayList()
         val db = readableDatabase
-        val selectALLQuery = "SELECT * FROM $tableRecipes WHERE $recipeUserId = '$userid' AND $recipeRemove = 0 "// ORDER BY $recipeId DESC
+        val selectALLQuery = "SELECT * FROM $tableRecipes WHERE $recipeUserId = '$userid' AND $recipeRemove = 0 ORDER BY $recipeDate DESC"
         val cursor = db.rawQuery(selectALLQuery, null)
 
         if (cursor != null) {
@@ -536,7 +498,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
     fun getAllMyRecipesRemoved(userid: String): ArrayList<RecipesModel> {
         val data: ArrayList<RecipesModel> = ArrayList()
         val db = readableDatabase
-        val selectALLQuery = "SELECT * FROM $tableRecipes WHERE $recipeUserId = '$userid' AND $recipeRemove = 1"//ORDER BY $recipeId DESC
+        val selectALLQuery = "SELECT * FROM $tableRecipes WHERE $recipeUserId = '$userid' AND $recipeRemove = 1"
         val cursor = db.rawQuery(selectALLQuery, null)
 
         if (cursor != null) {
@@ -667,6 +629,28 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         db.close()
 
         return data
+    }
+
+    //  Comprueba si el usuario tiene una receta en favoritos
+    fun getFavoriteRecipe(userId: String, recipeid: String?): Int{
+        var favorite = 0
+        val db = readableDatabase
+        val selectQuery = "SELECT $favoriteBoolean FROM $tableFavorites WHERE $favoriteUserId = '$userId' AND $favoriteRecipeId = '$recipeid'"
+        val cursor = db.rawQuery(selectQuery, null)
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    val data = cursor.getInt(cursor.getColumnIndex(favoriteBoolean))
+                    favorite = data
+
+                } while (cursor.moveToNext())
+            }
+        }
+
+        cursor.close()
+        db.close()
+
+        return favorite
     }
 
     //  Retorna el voto positivo de una receta ya puntuada
@@ -856,6 +840,17 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         db.close()
     }
 
+    //  Actualiza las recetas guardadas en la tabla favoritas, marcada como favorita(1), desmarcada como tal(-1)
+    fun updateFavoriteRecipe(userId: String, recipeid: String?, favorite: Int, date: String){
+        val db = writableDatabase
+        val values = ContentValues()
+
+        values.put(favoriteBoolean, favorite)
+        values.put(favoriteDate, date)
+
+        db.update(tableFavorites, values, "$favoriteUserId = '$userId' AND $favoriteRecipeId = '$recipeid'", null)
+        db.close()
+    }
 
     //  Actualiza el voto positivo del usuario
     fun updateUserVotePositive(idRecipe: String, idUser: String, vote:Int){

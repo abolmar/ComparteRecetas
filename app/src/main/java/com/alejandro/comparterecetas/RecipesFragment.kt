@@ -13,6 +13,7 @@ import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_recipes.view.*
 
 /**
@@ -53,7 +54,7 @@ class RecetasFragment : Fragment() {
             view.swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorAccent)
 
             view.swipeRefreshLayout.setOnRefreshListener {
-                recipesFirebase.whereEqualTo("type", 1).get().addOnSuccessListener { documentSnapshot ->
+                recipesFirebase.whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
                     val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
 
                     try {
@@ -66,16 +67,16 @@ class RecetasFragment : Fragment() {
                     } catch (e: KotlinNullPointerException){
                         Log.d("capullo", "Algo falla en RecipesFragment -->: $e")
                     }
-                    // Lineas de prueba
-                    view.rv_all_users_recipes.setHasFixedSize(true)
-                    view.rv_all_users_recipes.setItemViewCacheSize(20)
+//                    // Lineas de prueba
+//                    view.rv_all_users_recipes.setHasFixedSize(true)
+//                    view.rv_all_users_recipes.setItemViewCacheSize(20)
                 }
             }
             // *******************************Funciona pero...**********************************************************
             //**********************************************************************************************************
 
-
-            recipesFirebase.whereEqualTo("type", 1).get().addOnSuccessListener { documentSnapshot ->
+            //  Devuelve aquellas recetas que sean públicas (type = 1) y ordenadas por las más recientes
+            recipesFirebase.whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
                 val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
 
                 try {
@@ -86,9 +87,9 @@ class RecetasFragment : Fragment() {
                 } catch (e: KotlinNullPointerException){
                     Log.d("capullo", "Algo falla: $e")
                 }
-                // Lineas de prueba
-                view.rv_all_users_recipes.setHasFixedSize(true)
-                view.rv_all_users_recipes.setItemViewCacheSize(20)
+//                // Lineas de prueba
+//                view.rv_all_users_recipes.setHasFixedSize(true)
+//                view.rv_all_users_recipes.setItemViewCacheSize(20)
             }
 
             return view
@@ -97,7 +98,7 @@ class RecetasFragment : Fragment() {
             view.textView_offInternet.visibility = View.VISIBLE
             view.rv_all_users_recipes.visibility = View.GONE
 
-            return inflater.inflate(R.layout.fragment_recipes, container, false)
+            return view
         }
 
     }

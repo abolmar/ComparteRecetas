@@ -154,8 +154,6 @@ class ShowRecipeActivity : AppCompatActivity() {
             img_favorite_No.visibility = View.VISIBLE
             img_favorite_Yes.visibility = View.GONE
         }
-
-
     }
 
     override fun onBackPressed() {
