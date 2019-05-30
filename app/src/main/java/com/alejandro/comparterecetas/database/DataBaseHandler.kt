@@ -64,6 +64,8 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         //  Columnas tabla "favorites"
         private const val favoriteId = "id"
         private const val favoriteRecipeId = "recipeId"
+        private const val favoriteUserId = "userId"
+        private const val favoriteType = "type"
         private const val favoriteBoolean = "favorite"
         private const val favoriteDate = "date"
 
@@ -141,6 +143,8 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         val createTableFavorites = "CREATE TABLE IF NOT EXISTS `$tableFavorites` (" +
                 "`$favoriteId` TEXT, " +
                 "`$favoriteRecipeId` TEXT, " +
+                "`$favoriteUserId` TEXT, " +
+                "`$favoriteType` TEXT, " +
                 "`$favoriteBoolean` Integer, " +
                 "`$favoriteDate` TEXT, " +
                 "PRIMARY KEY (`$favoriteId`), " +
@@ -277,6 +281,64 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return (Integer.parseInt("$success") != -1)
     }
 
+    //******************************************************************************************************************
+    //*******************************Por desarrollar...*****************************************************************
+    fun addFavoriteRecipe(favoritesModel: FavoritesModel): Boolean {
+        val db = writableDatabase
+        val values = ContentValues()
+
+        values.put(favoriteId, favoritesModel.id)
+        values.put(favoriteRecipeId, favoritesModel.recipeId)
+        values.put(favoriteUserId, favoritesModel.userId)
+        values.put(favoriteType, favoritesModel.type)
+        values.put(favoriteBoolean, favoritesModel.favorite)
+        values.put(favoriteDate, favoritesModel.date)
+
+        val success = db.insert(tableFavorites, null, values)
+
+        db.close()
+
+        return (Integer.parseInt("$success") != -1)
+    }
+
+    //  Comprueba si el usuario tiene una receta en favoritos
+    fun getFavoriteRecipe(userId: String, recipeid: String?): Int{
+        var favorite = 0
+        val db = readableDatabase
+        val selectQuery = "SELECT $favoriteBoolean FROM $tableFavorites WHERE $favoriteUserId = '$userId' AND $favoriteRecipeId = '$recipeid'"
+        val cursor = db.rawQuery(selectQuery, null)
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    val data = cursor.getInt(cursor.getColumnIndex(favoriteBoolean))
+                    favorite = data
+
+                } while (cursor.moveToNext())
+            }
+        }
+
+        cursor.close()
+        db.close()
+
+        return favorite
+    }
+
+    //  Actualiza el tipo de receta (Privada = 0 / Pública = 1)
+    fun updateFavoriteRecipe(userId: String, recipeid: String?, favorite: Int, date: String){
+        val db = writableDatabase
+        val values = ContentValues()
+
+        values.put(favoriteBoolean, favorite)
+        values.put(favoriteDate, date)
+
+        db.update(tableFavorites, values, "$favoriteUserId = '$userId' AND $favoriteRecipeId = '$recipeid'", null)
+        db.close()
+    }
+
+    //*******************************Por desarrollar...*****************************************************************
+    //******************************************************************************************************************
+
+
 //    //  Comprueba que el usuario exista
 //    fun getUserEmailFromTableUsers(email:String, passwd:String): Boolean {
 //        var user = ""
@@ -330,8 +392,8 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    val loging = cursor.getInt(cursor.getColumnIndex(usersLoginLogin))
-                    user = loging
+                    val data = cursor.getInt(cursor.getColumnIndex(usersLoginLogin))
+                    user = data
 
                     if (user == 1) return true
 

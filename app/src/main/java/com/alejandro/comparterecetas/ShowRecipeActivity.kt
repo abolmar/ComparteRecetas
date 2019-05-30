@@ -11,6 +11,7 @@ import android.view.View
 import com.alejandro.comparterecetas.adapters.ShowImagesAdapter
 import com.alejandro.comparterecetas.adapters.ShowIngredientsAdapter
 import com.alejandro.comparterecetas.database.DataBaseHandler
+import com.alejandro.comparterecetas.models.FavoritesModel
 import com.alejandro.comparterecetas.models.ImagesModel
 import com.alejandro.comparterecetas.models.IngredientsModel
 import com.bumptech.glide.Glide
@@ -19,10 +20,15 @@ import com.bumptech.glide.request.RequestOptions.circleCropTransform
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_show_recipe.*
 import java.io.LineNumberReader
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ShowRecipeActivity : AppCompatActivity() {
 
     private var dbHandler: DataBaseHandler? = null
+    private val date: String = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault()).format(Date())
+    private val favorite = FavoritesModel()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +115,47 @@ class ShowRecipeActivity : AppCompatActivity() {
         btn_show_recipe_back.setOnClickListener {
             backRecipes()
         }
+
+        //  Contiene el valor representativo de una receta marcada como favorita(1), desmarcada como favorita(-1) o si no ha sido marcada(0)
+        val isFavorite = dbHandler!!.getFavoriteRecipe(dbHandler!!.getUserId(), recipeId)
+
+        when (isFavorite) {
+            -1, 0 -> {
+                img_favorite_No.visibility = View.VISIBLE
+                img_favorite_Yes.visibility = View.GONE
+            }
+            1 -> {
+                img_favorite_No.visibility = View.GONE
+                img_favorite_Yes.visibility = View.VISIBLE
+            }
+        }
+
+        img_favorite_No.setOnClickListener {
+            when (isFavorite) {
+                0 -> {
+                    favorite.id = "favorite-$date"
+                    favorite.recipeId = recipeId.toString()
+                    favorite.userId = dbHandler!!.getUserId()
+                    favorite.type = recipeCategory.toString()
+                    favorite.favorite = 1
+                    favorite.date = date
+
+                    dbHandler!!.addFavoriteRecipe(favorite)
+                }
+                -1 -> dbHandler!!.updateFavoriteRecipe(dbHandler!!.getUserId(), recipeId, 1, date)
+            }
+
+            img_favorite_Yes.visibility = View.VISIBLE
+            img_favorite_No.visibility = View.GONE
+        }
+
+        img_favorite_Yes.setOnClickListener {
+            dbHandler!!.updateFavoriteRecipe(dbHandler!!.getUserId(), recipeId, -1, date)
+            img_favorite_No.visibility = View.VISIBLE
+            img_favorite_Yes.visibility = View.GONE
+        }
+
+
     }
 
     override fun onBackPressed() {
