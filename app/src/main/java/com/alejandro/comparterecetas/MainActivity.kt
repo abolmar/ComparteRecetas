@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.navigation_favoritas -> {
-                favourites()
+                favorites()
                 return@OnNavigationItemSelectedListener true
             }
 
@@ -61,14 +61,22 @@ class MainActivity : AppCompatActivity() {
         dbHandler = DataBaseHandler(this)
 
         val intent = intent
+
+        val favorites = intent.getBooleanExtra("USER_FAVORITES", false)
         val profile = intent.getBooleanExtra("USER_PROFILE", false)
+
+        recipes()
+
+        if (favorites){
+            favorites()
+            navigation.selectedItemId = R.id.navigation_favoritas
+        }
 
         if (profile){
             profile()
             navigation.selectedItemId = R.id.navigation_perfil
-        } else {
-            recipes()
         }
+
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
@@ -87,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.fragment_container, fragment).commit()
     }
 
-    private fun favourites(){
+    private fun favorites(){
         val transaction = manager.beginTransaction()
         val fragment = FavoritasFragment()
 

@@ -2,8 +2,10 @@ package com.alejandro.comparterecetas
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +36,15 @@ class RecetasFragment : Fragment() {
         if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase() //?????????????
     }
 
+    //******************************************************************************************************************
+    //******************************************************************************************************************
+    override fun onPause() {
+        super.onPause()
+        (activity as AppCompatActivity).overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
+    }
+    //******************************************************************************************************************
+    //******************************************************************************************************************
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,7 +71,7 @@ class RecetasFragment : Fragment() {
                     try {
                         view.rv_all_users_recipes.layoutManager = LinearLayoutManager(context)
                         view.rv_all_users_recipes.layoutManager = GridLayoutManager(context, 1)
-                        view.rv_all_users_recipes?.adapter = AllRecipesAdapter(usersRecipesFirebase, context!!)
+                        view.rv_all_users_recipes?.adapter = AllRecipesAdapter(usersRecipesFirebase, "recipes", "", context!!)
 
                         view.swipeRefreshLayout.isRefreshing = false
 
@@ -82,7 +93,7 @@ class RecetasFragment : Fragment() {
                 try {
                     view.rv_all_users_recipes.layoutManager = LinearLayoutManager(context)
                     view.rv_all_users_recipes.layoutManager = GridLayoutManager(context, 1)
-                    view.rv_all_users_recipes?.adapter = AllRecipesAdapter(usersRecipesFirebase, context!!)
+                    view.rv_all_users_recipes?.adapter = AllRecipesAdapter(usersRecipesFirebase, "recipes", "", context!!)
 
                 } catch (e: KotlinNullPointerException){
                     Log.d("capullo", "Algo falla: $e")

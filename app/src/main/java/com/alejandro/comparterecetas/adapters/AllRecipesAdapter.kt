@@ -33,12 +33,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val context: Context) :
+class AllRecipesAdapter(private val items: MutableList<RecipesModel>, private val fragment: String, private val category: String, val context: Context) :
     RecyclerView.Adapter<ViewHolderAllRecipes>() {
 
     private lateinit var auth: FirebaseAuth
-    private var dbFirebase = FirebaseFirestore.getInstance()
     private var dbHandler: DataBaseHandler? = null
+    private var dbFirebase = FirebaseFirestore.getInstance()
     private var usersFirebase = dbFirebase.collection("usersLogin")
     private val date: String = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault()).format(Date())
 
@@ -63,6 +63,9 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
 
         val userId = auth.currentUser!!.uid
 
+        if (items[position].type == 1){
+
+        }
         val ref = FirebaseStorage.getInstance().reference
 
         // Saca la imagen de la receta de firebase
@@ -116,6 +119,8 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, val contex
             intent.putExtra("recipeminute", items[position].timeM)
             intent.putExtra("recipePreparation", items[position].preparation)
             intent.putExtra("recipeId", items[position].id)
+            intent.putExtra("fromFragment", fragment)
+            intent.putExtra("fromCategory", category)
 
             context.startActivity(intent)
         }

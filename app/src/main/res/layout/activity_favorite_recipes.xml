@@ -13,7 +13,7 @@
             android:background="?attr/colorPrimary"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
-            android:id="@+id/toolbar_recipe_crud"
+            android:id="@+id/toolbar_recipe_favorite"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -24,9 +24,9 @@
             app:srcCompat="@drawable/ic_arrow_back_black_24dp"
             android:id="@+id/btn_favorite_recipes_back"
             android:background="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar_recipe_crud"
-            app:layout_constraintStart_toStartOf="@+id/toolbar_recipe_crud"
-            app:layout_constraintTop_toTopOf="@+id/toolbar_recipe_crud"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbar_recipe_favorite"
+            app:layout_constraintStart_toStartOf="@+id/toolbar_recipe_favorite"
+            app:layout_constraintTop_toTopOf="@+id/toolbar_recipe_favorite"
             android:padding="8dp"
             android:layout_marginStart="8dp"
             android:contentDescription="Back"/>
@@ -37,7 +37,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar_recipe_crud"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_recipe_favorite"
             android:id="@+id/rv_favorite_recipes"/>
+
+    <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_title_category"
+            app:layout_constraintStart_toEndOf="@+id/btn_favorite_recipes_back"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="@+id/toolbar_recipe_favorite"
+            />
 
 </android.support.constraint.ConstraintLayout>

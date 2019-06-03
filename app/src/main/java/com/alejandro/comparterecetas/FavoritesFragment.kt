@@ -17,17 +17,11 @@ import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_favorites.view.*
 import kotlinx.android.synthetic.main.fragment_recipes.view.*
 
-
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
  * A simple [Fragment] subclass.
  *
  */
 class FavoritasFragment : Fragment() {
-
 
 
     override fun onCreateView(
@@ -40,7 +34,35 @@ class FavoritasFragment : Fragment() {
         view.btn_all_recipes.setOnClickListener {
             val intent = Intent(context, FavoriteRecipesActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra("ALL", "Postre")
+            intent.putExtra("ALL", "Todas")
+            startActivity(intent)
+        }
+
+        view.btn_lunch_recipes.setOnClickListener {
+            val intent = Intent(context, FavoriteRecipesActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("LUNCH", "Comida")
+            startActivity(intent)
+        }
+
+        view.btn_dinner_recipes.setOnClickListener {
+            val intent = Intent(context, FavoriteRecipesActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("DINNER", "Cena")
+            startActivity(intent)
+        }
+
+        view.btn_afternoonSnack_recipes.setOnClickListener {
+            val intent = Intent(context, FavoriteRecipesActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("AFTERNOONSNACK", "Merienda")
+            startActivity(intent)
+        }
+
+        view.btn_dessert_recipes.setOnClickListener {
+            val intent = Intent(context, FavoriteRecipesActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("DESSERT", "Postre")
             startActivity(intent)
         }
 

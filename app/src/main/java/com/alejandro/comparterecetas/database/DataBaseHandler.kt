@@ -532,7 +532,71 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return data
     }
 
-    //  Retorna todas las recetas de todos los usuarios cuyo tipo de receta sea pÚblico(1)
+    //  Retorna todas las recetas de un usuario que no han sido "eliminadas" (remove = 0)
+    fun getAllMyFavoriteRecipes(userid: String): ArrayList<FavoritesModel> {
+        val data: ArrayList<FavoritesModel> = ArrayList()
+        val db = readableDatabase
+        val selectALLQuery = "SELECT * FROM $tableFavorites WHERE $favoriteUserId = '$userid' AND $favoriteBoolean = 1"
+        val cursor = db.rawQuery(selectALLQuery, null)
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val faorite = FavoritesModel(
+
+                        cursor.getString(cursor.getColumnIndex(favoriteId)),
+                        cursor.getString(cursor.getColumnIndex(favoriteRecipeId)),
+                        cursor.getString(cursor.getColumnIndex(favoriteUserId)),
+                        cursor.getString(cursor.getColumnIndex(favoriteType)),
+                        cursor.getInt(cursor.getColumnIndex(favoriteBoolean)),
+                        cursor.getString(cursor.getColumnIndex(favoriteDate))
+                    )
+
+                    data.add(faorite)
+                } while (cursor.moveToNext())
+            }
+        }
+
+        cursor.close()
+        db.close()
+
+        return data
+    }
+
+    //  Retorna todas las recetas de un usuario que no han sido "eliminadas" (remove = 0)
+    fun getMyFavoriteRecipes(userid: String, recipetype: String?): ArrayList<FavoritesModel> {
+        val data: ArrayList<FavoritesModel> = ArrayList()
+        val db = readableDatabase
+        val selectALLQuery = "SELECT * FROM $tableFavorites WHERE $favoriteUserId = '$userid' AND $favoriteType = '$recipetype' AND $favoriteBoolean = 1"
+        val cursor = db.rawQuery(selectALLQuery, null)
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val faorite = FavoritesModel(
+
+                        cursor.getString(cursor.getColumnIndex(favoriteId)),
+                        cursor.getString(cursor.getColumnIndex(favoriteRecipeId)),
+                        cursor.getString(cursor.getColumnIndex(favoriteUserId)),
+                        cursor.getString(cursor.getColumnIndex(favoriteType)),
+                        cursor.getInt(cursor.getColumnIndex(favoriteBoolean)),
+                        cursor.getString(cursor.getColumnIndex(favoriteDate))
+                    )
+
+                    data.add(faorite)
+                } while (cursor.moveToNext())
+            }
+        }
+
+        cursor.close()
+        db.close()
+
+        return data
+    }
+
+    //  Retorna todas las recetas de todos los usuarios cuyo tipo de receta sea Público(1)
     fun getAllUsersRecipes(): ArrayList<RecipesModel> {
         val data: ArrayList<RecipesModel> = ArrayList()
         val db = readableDatabase
