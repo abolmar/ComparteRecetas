@@ -3,32 +3,24 @@ package com.alejandro.comparterecetas.adapters
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.Toast
-import com.alejandro.comparterecetas.EditProfileActivity
 import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.ShowRecipeActivity
 import com.alejandro.comparterecetas.database.DataBaseHandler
+import com.alejandro.comparterecetas.models.ImagesModel
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.alejandro.comparterecetas.models.UsersModel
 import com.alejandro.comparterecetas.models.VotesModel
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.adapter_all_recipes.view.*
-import com.google.firebase.storage.StorageReference
 import com.bumptech.glide.Glide
-import com.bumptech.glide.module.AppGlideModule
-import com.bumptech.glide.Registry
-import com.bumptech.glide.annotation.GlideModule
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageException
-import kotlinx.android.synthetic.main.fragment_recipes.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,6 +32,7 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, private va
     private var dbHandler: DataBaseHandler? = null
     private var dbFirebase = FirebaseFirestore.getInstance()
     private var usersFirebase = dbFirebase.collection("usersLogin")
+    private var imagesFirebase = dbFirebase.collection("images")
     private val date: String = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault()).format(Date())
 
     override fun getItemId(position: Int): Long {
@@ -62,25 +55,27 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, private va
         auth = FirebaseAuth.getInstance()
 
         val userId = auth.currentUser!!.uid
-
-        if (items[position].type == 1){
-
-        }
         val ref = FirebaseStorage.getInstance().reference
 
-        // Saca la imagen de la receta de firebase
-        ref.child("/Images/recipes/${items[position].id}/0.png").downloadUrl
-            .addOnSuccessListener {
-                try {
-                    Glide.with(context)
-                        .load(it)
-                        .fitCenter()
-                        .centerCrop()
-                        .into(holder.imgMain)
-                } catch (e: IllegalArgumentException) {
+        imagesFirebase.whereEqualTo("recipeId", items[position].id).get().addOnSuccessListener { images->
+            val recipeImagesFirebase = images.toObjects(ImagesModel::class.java)
+            for (i in recipeImagesFirebase){
+                if (i.name.endsWith("0")){
+                    // Saca la imagen de la receta de firebase
+                    ref.child("/Images/recipes/${items[position].id}/${i.name}.png").downloadUrl
+                        .addOnSuccessListener {
+                            try {
+                                Glide.with(context)
+                                    .load(it)
+                                    .fitCenter()
+                                    .centerCrop()
+                                    .into(holder.imgMain)
+                            } catch (e: IllegalArgumentException) {
+                            }
+                        }
                 }
             }
-
+        }
 
         usersFirebase.whereEqualTo("id", items[position].userId).get().addOnSuccessListener {
             val userImageProfile = it.toObjects(UsersModel::class.java)

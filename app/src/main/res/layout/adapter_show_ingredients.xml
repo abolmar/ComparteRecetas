@@ -5,15 +5,15 @@
                                              android:layout_width="match_parent"
                                              android:layout_height="wrap_content">
 
-    <TextView
-            android:text="1 -"
+    <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/tv_count_ingredient"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:textSize="18sp"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_lens_black_24dp"
+            />
 
     <TextView
             android:text="TextView"
@@ -24,7 +24,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/tv_count_ingredient"
-            android:layout_marginStart="4dp"
-            android:padding="8dp"/>
+            android:paddingBottom="8dp"/>
 
 </android.support.constraint.ConstraintLayout>

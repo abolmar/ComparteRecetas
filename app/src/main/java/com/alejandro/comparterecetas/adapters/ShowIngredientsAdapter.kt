@@ -21,13 +21,10 @@ class ShowIngredientsAdapter(private val items: MutableList<IngredientsModel>, v
     }
 
     override fun onBindViewHolder(holder: ViewHolderShowIngredients, position: Int) {
-        holder.tvCountIngredient.text = "${position+1} -"
         holder.tvShowIngredient.text = items[position].ingredientName
     }
 }
 
 class ViewHolderShowIngredients(view: View) : RecyclerView.ViewHolder(view) {
-    val tvCountIngredient = view.tv_count_ingredient!!
     val tvShowIngredient = view.tv_show_ingredient!!
-
 }

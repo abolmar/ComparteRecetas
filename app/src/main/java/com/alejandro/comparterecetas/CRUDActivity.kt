@@ -24,6 +24,7 @@ import com.alejandro.comparterecetas.models.Ingredients
 import com.alejandro.comparterecetas.models.IngredientsModel
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_crud.*
@@ -42,7 +43,6 @@ class CRUDActivity : AppCompatActivity() {
     private var imagesFirebase = dbFirebase.collection("images") //  Crea una nueva colección en Firebase
     private val date: String = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault()).format(Date())
     private var dbHandler: DataBaseHandler? = null
-    private val selectedIngredients: ArrayList<Ingredients> = ArrayList()
     private var selectedPhotoUri0: Uri? = null
     private var selectedPhotoUri1: Uri? = null
     private var selectedPhotoUri2: Uri? = null
@@ -51,18 +51,102 @@ class CRUDActivity : AppCompatActivity() {
     private var rButtonchecked: Int = 0 //  Guarda la selección del radioButton (privada/pública)
     private val imagesView: ArrayList<ImageView> = ArrayList() //  Contiene las images seleccionadas en los ImageView
     private val savedImagePath: ArrayList<String> = ArrayList() // Contiene las rutas a las imágenes guardadas en el directorio "Images/recipes" del proyecto
-    private val savedIngredients: ArrayList<String> = ArrayList() //  Contiene los ingredientes de la receta
+    private val selectedIngredients: ArrayList<Ingredients> = ArrayList() //  Contiene los ingredientes de la receta
+
+    private var addOrEdit: String? = ""
+    private var recipeId:String? = ""
+    private var recipeName: String? = ""
+    private var recipeCategory: String? = ""
+    private var recipeType: Int? = 0
+    private var recipeHour: Int? = 0
+    private var recipeMinute: Int? = 0
+    private var recipePreparation: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crud)
 
+        //init db
+        dbHandler = DataBaseHandler(this)
+
+        val extras = intent.extras
+
+        if (extras != null){
+            addOrEdit = extras.getString("load")
+            recipeId = extras.getString("recipeId")
+            recipeName = extras.getString("recipeName")
+            recipeCategory = extras.getString("category")
+            recipeType = extras.getInt("type")
+            recipeHour = extras.getInt("hours")
+            recipeMinute = extras.getInt("minutes")
+            recipePreparation = extras.getString("preparation")
+        }
+
+        if (addOrEdit == "edit"){
+            et_recipe_name.setText(recipeName)
+            et_hours.setText("$recipeHour")
+            et_minutes.setText("$recipeMinute")
+            et_preparation.setText(recipePreparation)
+
+
+            val userIngredients: ArrayList<IngredientsModel> = dbHandler!!.getAllMyIngredients(recipeId)
+
+            for (i in userIngredients){
+                val reg = Ingredients(
+                    i.ingredientName
+                )
+                selectedIngredients.add(reg)
+                rw_ingredient.layoutManager = LinearLayoutManager(this)
+                rw_ingredient.layoutManager = GridLayoutManager(this, 1)
+                rw_ingredient.adapter = IngredientsAdapter(selectedIngredients, this)
+            }
+
+            val userimages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
+
+            val imageViewArray: ArrayList<ImageView> = ArrayList()
+            imageViewArray.add(imageView_I)
+            imageViewArray.add(imageView_II)
+            imageViewArray.add(imageView_III)
+            imageViewArray.add(imageView_IV)
+
+            val imageButtonArray: ArrayList<ImageButton> = ArrayList()
+            imageButtonArray.add(btn_del_imageView_I)
+            imageButtonArray.add(btn_del_imageView_II)
+            imageButtonArray.add(btn_del_imageView_III)
+            imageButtonArray.add(btn_del_imageView_IV)
+
+            for ((count, i) in userimages.withIndex()){
+                Glide.with(this).load(i.imagePath).into(imageViewArray[count]) // invalid index 4 size is 4
+                imageButtonArray[count].visibility = View.VISIBLE
+            }
+
+            // Se les da un valor a las variables de tipo Uri
+            when(userimages.size){
+                1->{
+                    selectedPhotoUri0 = Uri.parse("0")
+                }
+                2->{
+                    selectedPhotoUri0 = Uri.parse("0")
+                    selectedPhotoUri1 = Uri.parse("0")
+                }
+                3->{
+                    selectedPhotoUri0 = Uri.parse("0")
+                    selectedPhotoUri1 = Uri.parse("0")
+                    selectedPhotoUri2 = Uri.parse("0")
+                }
+                4->{
+                    selectedPhotoUri0 = Uri.parse("0")
+                    selectedPhotoUri1 = Uri.parse("0")
+                    selectedPhotoUri2 = Uri.parse("0")
+                    selectedPhotoUri3 = Uri.parse("0")
+                }
+            }
+        }
+
         spinnerCategory()
 
         radioButtonChecked()
 
-        //init db
-        dbHandler = DataBaseHandler(this)
 
         //  Regresa al menú "perfil"
         btn_crud_back.setOnClickListener {
@@ -96,14 +180,13 @@ class CRUDActivity : AppCompatActivity() {
         //  Añade ingredientes a la receta
         btn_add_ingredient.setOnClickListener {
             if (et_ingredient.text.toString() != "") {
-                val reg = Ingredients(et_ingredient.text.toString())
 
+                val reg = Ingredients(et_ingredient.text.toString())
                 selectedIngredients.add(reg) //  Ingredientes mostrados en el recyclerView
-                savedIngredients.add(et_ingredient.text.toString()) //  Ingredientes para guardar en la tabla "ingredients"
 
                 rw_ingredient.layoutManager = LinearLayoutManager(this)
                 rw_ingredient.layoutManager = GridLayoutManager(this, 1)
-                rw_ingredient.adapter = IngredientsAdapter(selectedIngredients, savedIngredients, this)
+                rw_ingredient.adapter = IngredientsAdapter(selectedIngredients, this)
                 rw_ingredient.smoothScrollToPosition(selectedIngredients.size)
 
                 et_ingredient.setText("")
@@ -111,6 +194,7 @@ class CRUDActivity : AppCompatActivity() {
 
         }
 
+        //  Guarda la receta
         btn_crud_save.setOnClickListener {
             if (this.validation()!! && imageSelected()) {
                 if (!selectedCategory.contentEquals(" -- Elije una categoría -- ")) {
@@ -118,34 +202,70 @@ class CRUDActivity : AppCompatActivity() {
                     val successRecipe: Boolean
 
                     if (et_hours.text.toString() != "" && et_minutes.text.toString() != "") {
-                        //  Guarda la receta
 
-                        recipe.id = "recipe-$date"
-                        recipe.name = et_recipe_name.text.toString()
-                        recipe.userId = dbHandler!!.getUserId()
-                        recipe.timeH = et_hours.text.toString().toInt()
-                        recipe.timeM = et_minutes.text.toString().toInt()
-                        recipe.preparation = et_preparation.text.toString()
-                        recipe.category = selectedCategory
-                        recipe.type = rButtonchecked
-                        recipe.date = date
+                        if (addOrEdit != "edit"){
 
-                        successRecipe = dbHandler!!.addRecipe(recipe)
+                            recipe.id = "recipe-$date"
+                            recipe.name = et_recipe_name.text.toString()
+                            recipe.userId = dbHandler!!.getUserId()
+                            recipe.timeH = et_hours.text.toString().toInt()
+                            recipe.timeM = et_minutes.text.toString().toInt()
+                            recipe.preparation = et_preparation.text.toString()
+                            recipe.category = selectedCategory
+                            recipe.type = rButtonchecked
+                            recipe.date = date
+                            successRecipe = dbHandler!!.addRecipe(recipe)
 
-                        //  Guarda los ingredientes de la receta
-                        saveIngredientsTable()
+                            //  Guarda los ingredientes de la receta
+                            saveIngredientsTable()
 
-                        //  Guarda las imagenes de la receta
-                        saveImagesTable()
+                            //  Guarda las imagenes de la receta
+                            saveImagesTable()
 
-                        if (successRecipe) {
-                            if (isNetworkConnected()){
-                                saveRecipeInFirebase(recipe)
-                            } else {
-                                Toast.makeText(this, "Sin conexión - NO FIREBASE DB", Toast.LENGTH_LONG).show()
+                            if (successRecipe) {
+                                if (isNetworkConnected()){
+                                    saveRecipeInFirebase(recipe)
+                                }
+                                backtoProfile()
                             }
-                            backtoProfile()
+
+                        } else {
+                            // ACTUALIZAR LA RECETA, LOS INGREDIENTES Y LAS FOTOS!!!
+                            successRecipe = dbHandler!!.updateUserRecipe(recipeId,
+                                et_recipe_name.text.toString(),
+                                selectedCategory,
+                                rButtonchecked,
+                                et_hours.text.toString().toInt(),
+                                et_minutes.text.toString().toInt(),
+                                et_preparation.text.toString(),
+                                date
+                            )
+
+                            //  Guarda los ingredientes de la receta
+                            editIngredientsTable()
+                            saveIngredientsTable()
+
+                            //  Guarda las imagenes de la receta
+                            editImagesTable()
+                            saveImagesTable()
+
+                            if (successRecipe){
+                                if (isNetworkConnected()){
+                                    updateRecipeFirebase(recipeId,
+                                        et_recipe_name.text.toString(),
+                                        selectedCategory,
+                                        rButtonchecked,
+                                        et_hours.text.toString().toInt(),
+                                        et_minutes.text.toString().toInt(),
+                                        et_preparation.text.toString(),
+                                        date
+                                    )
+                                }
+
+                                backtoProfile()
+                            }
                         }
+
 
                     } else if (et_hours.text.toString() == "" && et_minutes.text.toString() == "") {
                         Toast.makeText(this, "Debes indicar un tiempo aproximado de preparación", Toast.LENGTH_LONG)
@@ -164,9 +284,6 @@ class CRUDActivity : AppCompatActivity() {
 
                         successRecipe = dbHandler!!.addRecipe(recipe)
 
-                        if (selectedIngredients.size < 4) {
-
-                        }
                         //  Guarda los ingredientes de la receta
                         saveIngredientsTable()
 
@@ -400,22 +517,61 @@ class CRUDActivity : AppCompatActivity() {
         // Finally, data bind the spinner object with dapter
         spn_crud_categories.adapter = adapter
 
-        // Set an on item selected listener for spinner object
-        spn_crud_categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                // Display the selected item text on text view
-                selectedCategory = parent.getItemAtPosition(position).toString()
+        if (addOrEdit != "edit") {
+            // Set an on item selected listener for spinner object
+            spn_crud_categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                    // Display the selected item text on text view
+                    selectedCategory = parent.getItemAtPosition(position).toString()
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Another interface callback
+        } else {
+            when (recipeCategory) {
+                "Comida" -> {
+                    spn_crud_categories.setSelection(1)
+                }
+                "Cena" -> {
+                    spn_crud_categories.setSelection(2)
+                }
+                "Merienda" -> {
+                    spn_crud_categories.setSelection(3)
+                }
+                "Postre" -> {
+                    spn_crud_categories.setSelection(4)
+                }
+            }
+
+            spn_crud_categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                    // Display the selected item text on text view
+                    selectedCategory = parent.getItemAtPosition(position).toString()
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
         }
-
     }
 
     //  Comprueba si la receta es privada o pública
     private fun radioButtonChecked() {
+        if (addOrEdit == "edit") {
+            when(recipeType){
+                0->{
+                    rb_private.isChecked = true
+                    rButtonchecked = 0
+                }
+                1->{
+                    rb_public.isChecked = true
+                    rButtonchecked = 1
+                }
+            }
+        } else {
+            rb_private.isChecked = true
+        }
+
         rb_public.setOnClickListener {
             rb_private.isChecked = false
             rButtonchecked = 1
@@ -425,6 +581,7 @@ class CRUDActivity : AppCompatActivity() {
             rb_public.isChecked = false
             rButtonchecked = 0
         }
+
     }
 
     //  Crea un directorio para las imágenes si no existe
@@ -476,14 +633,14 @@ class CRUDActivity : AppCompatActivity() {
                     val bitmap = (i.drawable as BitmapDrawable).bitmap
 
                     //  Guarda las imágenes en el directorio "/Images/recipes/..."
-                    saveFile(bitmap, countImage.toString(), idRecipe)
+                    saveFile(bitmap, "$date$countImage", idRecipe)
 
                     //  Guarda la ruta hacia la imagen
-                    savedImagePath.add("${this.filesDir}/Images/recipes/$idRecipe/$countImage.png")
+                    savedImagePath.add("${this.filesDir}/Images/recipes/$idRecipe/$date$countImage.png")
 
                     //  Sube las imágenes selecionadas a firebase
                     if (isNetworkConnected()){
-                        val ref = FirebaseStorage.getInstance().getReference("/Images/recipes/$idRecipe/$countImage.png")
+                        val ref = FirebaseStorage.getInstance().getReference("/Images/recipes/$idRecipe/$date$countImage.png")
 
                         val baos = ByteArrayOutputStream()
 
@@ -504,7 +661,7 @@ class CRUDActivity : AppCompatActivity() {
             image.id = "imagePath$count-$date"
             image.recipeId = dbHandler!!.getRecipeId(dbHandler!!.getUserId(),et_recipe_name.text.toString())
             image.imagePath = i
-            image.name = "$count"
+            image.name = "$date$count"
             image.date = date
 
             dbHandler!!.addImageTableImages(image)
@@ -516,29 +673,78 @@ class CRUDActivity : AppCompatActivity() {
         }
     }
 
+    //  Edita las rutas hacia las imágenes en la base de datos
+    private fun editImagesTable() {
+        val recipeImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
+
+        val myF = File("${this.filesDir}/Images/recipes/$recipeId")
+        myF.deleteRecursively()
+
+        for (image in recipeImages) {
+            val storage = FirebaseStorage.getInstance()
+            val imagesRef = storage.reference.child("Images/recipes/${image.recipeId}/${image.name}.png")
+
+            imagesFirebase.document(image.id).delete()
+            dbHandler!!.removeImage(image.id)
+
+            imagesRef.delete().addOnSuccessListener {
+                Log.d("capullo", "Imagen borrada: ${image.name}")
+//                imagesFirebase.document(image.id).delete()
+//                dbHandler!!.removeImage(image.id)
+
+            }.addOnFailureListener {
+                Log.d("capullo", "Imagen Noooooooo borrada")
+            }
+
+        }
+    }
+
     //  Guarda los ingredientes de la receta
     private fun saveIngredientsTable() {
         val ingredient = IngredientsModel()
+        val recipeId = dbHandler!!.getRecipeId(dbHandler!!.getUserId(),et_recipe_name.text.toString())
 
-        for ((count, i) in savedIngredients.withIndex()) {
-            ingredient.id = "ingredient-$date"+count.toString()
-            ingredient.idRecipe = dbHandler!!.getRecipeId(dbHandler!!.getUserId(),et_recipe_name.text.toString())
-            ingredient.ingredientName = i
+        for ((count, i) in selectedIngredients.withIndex()) {
+            ingredient.id = "ingredient-$date$count"
+            ingredient.idRecipe = recipeId
+            ingredient.ingredientName = i.ingredient
             ingredient.date = date
 
             dbHandler!!.addIngredientTableIngredients(ingredient)
 
             if (isNetworkConnected()){
                 // Guarda los ingredientes en Firebase si hay conexión a internet
-                ingredientsFirebase.document("ingredient-$date"+count.toString()).set(ingredient)
+                ingredientsFirebase.document("ingredient-$date$count").set(ingredient)
             }
         }
+    }
 
+    //  Edita los ingredientes de la receta
+    private fun editIngredientsTable() {
+        val recipeId = dbHandler!!.getRecipeId(dbHandler!!.getUserId(),et_recipe_name.text.toString())
+        val userIngredients: ArrayList<IngredientsModel> = dbHandler!!.getAllMyIngredients(recipeId)
+
+        for (i in userIngredients) {
+            ingredientsFirebase.document(i.id).delete()
+            dbHandler!!.removeIngredient(i.id)
+        }
     }
 
     //  Guarda las recetas en Firebase
     private fun saveRecipeInFirebase(recipe: RecipesModel) {
         recipesFirebase.document("recipe-$date").set(recipe)
+    }
+
+    private fun updateRecipeFirebase(id: String?, name: String, category: String, type: Int, hour: Int, minute: Int, preparation: String, date: String){
+        recipesFirebase.document(id.toString()).update(
+            "name", name,
+            "category", category,
+            "type", type,
+            "timeH", hour,
+            "timeM", minute,
+            "preparation", preparation,
+            "date", date
+        )
     }
 
     // Comprueba la conexión a internet

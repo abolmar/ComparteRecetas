@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.recipe_ingredient.view.*
 import java.lang.IndexOutOfBoundsException
 import java.util.ArrayList
 
-class IngredientsAdapter(private val items: ArrayList<Ingredients>, private val ingredients: ArrayList<String>, val context: Context) :
+class IngredientsAdapter(private val items: ArrayList<Ingredients>, val context: Context) : // private val ingredients: ArrayList<IngredientsModel>, private val load: String?,
     RecyclerView.Adapter<ViewHolderIngredient>() {
 
     override fun getItemCount(): Int {
@@ -23,6 +23,7 @@ class IngredientsAdapter(private val items: ArrayList<Ingredients>, private val 
     }
 
     override fun onBindViewHolder(holder: ViewHolderIngredient, position: Int) {
+
         holder.tvIngredient.text = items[position].ingredient
 
         holder.btnDelete.setOnClickListener {
@@ -34,7 +35,6 @@ class IngredientsAdapter(private val items: ArrayList<Ingredients>, private val 
     private fun removeItem(position: Int) {
         try {
             items.removeAt(position)
-            ingredients.removeAt(position) //  Elimina ingrediente del ArrayList de la tabla "ingredients"
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, itemCount)
         } catch (e: IndexOutOfBoundsException) {

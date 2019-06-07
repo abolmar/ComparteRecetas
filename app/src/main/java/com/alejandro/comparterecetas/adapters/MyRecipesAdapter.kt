@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.content.DialogInterface
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v7.app.AppCompatActivity
@@ -14,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.alejandro.comparterecetas.CRUDActivity
 import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.RecipesModel
@@ -78,7 +80,17 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
                             true
                         }
                         R.id.my_recipe_edit -> {
-                            Toast.makeText(context, "Editar receta", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(context, CRUDActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            intent.putExtra("load", "edit")
+                            intent.putExtra("recipeId", items[position].id)
+                            intent.putExtra("recipeName", items[position].name)
+                            intent.putExtra("category", items[position].category)
+                            intent.putExtra("type", items[position].type)
+                            intent.putExtra("hours", items[position].timeH)
+                            intent.putExtra("minutes", items[position].timeM)
+                            intent.putExtra("preparation", items[position].preparation)
+                            context.startActivity(intent)
                             true
                         }
                         R.id.my_recipe_delete -> {
@@ -108,7 +120,17 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
                             true
                         }
                         R.id.my_recipe_edit -> {
-                            Toast.makeText(context, "Editar receta", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(context, CRUDActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            intent.putExtra("load", "edit")
+                            intent.putExtra("recipeId", items[position].id)
+                            intent.putExtra("recipeName", items[position].name)
+                            intent.putExtra("category", items[position].category)
+                            intent.putExtra("type", items[position].type)
+                            intent.putExtra("hours", items[position].timeH)
+                            intent.putExtra("minutes", items[position].timeM)
+                            intent.putExtra("preparation", items[position].preparation)
+                            context.startActivity(intent)
                             true
                         }
                         R.id.my_recipe_delete -> {

@@ -633,7 +633,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return data
     }
 
-    //  Retorna todas los ingredientes de una receta
+    //  Retorna todos los ingredientes de una receta
     fun getAllMyIngredients(recipeid: String?): ArrayList<IngredientsModel> {
         val data: ArrayList<IngredientsModel> = ArrayList()
         val db = readableDatabase
@@ -890,6 +890,25 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
 
         db.update(tableRecipes, values, "$recipeId = '$id'", null)
         db.close()
+    }
+
+    //  Actualiza la receta que el usuario haya editado
+    fun updateUserRecipe(id: String?, name: String, category: String, type: Int, hour: Int, minute: Int, preparation: String, date: String): Boolean{
+        val db = writableDatabase
+        val values = ContentValues()
+
+        values.put(recipeName, name)
+        values.put(recipeCategory, category)
+        values.put(recipeType, type)
+        values.put(recipeTimeHours, hour)
+        values.put(recipeTimeMinutes, minute)
+        values.put(recipePreparation, preparation)
+        values.put(recipeDate, date)
+
+        val success = db.update(tableRecipes, values, "$recipeId = '$id'", null)
+        db.close()
+
+        return (Integer.parseInt("$success") != -1)
     }
 
     //  Actualiza el tipo de receta (Eliminar = 1)

@@ -37,10 +37,10 @@ class PerfilFragment : Fragment() {
         if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase() //?????????????
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        (activity as MainActivity).updateFirebase()
-//    }
+    override fun onPause() {
+        super.onPause()
+        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -151,6 +151,7 @@ class PerfilFragment : Fragment() {
         view.fab_new_recipe.setOnClickListener {
             val intent = Intent(context, CRUDActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+//            intent.putExtra("load", "add")
             startActivity(intent)
         }
 

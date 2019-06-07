@@ -27,7 +27,6 @@ class RecetasFragment : Fragment() {
     private var dbHandler: DataBaseHandler? = null
     private var dbFirebase = FirebaseFirestore.getInstance()
     private var recipesFirebase = dbFirebase.collection("recipes")
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +37,10 @@ class RecetasFragment : Fragment() {
 
     //******************************************************************************************************************
     //******************************************************************************************************************
-    override fun onPause() {
-        super.onPause()
-        (activity as AppCompatActivity).overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
-    }
+//    override fun onPause() {
+//        super.onPause()
+//        (activity as AppCompatActivity).overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
+//    }
     //******************************************************************************************************************
     //******************************************************************************************************************
 
@@ -75,9 +74,7 @@ class RecetasFragment : Fragment() {
 
                         view.swipeRefreshLayout.isRefreshing = false
 
-                    } catch (e: KotlinNullPointerException){
-                        Log.d("capullo", "Algo falla en RecipesFragment -->: $e")
-                    }
+                    } catch (e: KotlinNullPointerException){}
 //                    // Lineas de prueba
 //                    view.rv_all_users_recipes.setHasFixedSize(true)
 //                    view.rv_all_users_recipes.setItemViewCacheSize(20)
@@ -94,13 +91,11 @@ class RecetasFragment : Fragment() {
                     view.rv_all_users_recipes.layoutManager = LinearLayoutManager(context)
                     view.rv_all_users_recipes.layoutManager = GridLayoutManager(context, 1)
                     view.rv_all_users_recipes?.adapter = AllRecipesAdapter(usersRecipesFirebase, "recipes", "", context!!)
+                    view.rv_all_users_recipes.setHasFixedSize(true)
+                    view.rv_all_users_recipes.setItemViewCacheSize(20)
 
-                } catch (e: KotlinNullPointerException){
-                    Log.d("capullo", "Algo falla: $e")
-                }
-//                // Lineas de prueba
-//                view.rv_all_users_recipes.setHasFixedSize(true)
-//                view.rv_all_users_recipes.setItemViewCacheSize(20)
+                } catch (e: KotlinNullPointerException){}
+
             }
 
             return view

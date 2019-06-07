@@ -18,8 +18,6 @@ import kotlinx.android.synthetic.main.activity_show_recipe.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-
 class ShowRecipeActivity : AppCompatActivity() {
 
     private var dbHandler: DataBaseHandler? = null
@@ -217,11 +215,6 @@ class ShowRecipeActivity : AppCompatActivity() {
 
     //******************************************************************************************************************
     //******************************************************************************************************************
-//    override fun onResume() {
-//        super.onResume()
-//        overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
-//    }
-
     override fun onPause() {
         super.onPause()
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)

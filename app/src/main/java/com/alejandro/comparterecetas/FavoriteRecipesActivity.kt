@@ -78,7 +78,6 @@ class FavoriteRecipesActivity : AppCompatActivity() {
 
         // Pasamos el contenido de las recetas favoritas al recycler view
         for (i in myFavorites){
-            Log.d("capullo", "Receta id: ${i.recipeId}")
             recipesFirebase.whereEqualTo("id", i.recipeId).whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
 
                 val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
@@ -92,8 +91,6 @@ class FavoriteRecipesActivity : AppCompatActivity() {
                     rv_favorite_recipes?.adapter = AllRecipesAdapter(myRecipesFavorites, "favorites", passCategory, this)
                 } catch (e: KotlinNullPointerException){}
 
-            }.addOnFailureListener {exception ->
-                Log.d("capullo", "Algo falla en Firebase: $exception")
             }
         }
 

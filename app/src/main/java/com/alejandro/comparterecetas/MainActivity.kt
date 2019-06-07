@@ -165,10 +165,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        recipesFirebase.whereEqualTo("userId", auth.currentUser!!.uid).get().addOnSuccessListener {
+        recipesFirebase.whereEqualTo("userId", auth.currentUser!!.uid).get().addOnSuccessListener { userRecipe ->
             val userRecipesRemove: ArrayList<RecipesModel> = dbHandler!!.getAllMyRecipesRemoved(dbHandler!!.getUserId()) // Recetas "eliminadas" del usuario actual
             val userRecipes: ArrayList<RecipesModel> = dbHandler!!.getAllMyRecipes(dbHandler!!.getUserId()) // Recetas del usuario actual
-            val userRecipesFirebase = it.toObjects(RecipesModel::class.java) // Recetas del usuario actual
+            val userRecipesFirebase = userRecipe.toObjects(RecipesModel::class.java) // Recetas del usuario actual
 
             var insertRecipe:Boolean = true
             var countRecipe:Int = 0
@@ -189,37 +189,63 @@ class MainActivity : AppCompatActivity() {
 
                 insertRecipe = true
 
-                ingredientsFirebase.whereEqualTo("idRecipe", recipe.id).get().addOnSuccessListener {
+                ingredientsFirebase.whereEqualTo("idRecipe", recipe.id).get().addOnSuccessListener { recipeIngredients ->
                     val userIngredients: ArrayList<IngredientsModel> = dbHandler!!.getAllMyIngredients(recipe.id)
-                    val userIngredientsFirebase = it.toObjects(IngredientsModel::class.java)
+                    val userIngredientsFirebase = recipeIngredients.toObjects(IngredientsModel::class.java)
 
                     var insertIngredient: Boolean = true
                     var countIngredient:Int = 0
-                    for ((addIngredient, ingredient) in userIngredients.withIndex()){
-                        for (ingredientF in userIngredientsFirebase){
-                            if (ingredient.id == ingredientF.id && ingredient.date != ingredientF.date){
-                                ingredientsFirebase.document(ingredient.id).set(userIngredients[countIngredient])
-                                countIngredient++
+//                    if (userIngredients.size > userIngredientsFirebase.size){
+                        for ((addIngredient, ingredient) in userIngredients.withIndex()){
+                            for (ingredientF in userIngredientsFirebase){
+                                if (ingredient.id == ingredientF.id && ingredient.date != ingredientF.date){//
+                                    ingredientsFirebase.document(ingredient.id).set(userIngredients[countIngredient])
+                                    countIngredient++
 
-                            } else if (ingredient.id == ingredientF.id && ingredient.date == ingredientF.date) {
-                                insertIngredient = false
-                                countIngredient++
+                                } else if (ingredient.id == ingredientF.id && ingredient.date == ingredientF.date) {
+                                    insertIngredient = false
+                                    countIngredient++
+                                }
                             }
-                        }
 
-                        if (insertIngredient){
-                            ingredientsFirebase.document(ingredient.id).set(userIngredients[addIngredient])
-                        }
+                            if (insertIngredient){
+                                ingredientsFirebase.document(ingredient.id).set(userIngredients[addIngredient])
+                            }
 
-                        insertIngredient = true
-                    }
+                            insertIngredient = true
+                        }
+//                    } else {
+//                        for ((addIngredient, ingredient) in userIngredientsFirebase.withIndex()){
+//                            for (ingredientF in userIngredients){
+//                                if (ingredient.id == ingredientF.id && ingredient.date != ingredientF.date){//
+//                                    ingredientsFirebase.document(ingredient.id).set(userIngredients[countIngredient])
+//                                    countIngredient++
+//
+//                                } else if (ingredient.id == ingredientF.id && ingredient.date == ingredientF.date) {
+//                                    insertIngredient = false
+//                                    countIngredient++
+//                                }
+//                            }
+//
+//                            if (insertIngredient){
+//                                ingredientsFirebase.document(ingredient.id).set(userIngredients[addIngredient])
+//                            }
+//
+//                            insertIngredient = true
+//                        }
+////                        ingredientsFirebase.document(recipe.id).delete()
+////                        for (ingredient in userIngredients){
+////                            ingredientsFirebase.document(ingredient.id).set(userIngredients[addIngredient])
+////                        }
+//
+//
+//                    }
+
                 }
 
-                imagesFirebase.whereEqualTo("recipeId", recipe.id).get().addOnSuccessListener {
+                imagesFirebase.whereEqualTo("recipeId", recipe.id).get().addOnSuccessListener { images ->
                     val recipeImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipe.id)
-                    val recipeImagesFirebase = it.toObjects(ImagesModel::class.java)
-
-                    Log.d("imagen", "Total imagenes en receta, ${recipe.name}: ${recipeImagesFirebase.size} - En sqlite: ${recipeImages.size}")
+                    val recipeImagesFirebase = images.toObjects(ImagesModel::class.java)
 
                     var insertImage: Boolean = true
                     var countImages:Int = 0
@@ -240,7 +266,6 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         if (insertImage){ // Si la imagen no existe, se inserta
-                            Log.d("imagen", "Añadir imagen numero: $addImage con id: ${image.id}")
 
                             imagesFirebase.document(image.id).set(recipeImages[addImage])
 
@@ -279,21 +304,16 @@ class MainActivity : AppCompatActivity() {
                         desertRef.delete().addOnSuccessListener {
                             imagesFirebase.document(image.id).delete()
                             dbHandler!!.removeImage(image.id)
-                            Log.d("capullo", "Lo borro todo!!!!!!")
                         }.addOnFailureListener {
-                            Log.d("capullo", "No borro una mierda")
+
                         }
-
                     }
-
-
                 }
             }
-
         }
     }
 
-    // Actualiza o inserta imágenes en la carpeta de las recipes
+    // Actualiza o inserta imágenes en la carpeta de las recetas
     private fun updateSaveImageRecipe(imagePath: String, recipeId: String, imageName: String){
         try{
             val ref = FirebaseStorage.getInstance().getReference("/Images/recipes/$recipeId/$imageName.png")
@@ -311,7 +331,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: ClassCastException){}
     }
 
-    // Actualiza o inserta imágenes en la carpeta del profile
+    // Actualiza o inserta imágenes en la carpeta del perfil
     private fun updateSaveImageUserProfile(imagePath: String, userId: String, imageName: String){
         try{
             val ref = FirebaseStorage.getInstance().getReference("/Images/profile/$userId/$imageName.png")
