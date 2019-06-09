@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.alejandro.comparterecetas.CRUDActivity
 import com.alejandro.comparterecetas.R
+import com.alejandro.comparterecetas.ShowRecipeActivity
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.bumptech.glide.Glide
@@ -62,8 +63,8 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
             .into(holder.imgUser)
 
         holder.tvName.text = items[position].name
-        holder.tvPositiveV.text = items[position].positive.toString()
-        holder.tvNegativeV.text = items[position].negative.toString()
+//        holder.tvPositiveV.text = items[position].positive.toString()
+//        holder.tvNegativeV.text = items[position].negative.toString()
 
         if (items[position].type == 0) {
             holder.imgType.setImageResource(R.drawable.ic_lock_outline_black_24dp)
@@ -147,6 +148,22 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
         }
 
         dbHandler!!.close()
+
+        holder.container.setOnClickListener {
+            val intent = Intent(context, ShowRecipeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            intent.putExtra("recipeName", items[position].name)
+            intent.putExtra("recipeCategory", items[position].category)
+            intent.putExtra("recipeHour", items[position].timeH)
+            intent.putExtra("recipeminute", items[position].timeM)
+            intent.putExtra("recipePreparation", items[position].preparation)
+            intent.putExtra("recipeId", items[position].id)
+            intent.putExtra("fromFragment", "profile")
+            intent.putExtra("fromCategory", "")
+
+            context.startActivity(intent)
+        }
     }
 
     private fun uploadItem(position: Int, type: Int) {
@@ -174,23 +191,6 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Eliminar la receta?")
 
-//      Antes***********************************************************************************************************
-//        builder.setPositiveButton("Eliminar", object : DialogInterface.OnClickListener {
-//            override fun onClick(dialog: DialogInterface?, which: Int) {
-//                dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
-//                removeItem(position)
-//                Toast.makeText(context, "Receta eliminada", Toast.LENGTH_SHORT).show()
-//            }
-//
-//        })
-//
-//        builder.setNegativeButton("Cancelar", object : DialogInterface.OnClickListener {
-//            override fun onClick(dialog: DialogInterface?, which: Int) {
-//            }
-//
-//        })
-
-//      Despues*********************************************************************************************************
         builder.setPositiveButton("Eliminar") { dialog, which ->
             dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
             removeItem(position)
@@ -198,7 +198,6 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
         }
 
         builder.setNegativeButton("Cancelar") { dialog, which -> }
-//      ****************************************************************************************************************
 
         val alert = builder.create()
         alert.show()
@@ -220,9 +219,11 @@ class ViewHolderMyRecipes(view: View) : RecyclerView.ViewHolder(view) {
 
     val imgUser = view.img_adapter_recipe_user
     val tvName = view.tv_adapter_recipe_name
-    val tvPositiveV = view.tv_adapter_recipe_positive
-    val tvNegativeV = view.tv_adapter_recipe_negative
+//    val tvPositiveV = view.tv_adapter_recipe_positive
+//    val tvNegativeV = view.tv_adapter_recipe_negative
     val imgType = view.img_adapter_recipe_type
     val btnMenu = view.btn_adapter_recipe_menu
+
+    val container = view.cv_my_recipes
 
 }

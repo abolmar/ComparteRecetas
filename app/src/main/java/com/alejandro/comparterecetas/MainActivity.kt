@@ -32,11 +32,12 @@ class MainActivity : AppCompatActivity() {
     private var ingredientsFirebase = dbFirebase.collection("ingredients")
     private var imagesFirebase = dbFirebase.collection("images")
     private var usersLoginFirebase = dbFirebase.collection("usersLogin")
+    private var position: Int? = 0
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_recetas -> {
-                recipes()
+                recipes(0)
                 return@OnNavigationItemSelectedListener true
             }
 
@@ -54,18 +55,25 @@ class MainActivity : AppCompatActivity() {
         false
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         dbHandler = DataBaseHandler(this)
 
+        val extras = intent.extras
+
+        if (extras != null) {
+            position = extras.getInt("position")
+        }
+
         val intent = intent
 
         val favorites = intent.getBooleanExtra("USER_FAVORITES", false)
         val profile = intent.getBooleanExtra("USER_PROFILE", false)
 
-        recipes()
+        recipes(position)
 
         if (favorites){
             favorites()
@@ -88,9 +96,15 @@ class MainActivity : AppCompatActivity() {
 //        file.deleteRecursively()
 //    }
 
-    private fun recipes(){
+
+    private fun recipes(position:Int?){
+        val args = Bundle()
+
+        args.putInt("position", position!!)
+
         val transaction = manager.beginTransaction()
         val fragment = RecetasFragment()
+        fragment.arguments = args
 
         transaction.replace(R.id.fragment_container, fragment).commit()
     }

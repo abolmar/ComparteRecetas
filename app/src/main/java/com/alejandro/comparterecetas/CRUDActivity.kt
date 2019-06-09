@@ -24,7 +24,6 @@ import com.alejandro.comparterecetas.models.Ingredients
 import com.alejandro.comparterecetas.models.IngredientsModel
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.bumptech.glide.Glide
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_crud.*
@@ -101,7 +100,7 @@ class CRUDActivity : AppCompatActivity() {
                 rw_ingredient.adapter = IngredientsAdapter(selectedIngredients, this)
             }
 
-            val userimages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
+            val userImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
 
             val imageViewArray: ArrayList<ImageView> = ArrayList()
             imageViewArray.add(imageView_I)
@@ -115,13 +114,13 @@ class CRUDActivity : AppCompatActivity() {
             imageButtonArray.add(btn_del_imageView_III)
             imageButtonArray.add(btn_del_imageView_IV)
 
-            for ((count, i) in userimages.withIndex()){
-                Glide.with(this).load(i.imagePath).into(imageViewArray[count]) // invalid index 4 size is 4
+            for ((count, i) in userImages.withIndex()){
+                Glide.with(this).load(i.imagePath).into(imageViewArray[count])
                 imageButtonArray[count].visibility = View.VISIBLE
             }
 
             // Se les da un valor a las variables de tipo Uri
-            when(userimages.size){
+            when(userImages.size){
                 1->{
                     selectedPhotoUri0 = Uri.parse("0")
                 }
@@ -241,11 +240,11 @@ class CRUDActivity : AppCompatActivity() {
                                 date
                             )
 
-                            //  Guarda los ingredientes de la receta
+                            //  Edita y guarda los ingredientes de la receta
                             editIngredientsTable()
                             saveIngredientsTable()
 
-                            //  Guarda las imagenes de la receta
+                            //  Edita y guarda las imagenes de la receta
                             editImagesTable()
                             saveImagesTable()
 
@@ -266,69 +265,144 @@ class CRUDActivity : AppCompatActivity() {
                             }
                         }
 
-
                     } else if (et_hours.text.toString() == "" && et_minutes.text.toString() == "") {
                         Toast.makeText(this, "Debes indicar un tiempo aproximado de preparación", Toast.LENGTH_LONG)
                             .show()
 
                     } else if (et_hours.text.toString() == "") {
 
-                        recipe.id = "recipe-$date"
-                        recipe.name = et_recipe_name.text.toString()
-                        recipe.userId = dbHandler!!.getUserId()
-                        recipe.timeM = et_minutes.text.toString().toInt()
-                        recipe.preparation = et_preparation.text.toString()
-                        recipe.category = selectedCategory
-                        recipe.type = rButtonchecked
-                        recipe.date = date
+                        if (addOrEdit != "edit"){
+                            recipe.id = "recipe-$date"
+                            recipe.name = et_recipe_name.text.toString()
+                            recipe.userId = dbHandler!!.getUserId()
+                            recipe.timeM = et_minutes.text.toString().toInt()
+                            recipe.preparation = et_preparation.text.toString()
+                            recipe.category = selectedCategory
+                            recipe.type = rButtonchecked
+                            recipe.date = date
 
-                        successRecipe = dbHandler!!.addRecipe(recipe)
+                            successRecipe = dbHandler!!.addRecipe(recipe)
 
-                        //  Guarda los ingredientes de la receta
-                        saveIngredientsTable()
+                            //  Guarda los ingredientes de la receta
+                            saveIngredientsTable()
 
-                        //  Guarda las imagenes de la receta
-                        saveImagesTable()
+                            //  Guarda las imagenes de la receta
+                            saveImagesTable()
 
-                        if (successRecipe) {
-                            if (isNetworkConnected()){
-                                saveRecipeInFirebase(recipe)
-                            } else {
-                                Toast.makeText(this, "Sin conexión - NO FIREBASE DB", Toast.LENGTH_LONG)
-                                    .show()
+                            if (successRecipe) {
+                                if (isNetworkConnected()){
+                                    saveRecipeInFirebase(recipe)
+                                } else {
+                                    Toast.makeText(this, "Sin conexión - NO FIREBASE DB", Toast.LENGTH_LONG)
+                                        .show()
+                                }
+
+                                backtoProfile()
                             }
 
-                            backtoProfile()
+                        } else {
+                            // ACTUALIZAR LA RECETA, LOS INGREDIENTES Y LAS FOTOS!!!
+                            successRecipe = dbHandler!!.updateUserRecipe(recipeId,
+                                et_recipe_name.text.toString(),
+                                selectedCategory,
+                                rButtonchecked,
+                                0,
+                                et_minutes.text.toString().toInt(),
+                                et_preparation.text.toString(),
+                                date
+                            )
+
+                            //  Edita y guarda los ingredientes de la receta
+                            editIngredientsTable()
+                            saveIngredientsTable()
+
+                            //  Edita y guarda las imagenes de la receta
+                            editImagesTable()
+                            saveImagesTable()
+
+                            if (successRecipe){
+                                if (isNetworkConnected()){
+                                    updateRecipeFirebase(recipeId,
+                                        et_recipe_name.text.toString(),
+                                        selectedCategory,
+                                        rButtonchecked,
+                                        0,
+                                        et_minutes.text.toString().toInt(),
+                                        et_preparation.text.toString(),
+                                        date
+                                    )
+                                }
+
+                                backtoProfile()
+                            }
                         }
+
 
                     } else if (et_minutes.text.toString() == "") {
 
-                        recipe.id = "recipe-$date"
-                        recipe.name = et_recipe_name.text.toString()
-                        recipe.userId = dbHandler!!.getUserId()
-                        recipe.timeH = et_hours.text.toString().toInt()
-                        recipe.preparation = et_preparation.text.toString()
-                        recipe.category = selectedCategory
-                        recipe.type = rButtonchecked
-                        recipe.date = date
+                        if (addOrEdit != "edit"){
+                            recipe.id = "recipe-$date"
+                            recipe.name = et_recipe_name.text.toString()
+                            recipe.userId = dbHandler!!.getUserId()
+                            recipe.timeH = et_hours.text.toString().toInt()
+                            recipe.preparation = et_preparation.text.toString()
+                            recipe.category = selectedCategory
+                            recipe.type = rButtonchecked
+                            recipe.date = date
 
-                        successRecipe = dbHandler!!.addRecipe(recipe)
+                            successRecipe = dbHandler!!.addRecipe(recipe)
 
-                        //  Guarda los ingredientes de la receta
-                        saveIngredientsTable()
+                            //  Guarda los ingredientes de la receta
+                            saveIngredientsTable()
 
-                        //  Guarda las imagenes de la receta
-                        saveImagesTable()
+                            //  Guarda las imagenes de la receta
+                            saveImagesTable()
 
-                        if (successRecipe) {
-                            if (isNetworkConnected()){
-                                saveRecipeInFirebase(recipe)
-                            } else {
-                                Toast.makeText(this, "Sin conexión - NO FIREBASE DB", Toast.LENGTH_LONG)
-                                    .show()
+                            if (successRecipe) {
+                                if (isNetworkConnected()){
+                                    saveRecipeInFirebase(recipe)
+                                } else {
+                                    Toast.makeText(this, "Sin conexión - NO FIREBASE DB", Toast.LENGTH_LONG)
+                                        .show()
+                                }
+
+                                backtoProfile()
                             }
+                        } else {
+                            // ACTUALIZAR LA RECETA, LOS INGREDIENTES Y LAS FOTOS!!!
+                            successRecipe = dbHandler!!.updateUserRecipe(recipeId,
+                                et_recipe_name.text.toString(),
+                                selectedCategory,
+                                rButtonchecked,
+                                et_hours.text.toString().toInt(),
+                                0,
+                                et_preparation.text.toString(),
+                                date
+                            )
 
-                            backtoProfile()
+                            //  Edita y guarda los ingredientes de la receta
+                            editIngredientsTable()
+                            saveIngredientsTable()
+
+                            //  Edita y guarda las imagenes de la receta
+                            editImagesTable()
+                            saveImagesTable()
+
+                            if (successRecipe){
+                                if (isNetworkConnected()){
+                                    updateRecipeFirebase(recipeId,
+                                        et_recipe_name.text.toString(),
+                                        selectedCategory,
+                                        rButtonchecked,
+                                        et_hours.text.toString().toInt(),
+                                        0,
+                                        et_preparation.text.toString(),
+                                        date
+                                    )
+                                }
+
+                                backtoProfile()
+                            }
                         }
                     }
                     
@@ -431,19 +505,6 @@ class CRUDActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        backtoProfile()
-    }
-
-    private fun backtoProfile() {
-        dbHandler!!.close()
-        val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.putExtra("USER_PROFILE", true)
-        startActivity(intent)
-    }
-
     //  Comprueba que los editText no queden sin rellenar
     private fun validation(): Boolean? {
         var validate: Boolean? = null
@@ -484,6 +545,7 @@ class CRUDActivity : AppCompatActivity() {
         return  validate
     }
 
+    //  Guarda la categoría a la que pertenecerá la receta
     private fun spinnerCategory() {
         val categories = arrayOf(" -- Elije una categoría -- ", "Comida", "Cena", "Merienda", "Postre")
 
@@ -735,6 +797,7 @@ class CRUDActivity : AppCompatActivity() {
         recipesFirebase.document("recipe-$date").set(recipe)
     }
 
+    //  Actualiza la receta en Firebase
     private fun updateRecipeFirebase(id: String?, name: String, category: String, type: Int, hour: Int, minute: Int, preparation: String, date: String){
         recipesFirebase.document(id.toString()).update(
             "name", name,
@@ -751,6 +814,19 @@ class CRUDActivity : AppCompatActivity() {
     private fun isNetworkConnected(): Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return cm.activeNetworkInfo != null
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        backtoProfile()
+    }
+
+    private fun backtoProfile() {
+        dbHandler!!.close()
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.putExtra("USER_PROFILE", true)
+        startActivity(intent)
     }
 
 }

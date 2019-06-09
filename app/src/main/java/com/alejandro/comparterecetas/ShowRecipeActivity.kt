@@ -37,6 +37,8 @@ class ShowRecipeActivity : AppCompatActivity() {
     private var toFragment: String? = ""
     private var toCategory: String? = ""
 
+    var position: Int? = 0
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +59,8 @@ class ShowRecipeActivity : AppCompatActivity() {
 
             toFragment = extras.getString("fromFragment") // A qué fragment debe volver
             toCategory = extras.getString("fromCategory") // Si el fragment es "Favoritas", a qué categoría debe volver
+
+            position = extras.getInt("position")
         }
 
         tv_title.text = recipeName
@@ -176,6 +180,12 @@ class ShowRecipeActivity : AppCompatActivity() {
         if (toFragment == "recipes"){
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("position", position)
+            startActivity(intent)
+        } else if (toFragment == "profile"){
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("USER_PROFILE", true)
             startActivity(intent)
         } else {
             when (toCategory) {
