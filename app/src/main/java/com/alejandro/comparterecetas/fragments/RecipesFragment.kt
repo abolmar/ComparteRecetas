@@ -127,7 +127,6 @@ class RecipesFragment : Fragment() {
 
         view.execute_search_button.setOnClickListener {
             if (view.search_input_text.text.toString().isNotEmpty()){
-                //recipesFirebase.whereEqualTo("type", 1).orderBy("name").startAt("${view.search_input_text.text}").endAt(("${view.search_input_text.text}\uf8ff")).get().addOnSuccessListener { documentSnapshot ->
                 recipesFirebase.whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
                     val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
                     val recipeSearch: ArrayList<RecipesModel> = ArrayList()

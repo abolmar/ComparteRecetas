@@ -268,7 +268,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         var name = ""
         val db = readableDatabase
         val selectQuery = "SELECT $usersLoginName FROM $tableUsersLogin WHERE $usersLoginLogin = 1"
-//        val selectQuery = "SELECT U.$usersName FROM $tableUsers U INNER JOIN $tableUsersLogin UL ON U.$usersEmail = UL.$usersLoginEmail WHERE UL.$usersLoginLogin = 1"
         val cursor = db.rawQuery(selectQuery, null)
 
         if (cursor != null) {
