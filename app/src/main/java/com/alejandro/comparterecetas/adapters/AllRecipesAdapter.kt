@@ -8,25 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.ShowRecipeActivity
-import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.ImagesModel
 import com.alejandro.comparterecetas.models.RecipesModel
 import com.alejandro.comparterecetas.models.UsersModel
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.adapter_all_recipes.view.*
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageException
-import java.text.SimpleDateFormat
-import java.util.*
-
 
 class AllRecipesAdapter(private val items: MutableList<RecipesModel>, private val fragment: String, private val category: String, val context: Context) :
     RecyclerView.Adapter<ViewHolderAllRecipes>() {
 
-    private lateinit var auth: FirebaseAuth
-    private var dbHandler: DataBaseHandler? = null
     private var dbFirebase = FirebaseFirestore.getInstance()
     private var usersFirebase = dbFirebase.collection("usersLogin")
     private var imagesFirebase = dbFirebase.collection("images")
@@ -44,11 +37,6 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, private va
     }
 
     override fun onBindViewHolder(holder: ViewHolderAllRecipes, position: Int) {
-        //init db
-        dbHandler = DataBaseHandler(context)
-
-        // Inicializa Firebase Auth
-        auth = FirebaseAuth.getInstance()
 
         val ref = FirebaseStorage.getInstance().reference
 
@@ -100,8 +88,6 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, private va
         holder.tvRecipeName.text = items[position].name
         holder.tvHours.text = items[position].timeH.toString()
         holder.tvMinutes.text = items[position].timeM.toString()
-//        holder.tvPositiveV.text = items[position].positive.toString()
-//        holder.tvNegativeV.text = items[position].negative.toString()
 
         holder.container.setOnClickListener {
             val intent = Intent(context, ShowRecipeActivity::class.java)
@@ -120,196 +106,12 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, private va
 
             context.startActivity(intent)
         }
-
-        //**************************************************************************************************************
-        // O SE MEJORA O SE ELIMINA*************************************************************************************
-        /*
-        if (dbHandler!!.getPositiveVote(items[position].id, userId) == 0 && dbHandler!!.getNegativeVote(items[position].id, userId) == 0) {
-            holder.btnPositiveV.setColorFilter(Color.BLACK)
-            holder.btnNegativeV.setColorFilter(Color.BLACK)
-
-            holder.btnPositiveV.setOnClickListener {
-                //  Si el id retornado es cero, se inserta un nuevo registro
-                if (dbHandler!!.getIdVote(items[position].id, userId) == "") {
-                    val vote = VotesModel()
-                    val successVote: Boolean
-
-                    vote.id = "vote-$date"
-                    vote.recipeId = items[position].id
-                    vote.userId = userId
-                    vote.votePositive = 1
-                    vote.voteNegative = 0
-                    vote.date = date
-
-                    successVote = dbHandler!!.addUserVoteTableUserVotes(vote)
-
-                    if (successVote) {
-                        //  Suma uno a los votos positivos de la receta
-                        items[position].positive += 1
-                        //  Suma uno a los votos positivos de la receta
-//                        dbHandler!!.updateRecipePositiveVoteAdd(
-//                            items[position].id,
-//                            items[position].positive + 1
-//                        )
-
-//                        dbHandler!!.close()
-                    }
-
-                } else {
-                    dbHandler!!.updateUserVotePositive(items[position].id, userId, 1)
-
-                    //  Suma uno a los votos positivos de la receta
-                    items[position].positive += 1
-//                    dbHandler!!.updateRecipePositiveVoteAdd(
-//                        items[position].id,
-//                        items[position].positive + 1
-//                    )
-                }
-
-                notifyItemChanged(position)
-                notifyDataSetChanged()
-            }
-
-            holder.btnNegativeV.setOnClickListener {
-                if (dbHandler!!.getIdVote(items[position].id, userId) == "") {
-                    val vote = VotesModel()
-                    val successVote: Boolean
-
-                    vote.id = "vote-$date"
-                    vote.recipeId = items[position].id
-                    vote.userId = userId
-                    vote.votePositive = 0
-                    vote.voteNegative = 1
-                    vote.date = date
-
-                    successVote = dbHandler!!.addUserVoteTableUserVotes(vote)
-
-                    if (successVote) {
-                        //  Suma uno a los votos negativos de la receta
-                        items[position].negative += 1
-//                        dbHandler!!.updateRecipeNegativeVoteAdd(
-//                            items[position].id,
-//                            items[position].negative + 1
-//                        )
-//
-//                        dbHandler!!.close()
-                    }
-
-                } else {
-                    dbHandler!!.updateUserVoteNegative(items[position].id, userId, 1)
-
-                    //  Suma uno a los votos negativos de la receta
-                    items[position].negative += 1
-//                    dbHandler!!.updateRecipeNegativeVoteAdd(
-//                        items[position].id,
-//                        items[position].negative + 1
-//                    )
-                }
-                notifyItemChanged(position)
-                notifyDataSetChanged()
-            }
-        }
-
-        if (dbHandler!!.getPositiveVote(items[position].id, userId) == 0 && dbHandler!!.getNegativeVote(items[position].id, userId) == 1) {
-            holder.btnNegativeV.setColorFilter(Color.RED)
-            holder.tvNegativeV.setTextColor(Color.RED)
-            holder.btnPositiveV.setColorFilter(Color.BLACK)
-            holder.tvPositiveV.setTextColor(Color.BLACK)
-
-            holder.btnPositiveV.setOnClickListener {
-                dbHandler!!.updateUserVotePositive(items[position].id, userId, 1)
-                dbHandler!!.updateUserVoteNegative(items[position].id, userId, 0)
-
-                //  Suma uno a los votos positivos de la receta
-                items[position].positive += 1
-//                dbHandler!!.updateRecipePositiveVoteAdd(
-//                    items[position].id,
-//                    items[position].positive + 1
-//                )
-
-                //  Resta uno a los votos negativos de la receta
-                items[position].negative -= 1
-//                dbHandler!!.updateRecipeNegativeVoteRemove(
-//                    items[position].id,
-//                    items[position].negative - 1
-//                )
-
-                notifyItemChanged(position)
-                notifyDataSetChanged()
-            }
-
-            holder.btnNegativeV.setOnClickListener {
-                dbHandler!!.updateUserVoteNegative(items[position].id, userId, 0)
-
-                //  Resta uno a los votos negativos de la receta
-                items[position].negative -= 1
-//                dbHandler!!.updateRecipeNegativeVoteRemove(
-//                    items[position].id,
-//                    items[position].negative - 1
-//                )
-
-                notifyItemChanged(position)
-                notifyDataSetChanged()
-            }
-
-            dbHandler!!.close()
-        }
-
-        if (dbHandler!!.getPositiveVote(items[position].id, userId) == 1 && dbHandler!!.getNegativeVote(items[position].id, userId) == 0) {
-            holder.btnPositiveV.setColorFilter(Color.RED)
-            holder.btnNegativeV.setColorFilter(Color.BLACK)
-
-            holder.btnNegativeV.setOnClickListener {
-                dbHandler!!.updateUserVotePositive(items[position].id, userId, 0)
-                dbHandler!!.updateUserVoteNegative(items[position].id, userId, 1)
-
-                //  Suma uno a los votos negativos de la receta
-                items[position].negative += 1
-//                dbHandler!!.updateRecipeNegativeVoteAdd(
-//                    items[position].id,
-//                    items[position].negative + 1
-//                )
-
-                //  Resta uno a los votos positivos de la receta
-                items[position].positive -= 1
-//                dbHandler!!.updateRecipePositiveVoteRemove(
-//                    items[position].id,
-//                    items[position].positive - 1
-//                )
-
-                notifyItemChanged(position)
-                notifyDataSetChanged()
-            }
-
-            holder.btnPositiveV.setOnClickListener {
-                dbHandler!!.updateUserVotePositive(items[position].id, userId, 0)
-
-                //  Resta uno a los votos positivos de la receta
-                items[position].positive -= 1
-//                dbHandler!!.updateRecipePositiveVoteRemove(
-//                    items[position].id,
-//                    items[position].positive - 1
-//                )
-
-                notifyItemChanged(position)
-                notifyDataSetChanged()
-            }
-
-            dbHandler!!.close()
-        }
-        */
-        // O SE MEJORA O SE ELIMINA*************************************************************************************
-        //**************************************************************************************************************
     }
 }
 
 class ViewHolderAllRecipes(view: View) : RecyclerView.ViewHolder(view) {
 
     val tvRecipeName = view.tv_adapter_all_recipe_name!!
-//    val tvPositiveV = view.tv_adapter_all_recipe_positive!!
-//    val tvNegativeV = view.tv_adapter_all_recipe_negative!!
-//    val btnPositiveV = view.img_adapter_all_recipe_positive!!
-//    val btnNegativeV = view.img_adapter_all_recipe_negative!!
     val imgMain = view.img_adapter_all_recipe_main!!
     val imgUser = view.img_adapter_all_recipe_user!!
     val tvHours = view.tv_adapter_all_recipes_add_hours!!

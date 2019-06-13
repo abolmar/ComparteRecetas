@@ -1,11 +1,14 @@
 package com.alejandro.comparterecetas
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
+import android.view.View
 import com.alejandro.comparterecetas.adapters.AllRecipesAdapter
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.FavoritesModel
@@ -21,7 +24,14 @@ class FavoriteRecipesActivity : AppCompatActivity() {
     private var recipesFirebase = dbFirebase.collection("recipes")
     private var myFavorites: ArrayList<FavoritesModel> = ArrayList() // Este array contiene todas las recetas favoritas cuya categoría es la que se le pase por parámetro
     private val myRecipesFavorites: ArrayList<RecipesModel> = ArrayList() // Este array contendrá aquellas recetas que coincidan con las guardadas en favoritas
+    private var allCategories: String? = ""
+    private var lunch: String? = ""
+    private var dinner: String? = ""
+    private var afternoonSnack: String? = ""
+    private var dessert: String? = ""
+    private var passCategory = ""
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favorite_recipes)
@@ -30,73 +40,80 @@ class FavoriteRecipesActivity : AppCompatActivity() {
 
         val extras = intent.extras
 
-        var allCategories: String? = ""
-        var lunch: String? = ""
-        var dinner: String? = ""
-        var afternoonSnack: String? = ""
-        var dessert: String? = ""
-
-        var passCategory = ""
-
         if (extras != null) {
             allCategories = extras.getString("ALL")
             if (allCategories != null){
-                tv_title_category.text = allCategories
-                myFavorites = dbHandler!!.getAllMyFavoriteRecipes(dbHandler!!.getUserId())
-                passCategory = allCategories
+                categoryOfRecipesFavorites("Todas mis favoritas", dbHandler!!.getAllMyFavoriteRecipes(dbHandler!!.getUserId()), "Añade recetas a tus favoritos!")
+                passCategory = allCategories!!
             }
 
             lunch = extras.getString("LUNCH")
             if (lunch != null){
-                tv_title_category.text = lunch
-                myFavorites = dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), lunch)
-                passCategory = lunch
+                categoryOfRecipesFavorites("Comidas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), lunch), "Añade comidas a tus favoritos!")
+                passCategory = lunch!!
             }
 
             dinner = extras.getString("DINNER")
             if (dinner != null){
-                tv_title_category.text = dinner
-                myFavorites = dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), dinner)
-                passCategory = dinner
+                categoryOfRecipesFavorites("Cenas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), dinner), "Añade cenas a tus favoritos!")
+                passCategory = dinner!!
             }
 
             afternoonSnack = extras.getString("AFTERNOONSNACK")
             if (afternoonSnack != null){
-                tv_title_category.text = afternoonSnack
-                myFavorites = dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), afternoonSnack)
-                passCategory = afternoonSnack
+                categoryOfRecipesFavorites("Meriendas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), afternoonSnack), "Añade meriendas a tus favoritos!")
+                passCategory = afternoonSnack!!
             }
 
             dessert = extras.getString("DESSERT")
             if (dessert != null){
-                tv_title_category.text = dessert
-                myFavorites = dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), dessert)
-                passCategory = dessert
+                categoryOfRecipesFavorites("Postres", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), dessert), "Añade postres a tus favoritos!")
+                passCategory = dessert!!
             }
         }
 
+        if (isNetworkConnected()){
+            rv_favorite_recipes.visibility = View.VISIBLE
+            lostConection.visibility = View.GONE
 
-        // Pasamos el contenido de las recetas favoritas al recycler view
-        for (i in myFavorites){
-            recipesFirebase.whereEqualTo("id", i.recipeId).whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
+            // Pasamos el contenido de las recetas favoritas al recycler view
+            for (i in myFavorites){
+                recipesFirebase.whereEqualTo("id", i.recipeId).whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
 
-                val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
+                    val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
 
-                // O guardo el contenido en el array o guardo el contenido en el array, no queda otra :(
-                myRecipesFavorites.addAll(usersRecipesFirebase)
+                    myRecipesFavorites.addAll(usersRecipesFirebase)
 
-                try {
-                    rv_favorite_recipes.layoutManager = LinearLayoutManager(this)
-                    rv_favorite_recipes.layoutManager = GridLayoutManager(this, 1)
-                    rv_favorite_recipes?.adapter = AllRecipesAdapter(myRecipesFavorites, "favorites", passCategory, this)
-                } catch (e: KotlinNullPointerException){}
+                    try {
+                        rv_favorite_recipes.layoutManager = LinearLayoutManager(this)
+                        rv_favorite_recipes.layoutManager = GridLayoutManager(this, 1)
+                        rv_favorite_recipes?.adapter = AllRecipesAdapter(myRecipesFavorites, "favorites", passCategory, this)
+                    } catch (e: KotlinNullPointerException){}
 
+                }
             }
+        } else {
+            rv_favorite_recipes.visibility = View.GONE
+            addToFavorites.visibility = View.GONE
+            lostConection.visibility = View.VISIBLE
         }
 
 
         btn_favorite_recipes_back.setOnClickListener {
             backRecipes()
+        }
+    }
+
+    private fun categoryOfRecipesFavorites(categoryTitle:String, arrayListMyFavorites: ArrayList<FavoritesModel>, addRecipe: String){
+        tv_title_category.text = categoryTitle
+
+        myFavorites = arrayListMyFavorites
+
+        if (myFavorites.size == 0){
+            addToFavorites.visibility = View.VISIBLE
+            addToFavorites.text = addRecipe
+        } else {
+            addToFavorites.visibility = View.GONE
         }
     }
 
@@ -110,5 +127,11 @@ class FavoriteRecipesActivity : AppCompatActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra("USER_FAVORITES", true)
         startActivity(intent)
+    }
+
+    // Comprueba la conexión a internet
+    private fun isNetworkConnected(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo != null
     }
 }

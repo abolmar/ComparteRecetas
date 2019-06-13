@@ -1,21 +1,13 @@
 package com.alejandro.comparterecetas
 
-
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.alejandro.comparterecetas.adapters.AllRecipesAdapter
-import com.alejandro.comparterecetas.models.RecipesModel
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_favorites.view.*
-import kotlinx.android.synthetic.main.fragment_recipes.view.*
 
 /**
  * A simple [Fragment] subclass.

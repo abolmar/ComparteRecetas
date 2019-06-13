@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.alejandro.comparterecetas.models.*
-import com.alejandro.comparterecetas.models.*
 
 class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRecipes.db", null, 1) {
 
@@ -16,14 +15,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         private const val tableIngredients = "ingredients"
         private const val tableImages = "images"
         private const val tableFavorites = "favorites"
-        private const val tableUsersVotes = "usersVotes"
-
-//        //  Columnas tabla "users"
-//        private const val usersId = "id"
-//        private const val usersEmail = "email"
-//        private const val usersName = "name"
-//        private const val usersPasswd = "passwd"
-//        private const val usersImage = "imagePath"
 
         //  Columnas tabla "usersLogin"
         private const val usersLoginId = "id"
@@ -68,26 +59,9 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         private const val favoriteType = "type"
         private const val favoriteBoolean = "favorite"
         private const val favoriteDate = "date"
-
-        //  Columnas tabla "usersVotes"
-        private const val voteId = "id"
-        private const val voteRecipeId = "recipeId"
-        private const val voteUserId = "userId"
-        private const val votePositive = "positive"
-        private const val voteNegative = "negative"
-        private const val voteDate = "date"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-//        val createTableUsers = "CREATE TABLE IF NOT EXISTS `$tableUsers` (" +
-//                "`$usersId` Integer, " +
-//                "`$usersEmail` TEXT, " +
-//                "`$usersName` TEXT, " +
-//                "`$usersPasswd` TEXT, " +
-//                "`$usersImage` TEXT, " +
-//                "PRIMARY KEY(`$usersId`)" +
-//                ");"
-//        db?.execSQL(createTableUsers)
 
         val createTableUsersLogin = "CREATE TABLE IF NOT EXISTS `$tableUsersLogin` (" +
                 "`$usersLoginId` TEXT, " +
@@ -151,42 +125,11 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
                 "FOREIGN KEY(`$favoriteRecipeId`) REFERENCES `$tableRecipes`(`$recipeId`)" +
                 ");"
         db?.execSQL(createTableFavorites)
-
-        val createTableUsersVotes = "CREATE TABLE IF NOT EXISTS `$tableUsersVotes` (" +
-                "`$voteId` TEXT, " +
-                "`$voteRecipeId` TEXT, " +
-                "`$voteUserId` TEXT, " +
-                "`$votePositive` Integer DEFAULT 0, " +
-                "`$voteNegative` Integer DEFAULT 0, " +
-                "`$voteDate` TEXT, " +
-                "PRIMARY KEY (`$voteId`), " +
-                "FOREIGN KEY(`$voteRecipeId`) REFERENCES `$tableRecipes`(`$recipeId`), " +
-                "FOREIGN KEY(`$voteUserId`) REFERENCES `$tableUsersLogin`(`$usersLoginId`)" +
-                ");"
-        db?.execSQL(createTableUsersVotes)
-
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
 
     }
-
-//    //  Inserta datos en la tabla "users"
-//    fun addUserTableUser(usersModel: UsersModel): Boolean {
-//        val db = writableDatabase
-//        val values = ContentValues()
-//
-//        values.put(usersEmail, usersModel.email)
-//        values.put(usersName, usersModel.name)
-//        values.put(usersPasswd, usersModel.passwd)
-//        values.put(usersImage, usersModel.imagePath)
-//
-//        val success = db.insert(tableUsers, null, values)
-//
-//        db.close()
-//
-//        return (Integer.parseInt("$success") != -1)
-//    }
 
     //  Inserta datos en la tabla "usersLogin"
     fun addUserTableUserLogin(usersModel: UsersModel): Boolean {
@@ -262,25 +205,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         db.close()
     }
 
-    //  Inserta datos en la tabla "usersVotes"
-    fun addUserVoteTableUserVotes(votesModel: VotesModel): Boolean {
-        val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(voteId, votesModel.id)
-        values.put(voteRecipeId, votesModel.recipeId)
-        values.put(voteUserId, votesModel.userId)
-        values.put(votePositive, votesModel.votePositive)
-        values.put(voteNegative, votesModel.voteNegative)
-        values.put(voteDate, votesModel.date)
-
-        val success = db.insert(tableUsersVotes, null, values)
-
-        db.close()
-
-        return (Integer.parseInt("$success") != -1)
-    }
-
     //  Inserta datos en la tabla "favorites"
     fun addFavoriteRecipe(favoritesModel: FavoritesModel): Boolean {
         val db = writableDatabase
@@ -299,51 +223,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
 
         return (Integer.parseInt("$success") != -1)
     }
-
-
-//    //  Comprueba que el usuario exista
-//    fun getUserEmailFromTableUsers(email:String, passwd:String): Boolean {
-//        var user = ""
-//        val db = readableDatabase
-//        val selectQuery = "SELECT $usersLoginEmail FROM $tableUsersLogin WHERE $usersLoginEmail = '$email' AND $usersLoginPasswd = '$passwd'"
-//        val cursor = db.rawQuery(selectQuery, null)
-//
-//        if (cursor != null) {
-//            if (cursor.moveToFirst()) {
-//                do {
-//                    val eMail = cursor.getString(cursor.getColumnIndex(usersLoginEmail))
-//                    user = eMail
-//
-//                } while (cursor.moveToNext())
-//            }
-//        }
-//        cursor.close()
-//        db.close()
-//
-//        return user != ""
-//    }
-//
-//    //  Comprueba que el email del usuario sea unico
-//    fun getEmailFromTableUsers(email:String): Boolean {
-//        var user = ""
-//        val db = readableDatabase
-//        val selectQuery = "SELECT $usersEmail FROM $tableUsers WHERE $usersEmail = '$email'"
-//        val cursor = db.rawQuery(selectQuery, null)
-//
-//        if (cursor != null) {
-//            if (cursor.moveToFirst()) {
-//                do {
-//                    val eMail = cursor.getString(cursor.getColumnIndex(usersEmail))
-//                    user = eMail
-//
-//                } while (cursor.moveToNext())
-//            }
-//        }
-//        cursor.close()
-//        db.close()
-//
-//        return user == ""
-//    }
 
     //  Comprueba si el usuario tiene la sesion iniciada (1)
     fun getLoginTableUserLogin(): Boolean{
@@ -418,7 +297,27 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         var id = ""
         val db = readableDatabase
         val selectQuery = "SELECT $usersLoginId FROM $tableUsersLogin WHERE $usersLoginLogin = 1"
-//        val selectQuery = "SELECT U.$usersId FROM $tableUsers U INNER JOIN $tableUsersLogin UL ON U.$usersEmail = UL.$usersLoginEmail WHERE UL.$usersLoginLogin = 1"
+        val cursor = db.rawQuery(selectQuery, null)
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    val data = cursor.getString(cursor.getColumnIndex(usersLoginId))
+                    id = data
+                } while (cursor.moveToNext())
+            }
+        }
+        cursor.close()
+        db.close()
+
+        return id
+    }
+
+    //  Retorna todos los posibles usuarios registrados en un dispositivo
+    fun getAllUsersId(): String{
+        var id = ""
+        val db = readableDatabase
+        val selectQuery = "SELECT $usersLoginId FROM $tableUsersLogin WHERE $usersLoginLogin = 0"
         val cursor = db.rawQuery(selectQuery, null)
 
         if (cursor != null) {
@@ -596,43 +495,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return data
     }
 
-    //  Retorna todas las recetas de todos los usuarios cuyo tipo de receta sea Público(1)
-    fun getAllUsersRecipes(): ArrayList<RecipesModel> {
-        val data: ArrayList<RecipesModel> = ArrayList()
-        val db = readableDatabase
-        val selectALLQuery = "SELECT * FROM $tableRecipes WHERE $recipeType = 1 AND $recipeRemove = 0 ORDER BY '$recipeId' DESC"
-        val cursor = db.rawQuery(selectALLQuery, null)
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-
-                    val recipe = RecipesModel(
-                        cursor.getString(cursor.getColumnIndex(recipeId)),
-                        cursor.getString(cursor.getColumnIndex(recipeName)),
-                        cursor.getString(cursor.getColumnIndex(recipeUserId)),
-                        cursor.getString(cursor.getColumnIndex(recipePreparation)),
-                        cursor.getInt(cursor.getColumnIndex(recipeTimeHours)),
-                        cursor.getInt(cursor.getColumnIndex(recipeTimeMinutes)),
-                        cursor.getInt(cursor.getColumnIndex(recipePositiveVote)),
-                        cursor.getInt(cursor.getColumnIndex(recipeNegativeVote)),
-                        cursor.getString(cursor.getColumnIndex(recipeCategory)),
-                        cursor.getInt(cursor.getColumnIndex(recipeType)),
-                        cursor.getString(cursor.getColumnIndex(recipeDate)),
-                        cursor.getInt(cursor.getColumnIndex(recipeRemove))
-                    )
-
-                    data.add(recipe)
-                } while (cursor.moveToNext())
-            }
-        }
-
-        cursor.close()
-        db.close()
-
-        return data
-    }
-
     //  Retorna todos los ingredientes de una receta
     fun getAllMyIngredients(recipeid: String?): ArrayList<IngredientsModel> {
         val data: ArrayList<IngredientsModel> = ArrayList()
@@ -715,69 +577,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         db.close()
 
         return favorite
-    }
-
-    //  Retorna el voto positivo de una receta ya puntuada
-    fun getPositiveVote(recipeid: String, userid: String): Int {
-        var vote = 0
-        val db = readableDatabase
-        val selectQuery = "SELECT $votePositive FROM $tableUsersVotes WHERE $voteRecipeId = '$recipeid' AND $voteUserId = '$userid'"
-        val cursor = db.rawQuery(selectQuery, null)
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    val data = cursor.getInt(cursor.getColumnIndex(votePositive))
-                    vote = data
-                } while (cursor.moveToNext())
-            }
-        }
-        cursor.close()
-        db.close()
-
-        return vote
-    }
-
-    //  Retorna el voto negativo de una receta ya puntuada
-    fun getNegativeVote(recipeid: String, userid: String): Int {
-        var vote = 0
-        val db = readableDatabase
-        val selectQuery = "SELECT $voteNegative FROM $tableUsersVotes WHERE $voteRecipeId = '$recipeid' AND $voteUserId = '$userid'"
-        val cursor = db.rawQuery(selectQuery, null)
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    val data = cursor.getInt(cursor.getColumnIndex(voteNegative))
-                    vote = data
-                } while (cursor.moveToNext())
-            }
-        }
-        cursor.close()
-        db.close()
-
-        return vote
-    }
-
-    //  Retorna el id del voto de una receta ya puntuada
-    fun getIdVote(recipeid: String, userid: String): String {
-        var vote = ""
-        val db = readableDatabase
-        val selectQuery = "SELECT $voteId FROM $tableUsersVotes WHERE $voteRecipeId = '$recipeid' AND $voteUserId = '$userid'"
-        val cursor = db.rawQuery(selectQuery, null)
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    val data = cursor.getString(cursor.getColumnIndex(voteId))
-                    vote = data
-                } while (cursor.moveToNext())
-            }
-        }
-        cursor.close()
-        db.close()
-
-        return vote
     }
 
     //  Elimina una receta
@@ -923,84 +722,10 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         db.close()
     }
 
-    //  Actualiza las recetas guardadas en la tabla favoritas, marcada como favorita(1), desmarcada como tal(-1)
-    fun updateFavoriteRecipe(userId: String, recipeid: String?, favorite: Int, date: String){
+    //  Elimina las recetas favoritas
+    fun removeFavoriteRecipe(recipeid: String?){
         val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(favoriteBoolean, favorite)
-        values.put(favoriteDate, date)
-
-        db.update(tableFavorites, values, "$favoriteUserId = '$userId' AND $favoriteRecipeId = '$recipeid'", null)
+        db.delete(tableFavorites, "$favoriteRecipeId = '$recipeid'", null)
         db.close()
     }
-
-    //  Actualiza el voto positivo del usuario
-    fun updateUserVotePositive(idRecipe: String, idUser: String, vote:Int){
-        val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(votePositive, vote)
-
-        db.update(tableUsersVotes, values, "$voteRecipeId = '$idRecipe' AND $voteUserId = '$idUser'", null)
-        db.close()
-    }
-
-    //  Actualiza el voto negativo del usuario
-    fun updateUserVoteNegative(idRecipe: String, idUser: String, vote:Int){
-        val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(voteNegative, vote)
-
-        db.update(tableUsersVotes, values, "$voteRecipeId = '$idRecipe' AND $voteUserId = '$idUser'", null)
-        db.close()
-    }
-
-    //  Actualiza el voto positivo de la receta sumando uno
-    fun updateRecipePositiveVoteAdd(idRecipe: String, vote:Int){
-        val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(recipePositiveVote, vote)
-
-        db.update(tableRecipes, values, "$recipeId = '$idRecipe'", null)
-        db.close()
-    }
-
-    //  Actualiza el voto positivo de la receta restando uno
-    fun updateRecipePositiveVoteRemove(idRecipe: String, vote:Int){
-        val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(recipePositiveVote, vote)
-
-        db.update(tableRecipes, values, "$recipeId = '$idRecipe'", null)
-        db.close()
-    }
-
-
-    //  Actualiza el voto negativo de la receta sumando uno
-    fun updateRecipeNegativeVoteAdd(idRecipe: String, vote:Int){
-        val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(recipeNegativeVote, vote)
-
-        db.update(tableRecipes, values, "$recipeId = '$idRecipe'", null)
-        db.close()
-    }
-
-    //  Actualiza el voto negativo de la receta restando uno
-    fun updateRecipeNegativeVoteRemove(idRecipe: String, vote:Int){
-        val db = writableDatabase
-        val values = ContentValues()
-
-        values.put(recipeNegativeVote, vote)
-
-        db.update(tableRecipes, values, "$recipeId = '$idRecipe'", null)
-        db.close()
-    }
-
-
 }

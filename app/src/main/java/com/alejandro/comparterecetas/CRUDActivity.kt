@@ -51,7 +51,7 @@ class CRUDActivity : AppCompatActivity() {
     private val imagesView: ArrayList<ImageView> = ArrayList() //  Contiene las images seleccionadas en los ImageView
     private val savedImagePath: ArrayList<String> = ArrayList() // Contiene las rutas a las imágenes guardadas en el directorio "Images/recipes" del proyecto
     private val selectedIngredients: ArrayList<Ingredients> = ArrayList() //  Contiene los ingredientes de la receta
-
+    private var createOrEdit: String? = ""
     private var addOrEdit: String? = ""
     private var recipeId:String? = ""
     private var recipeName: String? = ""
@@ -71,6 +71,7 @@ class CRUDActivity : AppCompatActivity() {
         val extras = intent.extras
 
         if (extras != null){
+            createOrEdit = extras.getString("createOrEdit")
             addOrEdit = extras.getString("load")
             recipeId = extras.getString("recipeId")
             recipeName = extras.getString("recipeName")
@@ -80,6 +81,8 @@ class CRUDActivity : AppCompatActivity() {
             recipeMinute = extras.getInt("minutes")
             recipePreparation = extras.getString("preparation")
         }
+
+        tv_create_or_edit_recipe.text = createOrEdit
 
         if (addOrEdit == "edit"){
             et_recipe_name.setText(recipeName)
@@ -509,7 +512,7 @@ class CRUDActivity : AppCompatActivity() {
     private fun validation(): Boolean? {
         var validate: Boolean? = null
 
-        if (et_recipe_name.text.toString() != "" && et_preparation.text.toString() != "" && selectedIngredients.size >= 4) {
+        if (et_recipe_name.text.toString() != "" && et_preparation.text.toString() != "" && selectedIngredients.size >= 2) {
             validate = true
 
         } else if (et_recipe_name.text.toString() == "" && et_preparation.text.toString() == "") {
@@ -524,7 +527,7 @@ class CRUDActivity : AppCompatActivity() {
             validate = false
             Toast.makeText(this, "Rellena el campo preparacion", Toast.LENGTH_SHORT).show()
 
-        } else if (selectedIngredients.size < 4) {
+        } else if (selectedIngredients.size < 2) {
             validate = false
             Toast.makeText(this, "Número de ingredientes insuficiente", Toast.LENGTH_SHORT).show()
         }
@@ -749,14 +752,7 @@ class CRUDActivity : AppCompatActivity() {
             imagesFirebase.document(image.id).delete()
             dbHandler!!.removeImage(image.id)
 
-            imagesRef.delete().addOnSuccessListener {
-                Log.d("capullo", "Imagen borrada: ${image.name}")
-//                imagesFirebase.document(image.id).delete()
-//                dbHandler!!.removeImage(image.id)
-
-            }.addOnFailureListener {
-                Log.d("capullo", "Imagen Noooooooo borrada")
-            }
+            imagesRef.delete()
 
         }
     }

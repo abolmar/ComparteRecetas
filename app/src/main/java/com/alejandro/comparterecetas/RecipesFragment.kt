@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -33,17 +32,8 @@ class RecetasFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase() //?????????????
+        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase()
     }
-
-    //******************************************************************************************************************
-    //******************************************************************************************************************
-//    override fun onPause() {
-//        super.onPause()
-//        (activity as AppCompatActivity).overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
-//    }
-    //******************************************************************************************************************
-    //******************************************************************************************************************
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,18 +52,17 @@ class RecetasFragment : Fragment() {
             //init db
             dbHandler = DataBaseHandler(this.context!!)
 
-            //**********************************************************************************************************
-            // *******************************Funciona pero...**********************************************************
-            view.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.design_default_color_primary)
-            view.swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorAccent)
-
             view.swipeRefreshLayout.setOnRefreshListener {
-                initRecipesRecyclerView(view, 0)
-            }
-            // *******************************Funciona pero...**********************************************************
-            //**********************************************************************************************************
 
-            //  Devuelve aquellas recetas que sean públicas (type = 1) y ordenadas por las más recientes
+                initRecipesRecyclerView(view, 0)
+
+                if (view.open_search_button.visibility == View.GONE){
+                    closeSearch(view)
+                    view.open_search_button.visibility = View.VISIBLE
+                    view.tv_recetas.visibility = View.VISIBLE
+                }
+            }
+
             initRecipesRecyclerView(view, toPosition)
 
             view.open_search_button.setOnClickListener {
@@ -90,18 +79,17 @@ class RecetasFragment : Fragment() {
                 view.tv_recetas.visibility = View.VISIBLE
             }
 
-            return view
-
         } else {
             view.textView_offInternet.visibility = View.VISIBLE
             view.rv_all_users_recipes.visibility = View.GONE
-
-            return view
+            view.swipeRefreshLayout.visibility = View.INVISIBLE
         }
 
+        return view
     }
 
     private fun initRecipesRecyclerView(view: View, position: Int?){
+        //  Devuelve aquellas recetas que sean públicas (type = 1) y ordenadas por las más recientes
         recipesFirebase.whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
             val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
 
@@ -150,15 +138,12 @@ class RecetasFragment : Fragment() {
 
                         } catch (e: KotlinNullPointerException){}
                     } else {
-                        Toast.makeText(context, "No existe la receta", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "No existe ninguna coincidencia", Toast.LENGTH_SHORT).show()
                     }
                 }
 
-            } else {
-                Toast.makeText(context, "El buscador está vacío", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     //  Cierra el buscador

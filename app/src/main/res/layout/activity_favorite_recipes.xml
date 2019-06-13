@@ -10,13 +10,14 @@
     <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/colorPrimaryDark"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
             android:id="@+id/toolbar_recipe_favorite"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:elevation="8dp"/>
 
     <ImageButton
             android:layout_width="wrap_content"
@@ -29,7 +30,8 @@
             app:layout_constraintTop_toTopOf="@+id/toolbar_recipe_favorite"
             android:padding="8dp"
             android:layout_marginStart="8dp"
-            android:contentDescription="Back"/>
+            android:contentDescription="Back"
+            android:elevation="9dp"/>
 
     <android.support.v7.widget.RecyclerView
             android:layout_width="0dp"
@@ -38,10 +40,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar_recipe_favorite"
-            android:id="@+id/rv_favorite_recipes"/>
+            android:id="@+id/rv_favorite_recipes"
+            android:background="@color/greyBackground"/>
 
     <TextView
-            android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_title_category"
@@ -49,6 +51,38 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             app:layout_constraintTop_toTopOf="@+id/toolbar_recipe_favorite"
-            />
+            android:textSize="20sp"
+            android:textColor="@color/whiteBackground"
+            android:textStyle="bold"
+            android:elevation="9dp"/>
+
+    <TextView
+            android:text="Comprueba tu conexión a Internet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lostConection"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@id/toolbar_recipe_favorite"
+            android:visibility="gone"/>
+
+    <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/addToFavorites"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/rv_favorite_recipes"
+            android:textSize="18sp"
+            android:textColor="@color/blackLetters"
+            android:padding="16dp"
+            android:textAlignment="center"
+            android:fontFamily="@font/open_sans_light"/>
 
 </android.support.constraint.ConstraintLayout>

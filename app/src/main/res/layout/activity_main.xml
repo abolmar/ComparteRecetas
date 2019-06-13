@@ -29,13 +29,7 @@
             android:layout_height="wrap_content"
             app:menu="@menu/navigation"
             android:layout_alignParentBottom="true"
+            android:background="@color/whiteBackground"
             />
 
 </RelativeLayout>
-
-        <!--Remember for <android.support.design.widget.BottomNavigationView /> we can use the following properties
-
-            app:itemIconTint : for defining the Item Icon color.
-            app:itemTextColor : for defining the Item Text Color.
-            android:background : for defining the Bottom Navigation View background.
-            app:menu : for defining the menu that we need to display in the Bottom Navigation View.-->

@@ -24,7 +24,6 @@ import java.lang.ClassCastException
 class MainActivity : AppCompatActivity() {
 
     private val manager = supportFragmentManager
-    //*******************************************************//
     private var dbHandler: DataBaseHandler? = null
     private var dbFirebase = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth
@@ -55,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         false
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -65,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         val extras = intent.extras
 
         if (extras != null) {
-            position = extras.getInt("position")
+            position = extras.getInt("position") // Posición de la receta pulsada en el recycler view
         }
 
         val intent = intent
@@ -88,13 +86,12 @@ class MainActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
-    //*****Elimina la cache*****************Lo dejo o lo quito??????????????????????????????????????????????????????????
-    // En teoría con la cache las imágenes cargarían más rápido
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        val file = File("${this.cacheDir}")
-//        file.deleteRecursively()
-//    }
+    //  Elimina la cache al cerrar la aplicación
+    override fun onDestroy() {
+        super.onDestroy()
+        val file = File("${this.cacheDir}")
+        file.deleteRecursively()
+    }
 
 
     private fun recipes(position:Int?){
@@ -118,13 +115,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun profile(){
-        if (isNetworkConnected()){
-            updateFirebase()
-        }
         val transaction = manager.beginTransaction()
         val fragment = PerfilFragment()
 
-        manager.popBackStack()  //--> Sustitulle a "manager.popBackStackImmediate()", el que está puesto funciona de maravilla, pero por si acaso aquí está el otro -> BORRAME CUANDO ACABES!!!
+        manager.popBackStack()
         transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit()
     }
 
@@ -184,8 +178,8 @@ class MainActivity : AppCompatActivity() {
             val userRecipes: ArrayList<RecipesModel> = dbHandler!!.getAllMyRecipes(dbHandler!!.getUserId()) // Recetas del usuario actual
             val userRecipesFirebase = userRecipe.toObjects(RecipesModel::class.java) // Recetas del usuario actual
 
-            var insertRecipe:Boolean = true
-            var countRecipe:Int = 0
+            var insertRecipe = true
+            var countRecipe = 0
             for ((addRecipe, recipe) in userRecipes.withIndex()){
                 for (recipeF in userRecipesFirebase){
                     if (recipe.id == recipeF.id && recipe.date != recipeF.date){
@@ -207,62 +201,35 @@ class MainActivity : AppCompatActivity() {
                     val userIngredients: ArrayList<IngredientsModel> = dbHandler!!.getAllMyIngredients(recipe.id)
                     val userIngredientsFirebase = recipeIngredients.toObjects(IngredientsModel::class.java)
 
-                    var insertIngredient: Boolean = true
-                    var countIngredient:Int = 0
-//                    if (userIngredients.size > userIngredientsFirebase.size){
-                        for ((addIngredient, ingredient) in userIngredients.withIndex()){
-                            for (ingredientF in userIngredientsFirebase){
-                                if (ingredient.id == ingredientF.id && ingredient.date != ingredientF.date){//
-                                    ingredientsFirebase.document(ingredient.id).set(userIngredients[countIngredient])
-                                    countIngredient++
+                    var insertIngredient = true
+                    var countIngredient = 0
 
-                                } else if (ingredient.id == ingredientF.id && ingredient.date == ingredientF.date) {
-                                    insertIngredient = false
-                                    countIngredient++
-                                }
+                    for ((addIngredient, ingredient) in userIngredients.withIndex()){
+                        for (ingredientF in userIngredientsFirebase){
+                            if (ingredient.id == ingredientF.id && ingredient.date != ingredientF.date){//
+                                ingredientsFirebase.document(ingredient.id).set(userIngredients[countIngredient])
+                                countIngredient++
+
+                            } else if (ingredient.id == ingredientF.id && ingredient.date == ingredientF.date) {
+                                insertIngredient = false
+                                countIngredient++
                             }
-
-                            if (insertIngredient){
-                                ingredientsFirebase.document(ingredient.id).set(userIngredients[addIngredient])
-                            }
-
-                            insertIngredient = true
                         }
-//                    } else {
-//                        for ((addIngredient, ingredient) in userIngredientsFirebase.withIndex()){
-//                            for (ingredientF in userIngredients){
-//                                if (ingredient.id == ingredientF.id && ingredient.date != ingredientF.date){//
-//                                    ingredientsFirebase.document(ingredient.id).set(userIngredients[countIngredient])
-//                                    countIngredient++
-//
-//                                } else if (ingredient.id == ingredientF.id && ingredient.date == ingredientF.date) {
-//                                    insertIngredient = false
-//                                    countIngredient++
-//                                }
-//                            }
-//
-//                            if (insertIngredient){
-//                                ingredientsFirebase.document(ingredient.id).set(userIngredients[addIngredient])
-//                            }
-//
-//                            insertIngredient = true
-//                        }
-////                        ingredientsFirebase.document(recipe.id).delete()
-////                        for (ingredient in userIngredients){
-////                            ingredientsFirebase.document(ingredient.id).set(userIngredients[addIngredient])
-////                        }
-//
-//
-//                    }
 
+                        if (insertIngredient){
+                            ingredientsFirebase.document(ingredient.id).set(userIngredients[addIngredient])
+                        }
+
+                        insertIngredient = true
+                    }
                 }
 
                 imagesFirebase.whereEqualTo("recipeId", recipe.id).get().addOnSuccessListener { images ->
                     val recipeImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipe.id)
                     val recipeImagesFirebase = images.toObjects(ImagesModel::class.java)
 
-                    var insertImage: Boolean = true
-                    var countImages:Int = 0
+                    var insertImage = true
+                    var countImages = 0
                     for ((addImage, image) in recipeImages.withIndex()){
                         for (imageF in recipeImagesFirebase){
                             if (image.id == imageF.id && image.date != imageF.date){ // Si la imagen ha sido actualizada

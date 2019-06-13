@@ -2,13 +2,7 @@ package com.alejandro.comparterecetas.adapters
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Context.CONNECTIVITY_SERVICE
-import android.content.DialogInterface
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.support.v4.content.ContextCompat.getSystemService
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.util.DiffUtil
 import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -27,10 +21,9 @@ import kotlinx.android.synthetic.main.adapter_my_recipes.view.*
 import java.lang.IndexOutOfBoundsException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
-class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: Context) :
+class MyRecipesAdapter(private val items: MutableList<RecipesModel>, val context: Context) :
     RecyclerView.Adapter<ViewHolderMyRecipes>() {
 
     private var dbHandler: DataBaseHandler? = null
@@ -56,22 +49,23 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
 
         auth = FirebaseAuth.getInstance()
 
-        Glide.with(context)
-            .load(dbHandler!!.getImageUserProfilePath(auth.currentUser!!.uid))
-            .fitCenter()
-            .centerCrop()
-            .into(holder.imgUser)
+        if (dbHandler!!.getImageUserProfilePath(auth.currentUser!!.uid) != ""){
+            Glide.with(context)
+                .load(dbHandler!!.getImageUserProfilePath(auth.currentUser!!.uid))
+                .fitCenter()
+                .centerCrop()
+                .into(holder.imgUser)
+        }
+
 
         holder.tvName.text = items[position].name
-//        holder.tvPositiveV.text = items[position].positive.toString()
-//        holder.tvNegativeV.text = items[position].negative.toString()
 
         if (items[position].type == 0) {
             holder.imgType.setImageResource(R.drawable.ic_lock_outline_black_24dp)
-            holder.btnMenu.setOnClickListener {
-                val popupMenu = PopupMenu(context, it)
-                popupMenu.setOnMenuItemClickListener {
-                    when (it.itemId) {
+            holder.btnMenu.setOnClickListener { view ->
+                val popupMenu = PopupMenu(context, view)
+                popupMenu.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
                         R.id.my_recipe_public -> {
                             uploadItem(position, 1)
                             notifyItemChanged(position)
@@ -91,6 +85,7 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
                             intent.putExtra("hours", items[position].timeH)
                             intent.putExtra("minutes", items[position].timeM)
                             intent.putExtra("preparation", items[position].preparation)
+                            intent.putExtra("createOrEdit", "Editar receta")
                             context.startActivity(intent)
                             true
                         }
@@ -107,11 +102,11 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
             }
         } else {
             holder.imgType.setImageResource(R.drawable.ic_public_black_24dp)
-            holder.btnMenu.setOnClickListener {
-                val popupMenu = PopupMenu(context, it)
+            holder.btnMenu.setOnClickListener { view ->
+                val popupMenu = PopupMenu(context, view)
 
-                popupMenu.setOnMenuItemClickListener {
-                    when (it.itemId) {
+                popupMenu.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
                         R.id.my_recipe_private -> {
                             uploadItem(position, 0)
                             notifyItemChanged(position)
@@ -131,6 +126,7 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
                             intent.putExtra("hours", items[position].timeH)
                             intent.putExtra("minutes", items[position].timeM)
                             intent.putExtra("preparation", items[position].preparation)
+                            intent.putExtra("createOrEdit", "Editar receta")
                             context.startActivity(intent)
                             true
                         }
@@ -191,13 +187,13 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Eliminar la receta?")
 
-        builder.setPositiveButton("Eliminar") { dialog, which ->
+        builder.setPositiveButton("Eliminar") { _, _ ->
             dbHandler!!.updateUserRecipeRemove(items[position].id, 1, date)
             removeItem(position)
             Toast.makeText(context, "Receta eliminada", Toast.LENGTH_SHORT).show()
         }
 
-        builder.setNegativeButton("Cancelar") { dialog, which -> }
+        builder.setNegativeButton("Cancelar") { _, _ -> }
 
         val alert = builder.create()
         alert.show()
@@ -217,13 +213,11 @@ class MyRecipesAdapter(private val items: ArrayList<RecipesModel>, val context: 
 
 class ViewHolderMyRecipes(view: View) : RecyclerView.ViewHolder(view) {
 
-    val imgUser = view.img_adapter_recipe_user
-    val tvName = view.tv_adapter_recipe_name
-//    val tvPositiveV = view.tv_adapter_recipe_positive
-//    val tvNegativeV = view.tv_adapter_recipe_negative
-    val imgType = view.img_adapter_recipe_type
-    val btnMenu = view.btn_adapter_recipe_menu
+    val imgUser = view.img_adapter_recipe_user!!
+    val tvName = view.tv_adapter_recipe_name!!
+    val imgType = view.img_adapter_recipe_type!!
+    val btnMenu = view.btn_adapter_recipe_menu!!
 
-    val container = view.cv_my_recipes
+    val container = view.cv_my_recipes!!
 
 }

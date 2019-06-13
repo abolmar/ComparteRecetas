@@ -84,19 +84,20 @@ class EditProfileActivity : AppCompatActivity() {
 
             saveProfileImages()
 
-            if (change_name_edit_profile.text.toString() != dbHandler!!.getUserName()){
-                dbHandler!!.updateUserLoginName(dbHandler!!.getUserId(), change_name_edit_profile.text.toString())
+            when {
+                change_name_edit_profile.text.toString() != dbHandler!!.getUserName() -> {
+                    dbHandler!!.updateUserLoginName(dbHandler!!.getUserId(), change_name_edit_profile.text.toString())
 
-                if (isNetworkConnected()) {
-                    usersLogin.document(dbHandler!!.getUserId()).update("name", change_name_edit_profile.text.toString())
+                    if (isNetworkConnected()) {
+                        usersLogin.document(dbHandler!!.getUserId()).update("name", change_name_edit_profile.text.toString())
+                    }
+
+                    backProfile()
+
                 }
+                change_name_edit_profile.text.toString().isEmpty() -> Toast.makeText(this, "El campo 'Nombre' no puede quedar vacío", Toast.LENGTH_SHORT).show()
 
-                backProfile()
-
-            } else if (change_name_edit_profile.text.toString().isEmpty()){
-                Toast.makeText(this, "El campo 'Nombre' no puede quedar vacío", Toast.LENGTH_SHORT).show()
-            } else {
-                backProfile()
+                else -> backProfile()
             }
 
 
@@ -190,7 +191,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     // Comprueba la conexión a internet
-    fun isNetworkConnected(): Boolean {
+    private fun isNetworkConnected(): Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return cm.activeNetworkInfo != null
     }

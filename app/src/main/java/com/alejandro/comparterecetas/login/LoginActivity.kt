@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.alejandro.comparterecetas.MainActivity
 import com.alejandro.comparterecetas.R
@@ -51,38 +52,44 @@ class LoginActivity : AppCompatActivity() {
 
                                         val uid = user.uid
 
+                                        // Una vez iniciada la sesión, comprobamos que el usuario exista en el dispositivo
+                                        if (uid == dbHandler!!.getAllUsersId()){
                                         // Actualizar la tabla usersLogin con login = 1 cuando se inicie sesion
-                                        dbFirebase.collection("usersLogin").document(uid)
-                                            .update("login", 1)
-                                            .addOnSuccessListener { documentReference ->
-                                                // Loguea al usuario e inicia sesion, la cuenta seguirá abierta hasta que el usuario la cierre
-                                                dbHandler!!.updateLoginTableUserLogin(et_login_email.text.toString())
+                                            dbFirebase.collection("usersLogin").document(uid)
+                                                .update("login", 1)
+                                                .addOnSuccessListener {
+                                                    // Loguea al usuario e inicia sesion, la cuenta seguirá abierta hasta que el usuario la cierre
+                                                    dbHandler!!.updateLoginTableUserLogin(et_login_email.text.toString())
 
-                                                val intent = Intent(this, MainActivity::class.java)
-                                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                                startActivity(intent)
-                                            }
+                                                    val intent = Intent(this, MainActivity::class.java)
+                                                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                    startActivity(intent)
+                                                }
+                                        } else {
+                                            Toast.makeText(
+                                                this,
+                                                "Debes haberte registrado desde este dispositivo para poder iniciar sesión",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
                                     }
 
                                 } else {
-                                    Toast.makeText(baseContext, "Error en la autentificación.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        baseContext,
+                                        "Error en la autentificación.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
 
                     } else {
-                        Toast.makeText(baseContext, "Debes tener conexión a internet para iniciar sesión.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            baseContext,
+                            "Debes tener conexión a internet para iniciar sesión.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-//                        if (dbHandler!!.getUserEmailFromTableUsers(et_login_email.text.toString(), et_login_passwd.text.toString())){ // Si el usuario está registrado
-//
-//                            dbHandler!!.updateLoginTableUserLogin(et_login_email.text.toString()) // Loguea al usuario e inicia sesion, la cuenta seguirá abierta hasta que el usuario la cierre
-//
-//                            val intent = Intent(this, MainActivity::class.java)
-//                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                            startActivity(intent)
-//
-//                        } else {
-//                            Toast.makeText(this, "El usuario no existe", Toast.LENGTH_SHORT).show()
-//                        }
                 }
             }
 
@@ -99,7 +106,7 @@ class LoginActivity : AppCompatActivity() {
     private fun validation(): Boolean {
         val validate: Boolean
 
-        if (!et_login_email.text.toString().equals("") && !et_login_passwd.text.toString().equals("")) {
+        if (et_login_email.text.toString() != "" && et_login_passwd.text.toString() != "") {
             validate = true
         } else {
             validate = false

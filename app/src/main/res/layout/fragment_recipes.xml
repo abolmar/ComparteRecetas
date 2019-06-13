@@ -9,10 +9,11 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_gravity="top|center_vertical"
-            android:background="#FFF">
+            android:background="@color/colorPrimaryDark"
+            android:elevation="8dp">
 
         <TextView
-                android:text="Recetas"
+                android:text="@string/title_recetas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_recetas"
@@ -21,18 +22,18 @@
                 android:layout_marginTop="0dp"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="16dp"
-                android:gravity="center|fill_vertical"
-                android:textSize="30sp"
-                android:textStyle="bold"
+                android:textSize="25sp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="true"
-                />
+                android:textColor="@color/whiteBackground"
+                android:visibility="visible"
+                android:gravity="center|start"/>
 
         <View
                 android:id="@+id/open_search_button"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
@@ -46,9 +47,10 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_gravity="top|center_vertical"
-            android:background="#99FB90AA"
+            android:background="@color/greyBackground"
             android:visibility="invisible"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:elevation="9dp">
 
         <View
                 android:id="@+id/close_search_button"
@@ -57,7 +59,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
-                android:background="@drawable/ic_clear_black_24dp"
+                android:background="@drawable/ic_clear_search_24dp"
                 />
 
         <EditText
@@ -68,8 +70,9 @@
                 android:layout_marginEnd="16dp"
                 android:layout_toStartOf="@id/execute_search_button"
                 android:layout_toEndOf="@id/close_search_button"
-                android:hint="Tortilla de..."
-                android:singleLine="true"/>
+                android:hint="Ej. Tort..."
+                android:singleLine="true"
+                android:inputType="textCapSentences"/>
 
         <View
                 android:id="@+id/execute_search_button"
@@ -85,13 +88,15 @@
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#32BBADAD"
+            android:background="@color/greyBackground"
             tools:context=".RecetasFragment"
             android:layout_marginTop="?actionBarSize">
+
         <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
             <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -104,7 +109,7 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <TextView
-                android:text="Comprueba tu conexión a Internet"
+                android:text="@string/lostConnection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_offInternet"
@@ -125,76 +130,3 @@
     </RelativeLayout>
 
 </FrameLayout>
-
-<!-- Original
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#32BBADAD"
-                tools:context=".RecetasFragment">
-
-    <TextView
-            android:text="Recetas"
-            android:layout_width="match_parent"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:id="@+id/message"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="0dp"
-            android:background="#FFFFFF"/>
-
-    <ImageView
-            android:src="@drawable/ic_search_black_24dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView2"
-            android:layout_marginEnd="8dp"
-            android:layout_alignEnd="@+id/message"
-            android:layout_alignTop="@+id/message"
-            android:layout_marginTop="0dp"
-            android:layout_above="@+id/swipeRefreshLayout"
-            android:layout_marginBottom="0dp"/>
-
-    <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/message">
-        <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/message"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:id="@+id/rv_all_users_recipes">
-        </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-    <TextView
-            android:text="Comprueba tu conexión a Internet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView_offInternet"
-            android:layout_alignTop="@+id/message"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="0dp"
-            android:layout_alignBottom="@+id/swipeRefreshLayout"
-            android:textAlignment="center"
-            android:layout_marginStart="0dp"
-            android:layout_alignStart="@+id/message"
-            android:layout_marginEnd="0dp"
-            android:layout_alignEnd="@+id/message"
-            android:gravity="center"
-            tools:visibility="gone"/>
-
-</RelativeLayout>
--->

@@ -10,13 +10,14 @@
     <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/colorPrimaryDark"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
             android:id="@+id/toolbar_recipe_crud"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:elevation="8dp"/>
 
     <ImageButton
             android:layout_width="wrap_content"
@@ -28,7 +29,8 @@
             app:layout_constraintStart_toStartOf="@+id/toolbar_recipe_crud"
             app:layout_constraintTop_toTopOf="@+id/toolbar_recipe_crud"
             android:padding="8dp"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:elevation="9dp"/>
 
     <ScrollView
             android:layout_width="match_parent"
@@ -36,7 +38,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar_recipe_crud">
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_recipe_crud"
+            android:background="@color/whiteBackground">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -47,10 +50,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                <android.support.v7.widget.RecyclerView
+                        android:layout_width="wrap_content"
+                        android:layout_height="200dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:orientation="horizontal"
+                        android:id="@+id/rv_images"
+                        android:background="@color/whiteBackground"/>
+
                 <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@android:drawable/ic_media_previous"
+                        app:srcCompat="@drawable/ic_navigate_before_black_24dp"
                         android:id="@+id/back_image"
                         app:layout_constraintTop_toBottomOf="@+id/rv_images"
                         app:layout_constraintStart_toStartOf="parent"
@@ -74,34 +87,26 @@
                             android:layout_height="match_parent"
                             android:id="@+id/image_position"
                             android:textAlignment="center"
-                            android:gravity="center"/>
+                            android:gravity="center"
+                            android:textColor="@color/blackLetters"/>
 
                     <TextView
-                            android:text="3"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:id="@+id/count_images"
                             android:textAlignment="center"
-                            android:gravity="center"/>
+                            android:gravity="center"
+                            android:textColor="@color/blackLetters"/>
                 </LinearLayout>
 
                 <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@android:drawable/ic_media_next"
+                        app:srcCompat="@drawable/ic_navigate_next_black_24dp"
                         android:id="@+id/next_image"
                         app:layout_constraintTop_toBottomOf="@+id/rv_images"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:backgroundTint="@android:color/transparent"/>
-
-                <android.support.v7.widget.RecyclerView
-                        android:layout_width="wrap_content"
-                        android:layout_height="200dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:orientation="horizontal"
-                        android:id="@+id/rv_images"/>
 
                 <ImageView
                         android:layout_width="wrap_content"
@@ -128,38 +133,42 @@
 
 
                 <TextView
-                        android:text="TextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_title"
                         android:textAlignment="textStart"
-                        android:textSize="20sp"
+                        android:textSize="30sp"
                         android:layout_marginStart="16dp"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginTop="16dp"
                         app:layout_constraintTop_toBottomOf="@+id/back_image"
                         android:layout_marginEnd="8dp"
-                        app:layout_constraintEnd_toStartOf="@+id/next_image"/>
+                        app:layout_constraintEnd_toStartOf="@+id/next_image"
+                        android:textColor="@color/blackLetters"
+                        android:textStyle="bold"/>
 
                 <TextView
-                        android:text="Categoría:"
+                        android:text="@string/categorySelection"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_category"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:textColor="@color/blackLetters"
+                        android:textSize="14sp"
+                        android:layout_marginTop="32dp"
                         app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 
                 <TextView
-                        android:text="TextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_category_name"
-                        app:layout_constraintStart_toStartOf="@+id/tv_category"
-                        app:layout_constraintEnd_toEndOf="@+id/tv_category"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_category"
-                        android:layout_marginTop="8dp"/>
+                        app:layout_constraintStart_toEndOf="@+id/tv_category"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintTop_toTopOf="@+id/tv_category"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_category"
+                        android:textSize="18sp"
+                        android:textColor="@color/recipeContent"/>
 
                 <ImageView
                         android:layout_width="wrap_content"
@@ -172,30 +181,30 @@
                         app:layout_constraintTop_toTopOf="@+id/tv_hour"/>
 
                 <TextView
-                        android:text="H"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_hour"
                         app:layout_constraintEnd_toStartOf="@+id/tv_minute"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginTop="32dp"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
+                        android:textColor="@color/blackLetters"
+                        app:layout_constraintTop_toTopOf="@+id/tv_minute"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_minute"/>
 
                 <TextView
-                        android:text="M"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_minute"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="16dp"
+                        android:textColor="@color/blackLetters"
                         android:layout_marginTop="32dp"
                         app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 
                 <View
                         android:id="@+id/divider9"
                         android:layout_width="0dp"
-                        android:layout_height="1.5dp"
-                        android:background="?android:attr/listDivider"
+                        android:layout_height="0.5dp"
+                        android:background="@color/blackLetters"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -204,14 +213,16 @@
                         android:layout_marginTop="32dp"/>
 
                 <TextView
-                        android:text="Ingredientes"
+                        android:text="@string/ingredients"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_ingredients"
                         app:layout_constraintTop_toBottomOf="@+id/divider9"
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="32dp"/>
+                        android:layout_marginTop="32dp"
+                        android:textColor="@color/blackLetters"
+                        android:textSize="20sp"/>
 
                 <android.support.v7.widget.RecyclerView
                         android:layout_width="0dp"
@@ -220,34 +231,33 @@
                         android:layout_marginTop="8dp"
                         app:layout_constraintTop_toBottomOf="@+id/tv_ingredients"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="16dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="16dp"/>
+                        />
 
                 <TextView
-                        android:text="Preparación"
+                        android:text="@string/preparation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_preparation"
                         android:layout_marginTop="32dp"
                         app:layout_constraintTop_toBottomOf="@+id/rv_ingredients"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="16dp"/>
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/blackLetters"
+                        android:textSize="20sp"/>
 
                 <TextView
-                        android:text="TextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_preparation_content"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="16dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
                         app:layout_constraintTop_toBottomOf="@+id/tv_preparation"
                         android:layout_marginBottom="64dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:textSize="20sp"/>
+                        android:textSize="20sp"
+                        android:padding="16dp"
+                        android:textColor="@color/recipeContent"/>
 
             </android.support.constraint.ConstraintLayout>
         </LinearLayout>

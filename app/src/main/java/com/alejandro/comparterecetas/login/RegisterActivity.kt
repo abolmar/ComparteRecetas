@@ -12,7 +12,6 @@ import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.UsersModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_register.*
 
@@ -64,14 +63,6 @@ class RegisterActivity : AppCompatActivity() {
                                     successUsers = dbHandler!!.addUserTableUserLogin(usersModel)
 
                                     usersLogin.document(uid).set(usersModel)
-
-//                                    // Actualiza el nombre a mostrar del usuario
-//                                    val profileUpdates = UserProfileChangeRequest.Builder()
-//                                        .setDisplayName(et_reg_name.text.toString())
-//                                        .build()
-//
-//                                    user.updateProfile(profileUpdates)
-
 
                                     if (successUsers) {
                                         val intent = Intent(this, MainActivity::class.java)

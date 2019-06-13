@@ -9,11 +9,15 @@
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
             <EditText
@@ -25,7 +29,9 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="150dp"
-                    android:hint="Email"/>
+                    android:hint="@string/mail"
+                    android:textColor="@color/recipeContent"
+                    android:textSize="20sp"/>
 
             <EditText
                     android:layout_width="match_parent"
@@ -35,20 +41,24 @@
                     android:layout_marginTop="32dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
-                    android:hint="Contraseña"
-                    android:inputType="textPassword"/>
+                    android:hint="@string/passwd"
+                    android:inputType="textPassword"
+                    android:textColor="@color/recipeContent"
+                    android:textSize="20sp"/>
 
             <Button
-                    android:text="iniciar sesion"
+                    android:text="@string/login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/btn_login"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/rounded_corner"
+                    android:textColor="@color/whiteBackground"/>
 
             <TextView
-                    android:text="Crear una cuenta"
+                    android:text="@string/newAccount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_login_to_register"

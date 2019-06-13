@@ -34,11 +34,6 @@ class PerfilFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase() //?????????????
-    }
-
-    override fun onPause() {
-        super.onPause()
         if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase()
     }
 
@@ -151,7 +146,7 @@ class PerfilFragment : Fragment() {
         view.fab_new_recipe.setOnClickListener {
             val intent = Intent(context, CRUDActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            intent.putExtra("load", "add")
+            intent.putExtra("createOrEdit", "Crear nueva receta")
             startActivity(intent)
         }
 
@@ -160,4 +155,3 @@ class PerfilFragment : Fragment() {
 
 }
 
-// (activity as AppCompatActivity) => interesante - interesante - interesante - interesante - interesante - interesante - interesante

@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_show_recipe.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ShowRecipeActivity : AppCompatActivity() {
 
@@ -37,7 +38,7 @@ class ShowRecipeActivity : AppCompatActivity() {
     private var toFragment: String? = ""
     private var toCategory: String? = ""
 
-    var position: Int? = 0
+    private var position: Int? = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,64 +79,25 @@ class ShowRecipeActivity : AppCompatActivity() {
         }
 
 
-        imagesFirebase.whereEqualTo("recipeId", recipeId).get().addOnSuccessListener {
-            val imagesRecipeFirebase = it.toObjects(ImagesModel::class.java)
-
-            rv_images.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-            rv_images.adapter = ShowImagesAdapter(imagesRecipeFirebase, this)
-
-            val countImages = imagesRecipeFirebase.size
-
-            count_images.text = " / $countImages"
-
-            if (countImages > 1){
-                var count = 0
-
-                if (count == 0){
-                    back_image.isEnabled = false
-                }
-
-                next_image.setOnClickListener {
-                    count++
-                    rv_images.smoothScrollToPosition(count)
-                    image_position.text = "${count+1}"
-                    if (count == countImages-1){
-                        back_image.isEnabled = true
-                        next_image.isEnabled = false
-                    }else {
-                        back_image.isEnabled = true
-                        next_image.isEnabled = true
-                    }
-                }
-
-                back_image.setOnClickListener {
-                    count--
-                    rv_images.smoothScrollToPosition(count)
-                    image_position.text = "${count+1}"
-                    if (count == 0){
-                        back_image.isEnabled = false
-                        next_image.isEnabled = true
-                    } else {
-                        back_image.isEnabled = true
-                        next_image.isEnabled = true
-                    }
-                }
-            } else {
-                next_image.visibility = View.INVISIBLE
-                back_image.visibility = View.INVISIBLE
+        if (toFragment != "profile"){
+            imagesFirebase.whereEqualTo("recipeId", recipeId).get().addOnSuccessListener {
+                val imagesRecipeFirebase = it.toObjects(ImagesModel::class.java)
+                showImagesRecipe(imagesRecipeFirebase, "x")
             }
-
+        } else {
+            val myRecipeImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
+            showImagesRecipe(myRecipeImages, "profile")
         }
 
         btn_show_recipe_back.setOnClickListener {
-            backRecipes()
+            backToView()
         }
 
         //  Contiene el valor representativo de una receta marcada como favorita(1), desmarcada como favorita(-1) o si no ha sido marcada(0)
         val isFavorite = dbHandler!!.getFavoriteRecipe(dbHandler!!.getUserId(), recipeId)
 
         when (isFavorite) {
-            -1, 0 -> {
+            0 -> {
                 img_favorite_No.visibility = View.VISIBLE
                 img_favorite_Yes.visibility = View.GONE
             }
@@ -146,49 +108,93 @@ class ShowRecipeActivity : AppCompatActivity() {
         }
 
         img_favorite_No.setOnClickListener {
-            when (isFavorite) {
-                0 -> {
-                    favorite.id = "favorite-$date"
-                    favorite.recipeId = recipeId.toString()
-                    favorite.userId = dbHandler!!.getUserId()
-                    favorite.type = recipeCategory.toString()
-                    favorite.favorite = 1
-                    favorite.date = date
+            favorite.id = "favorite-$date"
+            favorite.recipeId = recipeId.toString()
+            favorite.userId = dbHandler!!.getUserId()
+            favorite.type = recipeCategory.toString()
+            favorite.favorite = 1
+            favorite.date = date
 
-                    dbHandler!!.addFavoriteRecipe(favorite)
-                }
-                -1 -> dbHandler!!.updateFavoriteRecipe(dbHandler!!.getUserId(), recipeId, 1, date)
-            }
+            dbHandler!!.addFavoriteRecipe(favorite)
 
             img_favorite_Yes.visibility = View.VISIBLE
             img_favorite_No.visibility = View.GONE
         }
 
         img_favorite_Yes.setOnClickListener {
-            dbHandler!!.updateFavoriteRecipe(dbHandler!!.getUserId(), recipeId, -1, date)
+            dbHandler!!.removeFavoriteRecipe(recipeId)
             img_favorite_No.visibility = View.VISIBLE
             img_favorite_Yes.visibility = View.GONE
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        backRecipes()
+    @SuppressLint("SetTextI18n")
+    private fun showImagesRecipe(images: MutableList<ImagesModel>, fragment: String){
+        rv_images.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rv_images.adapter = ShowImagesAdapter(images, fragment, this)
+
+        val countImages = images.size
+
+        count_images.text = " / $countImages"
+
+        if (countImages > 1){
+            var count = 0
+
+            if (count == 0){
+                back_image.isEnabled = false
+            }
+
+            next_image.setOnClickListener {
+                count++
+                rv_images.smoothScrollToPosition(count)
+                image_position.text = "${count+1}"
+                if (count == countImages-1){
+                    back_image.isEnabled = true
+                    next_image.isEnabled = false
+                }else {
+                    back_image.isEnabled = true
+                    next_image.isEnabled = true
+                }
+            }
+
+            back_image.setOnClickListener {
+                count--
+                rv_images.smoothScrollToPosition(count)
+                image_position.text = "${count+1}"
+                if (count == 0){
+                    back_image.isEnabled = false
+                    next_image.isEnabled = true
+                } else {
+                    back_image.isEnabled = true
+                    next_image.isEnabled = true
+                }
+            }
+        } else {
+            next_image.visibility = View.INVISIBLE
+            back_image.visibility = View.INVISIBLE
+        }
     }
 
-    private fun backRecipes() {
-        if (toFragment == "recipes"){
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra("position", position)
-            startActivity(intent)
-        } else if (toFragment == "profile"){
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra("USER_PROFILE", true)
-            startActivity(intent)
-        } else {
-            when (toCategory) {
+    override fun onBackPressed() {
+        super.onBackPressed()
+        backToView()
+    }
+
+    private fun backToView() {
+        when (toFragment) {
+            "recipes" -> {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.putExtra("position", position)
+                startActivity(intent)
+            }
+            "profile" -> {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.putExtra("USER_PROFILE", true)
+                startActivity(intent)
+            }
+            else -> when (toCategory) {
                 "Todas" -> {
                     val intent = Intent(this, FavoriteRecipesActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -223,12 +229,8 @@ class ShowRecipeActivity : AppCompatActivity() {
         }
     }
 
-    //******************************************************************************************************************
-    //******************************************************************************************************************
     override fun onPause() {
         super.onPause()
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
     }
-    //******************************************************************************************************************
-    //******************************************************************************************************************
 }
