@@ -6,8 +6,10 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import android.net.ConnectivityManager
-import android.util.Log
 import com.alejandro.comparterecetas.database.DataBaseHandler
+import com.alejandro.comparterecetas.fragments.FavoritesFragment
+import com.alejandro.comparterecetas.fragments.ProfileFragment
+import com.alejandro.comparterecetas.fragments.RecipesFragment
 import com.alejandro.comparterecetas.models.ImagesModel
 import com.alejandro.comparterecetas.models.IngredientsModel
 import com.alejandro.comparterecetas.models.RecipesModel
@@ -100,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         args.putInt("position", position!!)
 
         val transaction = manager.beginTransaction()
-        val fragment = RecetasFragment()
+        val fragment = RecipesFragment()
         fragment.arguments = args
 
         transaction.replace(R.id.fragment_container, fragment).commit()
@@ -108,7 +110,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun favorites(){
         val transaction = manager.beginTransaction()
-        val fragment = FavoritasFragment()
+        val fragment = FavoritesFragment()
 
         manager.popBackStack()
         transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit()
@@ -116,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun profile(){
         val transaction = manager.beginTransaction()
-        val fragment = PerfilFragment()
+        val fragment = ProfileFragment()
 
         manager.popBackStack()
         transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit()

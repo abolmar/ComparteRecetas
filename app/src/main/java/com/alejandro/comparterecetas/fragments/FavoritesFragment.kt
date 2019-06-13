@@ -1,19 +1,20 @@
-package com.alejandro.comparterecetas
+package com.alejandro.comparterecetas.fragments
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.alejandro.comparterecetas.FavoriteRecipesActivity
+import com.alejandro.comparterecetas.R
 import kotlinx.android.synthetic.main.fragment_favorites.view.*
 
 /**
  * A simple [Fragment] subclass.
  *
  */
-class FavoritasFragment : Fragment() {
+class FavoritesFragment : Fragment() {
 
 
     override fun onCreateView(

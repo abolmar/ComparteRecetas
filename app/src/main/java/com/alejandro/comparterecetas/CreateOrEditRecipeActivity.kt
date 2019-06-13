@@ -26,17 +26,16 @@ import com.alejandro.comparterecetas.models.RecipesModel
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_crud.*
+import kotlinx.android.synthetic.main.activity_create_or_edit_recipe.*
 import java.io.*
 import java.lang.ClassCastException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CRUDActivity : AppCompatActivity() {
+class CreateOrEditRecipeActivity : AppCompatActivity() {
 
     private var dbFirebase = FirebaseFirestore.getInstance()
-//    private lateinit var auth: FirebaseAuth
     private var recipesFirebase = dbFirebase.collection("recipes") //  Crea una nueva colección en Firebase
     private var ingredientsFirebase = dbFirebase.collection("ingredients") //  Crea una nueva colección en Firebase
     private var imagesFirebase = dbFirebase.collection("images") //  Crea una nueva colección en Firebase
@@ -63,7 +62,7 @@ class CRUDActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_crud)
+        setContentView(R.layout.activity_create_or_edit_recipe)
 
         //init db
         dbHandler = DataBaseHandler(this)

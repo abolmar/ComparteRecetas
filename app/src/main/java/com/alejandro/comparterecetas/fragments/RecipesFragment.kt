@@ -1,4 +1,4 @@
-package com.alejandro.comparterecetas
+package com.alejandro.comparterecetas.fragments
 
 import android.animation.Animator
 import android.os.Bundle
@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.widget.Toast
+import com.alejandro.comparterecetas.MainActivity
+import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.adapters.AllRecipesAdapter
 import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.models.RecipesModel
@@ -22,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_recipes.view.*
  * A simple [Fragment] subclass.
  *
  */
-class RecetasFragment : Fragment() {
+class RecipesFragment : Fragment() {
 
     private var dbHandler: DataBaseHandler? = null
     private var dbFirebase = FirebaseFirestore.getInstance()

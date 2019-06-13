@@ -1,4 +1,4 @@
-package com.alejandro.comparterecetas
+package com.alejandro.comparterecetas.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +17,10 @@ import kotlinx.android.synthetic.main.fragment_profile.view.*
 import kotlin.collections.ArrayList
 import com.bumptech.glide.Glide
 import android.support.v7.widget.RecyclerView
+import com.alejandro.comparterecetas.CreateOrEditRecipeActivity
+import com.alejandro.comparterecetas.EditProfileActivity
+import com.alejandro.comparterecetas.MainActivity
+import com.alejandro.comparterecetas.R
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
@@ -24,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
  * A simple [Fragment] subclass.
  *
  */
-class PerfilFragment : Fragment() {
+class ProfileFragment : Fragment() {
 
     private var dbHandler: DataBaseHandler? = null
     private var dbFirebase = FirebaseFirestore.getInstance()
@@ -144,7 +148,7 @@ class PerfilFragment : Fragment() {
 
         //  Crear una nueva receta
         view.fab_new_recipe.setOnClickListener {
-            val intent = Intent(context, CRUDActivity::class.java)
+            val intent = Intent(context, CreateOrEditRecipeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra("createOrEdit", "Crear nueva receta")
             startActivity(intent)

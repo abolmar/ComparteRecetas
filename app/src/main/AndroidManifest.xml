@@ -19,7 +19,7 @@
         </activity>
         <activity android:name=".ShowRecipeActivity" android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".CRUDActivity" android:screenOrientation="portrait">
+        <activity android:name=".CreateOrEditRecipeActivity" android:screenOrientation="portrait">
         </activity>
         <activity android:name=".EditProfileActivity" android:screenOrientation="portrait">
         </activity>

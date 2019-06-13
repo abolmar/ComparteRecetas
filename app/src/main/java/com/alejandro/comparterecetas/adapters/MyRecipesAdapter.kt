@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.alejandro.comparterecetas.CRUDActivity
+import com.alejandro.comparterecetas.CreateOrEditRecipeActivity
 import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.ShowRecipeActivity
 import com.alejandro.comparterecetas.database.DataBaseHandler
@@ -75,7 +75,7 @@ class MyRecipesAdapter(private val items: MutableList<RecipesModel>, val context
                             true
                         }
                         R.id.my_recipe_edit -> {
-                            val intent = Intent(context, CRUDActivity::class.java)
+                            val intent = Intent(context, CreateOrEditRecipeActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.putExtra("load", "edit")
                             intent.putExtra("recipeId", items[position].id)
@@ -116,7 +116,7 @@ class MyRecipesAdapter(private val items: MutableList<RecipesModel>, val context
                             true
                         }
                         R.id.my_recipe_edit -> {
-                            val intent = Intent(context, CRUDActivity::class.java)
+                            val intent = Intent(context, CreateOrEditRecipeActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.putExtra("load", "edit")
                             intent.putExtra("recipeId", items[position].id)
