@@ -10,7 +10,7 @@
     <string name="addRecipeName">Nombre de la receta</string>
     <string name="radioButtonPrivate">Privada</string>
     <string name="radioButtonPublic">Pública</string>
-    <string name="timeOfPreparation">Tiempo estimado para la preparación</string>
+    <string name="timeOfPreparation">Tiempo estimado para la preparación:</string>
     <string name="preparationHours">Horas</string>
     <string name="preparationMinutes">Minutos</string>
     <string name="addingredients">Ingredientes</string>
@@ -31,4 +31,7 @@
     <string name="dessert">Postres</string>
     <string name="allRecipes">Todas</string>
     <string name="lostConnection">Comprueba tu conexión a Internet</string>
+    <string name="searchRecipe">Buscar receta</string>
+    <string name="peopleNumber">Número de personas</string>
+    <string name="ingredientsFor">Ingredientes para:</string>
 </resources>

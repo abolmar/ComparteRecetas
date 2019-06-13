@@ -6,13 +6,13 @@
                                     android:id="@+id/cv_my_recipes"
                                     android:layout_marginStart="8dp"
                                     android:layout_marginEnd="8dp"
-                                    android:layout_marginTop="8dp"
+                                    android:layout_marginTop="4dp"
                                     app:cardCornerRadius="5dp"
                                     app:cardElevation="8dp"
                                     android:clickable="true"
                                     android:focusable="true"
                                     android:elevation="5dp"
-                                    android:layout_marginBottom="8dp">
+                                    android:layout_marginBottom="4dp">
 
 
     <android.support.constraint.ConstraintLayout

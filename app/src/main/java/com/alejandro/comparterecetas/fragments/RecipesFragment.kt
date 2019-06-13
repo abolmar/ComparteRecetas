@@ -127,14 +127,22 @@ class RecipesFragment : Fragment() {
 
         view.execute_search_button.setOnClickListener {
             if (view.search_input_text.text.toString().isNotEmpty()){
-                recipesFirebase.whereEqualTo("type", 1).orderBy("name").startAt("${view.search_input_text.text}").endAt(("${view.search_input_text.text}\uf8ff")).get().addOnSuccessListener { documentSnapshot ->
+                //recipesFirebase.whereEqualTo("type", 1).orderBy("name").startAt("${view.search_input_text.text}").endAt(("${view.search_input_text.text}\uf8ff")).get().addOnSuccessListener { documentSnapshot ->
+                recipesFirebase.whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
                     val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
+                    val recipeSearch: ArrayList<RecipesModel> = ArrayList()
 
-                    if (usersRecipesFirebase.size != 0){
+                    for (i in usersRecipesFirebase){
+                        if (i.name.toLowerCase().contains(view.search_input_text.text.toString().toLowerCase())){
+                            recipeSearch.add(i)
+                        }
+                    }
+
+                    if (recipeSearch.size != 0){
                         try {
                             view.rv_all_users_recipes.layoutManager = LinearLayoutManager(context)
                             view.rv_all_users_recipes.layoutManager = GridLayoutManager(context, 1)
-                            view.rv_all_users_recipes?.adapter = AllRecipesAdapter(usersRecipesFirebase, "recipes", "", context!!)
+                            view.rv_all_users_recipes?.adapter = AllRecipesAdapter(recipeSearch, "recipes", "", context!!)
                             view.rv_all_users_recipes.setHasFixedSize(true)
                             view.rv_all_users_recipes.setItemViewCacheSize(20)
 
@@ -143,7 +151,6 @@ class RecipesFragment : Fragment() {
                         Toast.makeText(context, "No existe ninguna coincidencia", Toast.LENGTH_SHORT).show()
                     }
                 }
-
             }
         }
     }

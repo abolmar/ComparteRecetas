@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_gravity="top|center_vertical"
-            android:background="@color/greyBackground"
+            android:background="@color/whiteBackground"
             android:visibility="invisible"
             android:padding="8dp"
             android:elevation="9dp">
@@ -70,7 +70,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_toStartOf="@id/execute_search_button"
                 android:layout_toEndOf="@id/close_search_button"
-                android:hint="Ej. Tort..."
+                android:hint="@string/searchRecipe"
                 android:singleLine="true"
                 android:inputType="textCapSentences"/>
 

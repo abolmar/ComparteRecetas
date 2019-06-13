@@ -71,8 +71,6 @@ class EditProfileActivity : AppCompatActivity() {
             startActivityForResult(intent, 0)
         }
 
-
-
         save_edit_profile.setOnClickListener {
             val myProfile = File("${this.filesDir}/Images/profile/${dbHandler!!.getUserId()}")
 
@@ -99,14 +97,11 @@ class EditProfileActivity : AppCompatActivity() {
 
                 else -> backProfile()
             }
-
-
         }
 
         btn_edit_profile_back.setOnClickListener {
             backProfile()
         }
-
     }
 
 
@@ -114,8 +109,6 @@ class EditProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             //  Procedemos a chequear qué imágen fué seleccionada...
-            Log.d("RegisterActivity", "Foto seleccionada")
-
             selectedPhotoUri = data.data
 
             val stream = ByteArrayOutputStream()
@@ -125,9 +118,6 @@ class EditProfileActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(stream.toByteArray())
                 .into(img_edit_profile)
-
-        } else {
-            Log.e("", "Ninguna imágen a sido seleccionada")
         }
     }
 
@@ -185,7 +175,6 @@ class EditProfileActivity : AppCompatActivity() {
                     val desertRef = storageRef.child("Images/profile/${dbHandler!!.getUserId()}/$oldImageName.png")
                     desertRef.delete()
                 }
-
             }
         }
     }

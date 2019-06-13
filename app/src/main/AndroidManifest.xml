@@ -19,13 +19,13 @@
         </activity>
         <activity android:name=".ShowRecipeActivity" android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".CreateOrEditRecipeActivity" android:screenOrientation="portrait">
+        <activity android:name=".CreateOrEditRecipeActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden">
         </activity>
-        <activity android:name=".EditProfileActivity" android:screenOrientation="portrait">
+        <activity android:name=".EditProfileActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden">
         </activity>
-        <activity android:name=".login.RegisterActivity" android:screenOrientation="portrait">
+        <activity android:name=".login.RegisterActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden">
         </activity>
-        <activity android:name=".login.LoginActivity" android:screenOrientation="portrait">
+        <activity android:name=".login.LoginActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

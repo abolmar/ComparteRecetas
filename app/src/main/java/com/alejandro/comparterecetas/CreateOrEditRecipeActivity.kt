@@ -58,6 +58,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
     private var recipeType: Int? = 0
     private var recipeHour: Int? = 0
     private var recipeMinute: Int? = 0
+    private var recipeNumberPeople: Int? = 0
     private var recipePreparation: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +79,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
             recipeType = extras.getInt("type")
             recipeHour = extras.getInt("hours")
             recipeMinute = extras.getInt("minutes")
+            recipeNumberPeople = extras.getInt("people")
             recipePreparation = extras.getString("preparation")
         }
 
@@ -87,6 +89,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
             et_recipe_name.setText(recipeName)
             et_hours.setText("$recipeHour")
             et_minutes.setText("$recipeMinute")
+            et_numberPeople.setText("$recipeNumberPeople")
             et_preparation.setText(recipePreparation)
 
 
@@ -205,12 +208,13 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                     if (et_hours.text.toString() != "" && et_minutes.text.toString() != "") {
 
                         if (addOrEdit != "edit"){
-
+                            // Crea una nueva receta
                             recipe.id = "recipe-$date"
                             recipe.name = et_recipe_name.text.toString()
                             recipe.userId = dbHandler!!.getUserId()
                             recipe.timeH = et_hours.text.toString().toInt()
                             recipe.timeM = et_minutes.text.toString().toInt()
+                            recipe.people = et_numberPeople.text.toString().toInt()
                             recipe.preparation = et_preparation.text.toString()
                             recipe.category = selectedCategory
                             recipe.type = rButtonchecked
@@ -231,13 +235,14 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             }
 
                         } else {
-                            // ACTUALIZAR LA RECETA, LOS INGREDIENTES Y LAS FOTOS!!!
+                            // Actualiza la receta selecccionada
                             successRecipe = dbHandler!!.updateUserRecipe(recipeId,
                                 et_recipe_name.text.toString(),
                                 selectedCategory,
                                 rButtonchecked,
                                 et_hours.text.toString().toInt(),
                                 et_minutes.text.toString().toInt(),
+                                et_numberPeople.text.toString().toInt(),
                                 et_preparation.text.toString(),
                                 date
                             )
@@ -258,6 +263,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                                         rButtonchecked,
                                         et_hours.text.toString().toInt(),
                                         et_minutes.text.toString().toInt(),
+                                        et_numberPeople.text.toString().toInt(),
                                         et_preparation.text.toString(),
                                         date
                                     )
@@ -278,6 +284,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             recipe.name = et_recipe_name.text.toString()
                             recipe.userId = dbHandler!!.getUserId()
                             recipe.timeM = et_minutes.text.toString().toInt()
+                            recipe.people = et_numberPeople.text.toString().toInt()
                             recipe.preparation = et_preparation.text.toString()
                             recipe.category = selectedCategory
                             recipe.type = rButtonchecked
@@ -294,9 +301,6 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             if (successRecipe) {
                                 if (isNetworkConnected()){
                                     saveRecipeInFirebase(recipe)
-                                } else {
-                                    Toast.makeText(this, "Sin conexión - NO FIREBASE DB", Toast.LENGTH_LONG)
-                                        .show()
                                 }
 
                                 backtoProfile()
@@ -310,6 +314,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                                 rButtonchecked,
                                 0,
                                 et_minutes.text.toString().toInt(),
+                                et_numberPeople.text.toString().toInt(),
                                 et_preparation.text.toString(),
                                 date
                             )
@@ -330,6 +335,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                                         rButtonchecked,
                                         0,
                                         et_minutes.text.toString().toInt(),
+                                        et_numberPeople.text.toString().toInt(),
                                         et_preparation.text.toString(),
                                         date
                                     )
@@ -347,6 +353,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             recipe.name = et_recipe_name.text.toString()
                             recipe.userId = dbHandler!!.getUserId()
                             recipe.timeH = et_hours.text.toString().toInt()
+                            recipe.people = et_numberPeople.text.toString().toInt()
                             recipe.preparation = et_preparation.text.toString()
                             recipe.category = selectedCategory
                             recipe.type = rButtonchecked
@@ -363,13 +370,10 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             if (successRecipe) {
                                 if (isNetworkConnected()){
                                     saveRecipeInFirebase(recipe)
-                                } else {
-                                    Toast.makeText(this, "Sin conexión - NO FIREBASE DB", Toast.LENGTH_LONG)
-                                        .show()
                                 }
-
                                 backtoProfile()
                             }
+
                         } else {
                             // ACTUALIZAR LA RECETA, LOS INGREDIENTES Y LAS FOTOS!!!
                             successRecipe = dbHandler!!.updateUserRecipe(recipeId,
@@ -378,6 +382,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                                 rButtonchecked,
                                 et_hours.text.toString().toInt(),
                                 0,
+                                et_numberPeople.text.toString().toInt(),
                                 et_preparation.text.toString(),
                                 date
                             )
@@ -398,6 +403,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                                         rButtonchecked,
                                         et_hours.text.toString().toInt(),
                                         0,
+                                        et_numberPeople.text.toString().toInt(),
                                         et_preparation.text.toString(),
                                         date
                                     )
@@ -501,9 +507,6 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
 
             btn_del_imageView_IV.visibility = View.VISIBLE
 
-        } else {
-            Toast.makeText(this, "Acepta los permisos para acceder a la galeria de imagesView", Toast.LENGTH_LONG)
-                .show()
         }
     }
 
@@ -511,10 +514,10 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
     private fun validation(): Boolean? {
         var validate: Boolean? = null
 
-        if (et_recipe_name.text.toString() != "" && et_preparation.text.toString() != "" && selectedIngredients.size >= 2) {
+        if (et_recipe_name.text.toString() != "" && et_preparation.text.toString() != "" && et_numberPeople.text.toString() != "" && selectedIngredients.size >= 2) {
             validate = true
 
-        } else if (et_recipe_name.text.toString() == "" && et_preparation.text.toString() == "") {
+        } else if (et_recipe_name.text.toString() == "" && et_preparation.text.toString() == "" && et_numberPeople.text.toString() == "") {
             validate = false
             Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show()
 
@@ -525,6 +528,10 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
         } else if (et_preparation.text.toString() == "") {
             validate = false
             Toast.makeText(this, "Rellena el campo preparacion", Toast.LENGTH_SHORT).show()
+
+        } else if (et_numberPeople.text.toString() == ""){
+            validate = false
+            Toast.makeText(this, "Rellena el campo número de personas", Toast.LENGTH_SHORT).show()
 
         } else if (selectedIngredients.size < 2) {
             validate = false
@@ -793,13 +800,14 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
     }
 
     //  Actualiza la receta en Firebase
-    private fun updateRecipeFirebase(id: String?, name: String, category: String, type: Int, hour: Int, minute: Int, preparation: String, date: String){
+    private fun updateRecipeFirebase(id: String?, name: String, category: String, type: Int, hour: Int, minute: Int, people: Int, preparation: String, date: String){
         recipesFirebase.document(id.toString()).update(
             "name", name,
             "category", category,
             "type", type,
             "timeH", hour,
             "timeM", minute,
+            "people", people,
             "preparation", preparation,
             "date", date
         )
@@ -823,5 +831,4 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
         intent.putExtra("USER_PROFILE", true)
         startActivity(intent)
     }
-
 }

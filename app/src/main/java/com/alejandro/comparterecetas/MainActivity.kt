@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity() {
 
                     for ((addIngredient, ingredient) in userIngredients.withIndex()){
                         for (ingredientF in userIngredientsFirebase){
-                            if (ingredient.id == ingredientF.id && ingredient.date != ingredientF.date){//
+                            if (ingredient.id == ingredientF.id && ingredient.date != ingredientF.date){
                                 ingredientsFirebase.document(ingredient.id).set(userIngredients[countIngredient])
                                 countIngredient++
 

@@ -9,7 +9,7 @@ import com.alejandro.comparterecetas.models.*
 class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRecipes.db", null, 1) {
 
     companion object {
-//        private const val tableUsers = "users"
+        //  Tablas
         private const val tableUsersLogin = "usersLogin"
         private const val tableRecipes = "recipes"
         private const val tableIngredients = "ingredients"
@@ -20,7 +20,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         private const val usersLoginId = "id"
         private const val usersLoginEmail = "email"
         private const val usersLoginName = "name"
-        private const val usersLoginPasswd = "passwd"
         private const val usersLoginImage = "imagePath"
         private const val usersLoginImageName = "imageName"
         private const val usersLoginLogin = "login"
@@ -32,8 +31,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         private const val recipePreparation = "preparation"
         private const val recipeTimeHours = "timeH"
         private const val recipeTimeMinutes = "timeM"
-        private const val recipePositiveVote = "positive"
-        private const val recipeNegativeVote = "negative"
+        private const val recipePeople = "people"
         private const val recipeCategory = "category"
         private const val recipeType = "type"
         private const val recipeDate = "date"
@@ -67,7 +65,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
                 "`$usersLoginId` TEXT, " +
                 "`$usersLoginEmail` TEXT, " +
                 "`$usersLoginName` TEXT, " +
-                "`$usersLoginPasswd` TEXT, " +
                 "`$usersLoginImage` TEXT, " +
                 "`$usersLoginImageName` TEXT, " +
                 "`$usersLoginLogin` Integer, " +
@@ -82,8 +79,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
                 "`$recipePreparation` TEXT, " +
                 "`$recipeTimeHours` Integer DEFAULT 0, " +
                 "`$recipeTimeMinutes` Integer DEFAULT 0, " +
-                "`$recipePositiveVote` Integer DEFAULT 0, " +
-                "`$recipeNegativeVote` Integer DEFAULT 0, " +
+                "`$recipePeople` Integer, " +
                 "`$recipeCategory` TEXT, " +
                 "`$recipeType` Integer DEFAULT 0, " +
                 "`$recipeDate` TEXT, " +
@@ -139,7 +135,6 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         values.put(usersLoginId, usersModel.id)
         values.put(usersLoginEmail, usersModel.email)
         values.put(usersLoginName, usersModel.name)
-        values.put(usersLoginPasswd, usersModel.passwd)
         values.put(usersLoginLogin, usersModel.login)
 
         val success = db.insert(tableUsersLogin, null, values)
@@ -160,8 +155,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         values.put(recipePreparation, recipesModel.preparation)
         values.put(recipeTimeHours, recipesModel.timeH)
         values.put(recipeTimeMinutes, recipesModel.timeM)
-        values.put(recipePositiveVote, recipesModel.positive)
-        values.put(recipeNegativeVote, recipesModel.negative)
+        values.put(recipePeople, recipesModel.people)
         values.put(recipeCategory, recipesModel.category)
         values.put(recipeType, recipesModel.type)
         values.put(recipeDate, recipesModel.date)
@@ -374,8 +368,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
                         cursor.getString(cursor.getColumnIndex(recipePreparation)),
                         cursor.getInt(cursor.getColumnIndex(recipeTimeHours)),
                         cursor.getInt(cursor.getColumnIndex(recipeTimeMinutes)),
-                        cursor.getInt(cursor.getColumnIndex(recipePositiveVote)),
-                        cursor.getInt(cursor.getColumnIndex(recipeNegativeVote)),
+                        cursor.getInt(cursor.getColumnIndex(recipePeople)),
                         cursor.getString(cursor.getColumnIndex(recipeCategory)),
                         cursor.getInt(cursor.getColumnIndex(recipeType)),
                         cursor.getString(cursor.getColumnIndex(recipeDate)),
@@ -412,8 +405,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
                         cursor.getString(cursor.getColumnIndex(recipePreparation)),
                         cursor.getInt(cursor.getColumnIndex(recipeTimeHours)),
                         cursor.getInt(cursor.getColumnIndex(recipeTimeMinutes)),
-                        cursor.getInt(cursor.getColumnIndex(recipePositiveVote)),
-                        cursor.getInt(cursor.getColumnIndex(recipeNegativeVote)),
+                        cursor.getInt(cursor.getColumnIndex(recipePeople)),
                         cursor.getString(cursor.getColumnIndex(recipeCategory)),
                         cursor.getInt(cursor.getColumnIndex(recipeType)),
                         cursor.getString(cursor.getColumnIndex(recipeDate)),
@@ -692,7 +684,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
     }
 
     //  Actualiza la receta que el usuario haya editado
-    fun updateUserRecipe(id: String?, name: String, category: String, type: Int, hour: Int, minute: Int, preparation: String, date: String): Boolean{
+    fun updateUserRecipe(id: String?, name: String, category: String, type: Int, hour: Int, minute: Int, people: Int, preparation: String, date: String): Boolean{
         val db = writableDatabase
         val values = ContentValues()
 
@@ -701,6 +693,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         values.put(recipeType, type)
         values.put(recipeTimeHours, hour)
         values.put(recipeTimeMinutes, minute)
+        values.put(recipePeople, people)
         values.put(recipePreparation, preparation)
         values.put(recipeDate, date)
 

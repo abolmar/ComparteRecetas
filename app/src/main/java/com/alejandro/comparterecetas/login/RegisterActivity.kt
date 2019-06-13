@@ -55,7 +55,7 @@ class RegisterActivity : AppCompatActivity() {
                                     usersModel.id = uid
                                     usersModel.email = email.toString()
                                     usersModel.name = et_reg_name.text.toString()
-                                    usersModel.passwd = et_reg_passwd.text.toString()
+//                                    usersModel.passwd = et_reg_passwd.text.toString()
                                     usersModel.login = 1
                                     usersModel.imagePath = "123"
                                     usersModel.imageName = "0"

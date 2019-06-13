@@ -32,6 +32,7 @@ class ShowRecipeActivity : AppCompatActivity() {
     private var recipeCategory: String? = ""
     private var recipeHour: Int? = 0
     private var recipeMinute: Int? = 0
+    private var recipePeople: Int? = 0
     private var recipePreparation: String? = ""
     private var recipeId: String? = ""
 
@@ -54,7 +55,8 @@ class ShowRecipeActivity : AppCompatActivity() {
             recipeName = extras.getString("recipeName")
             recipeCategory = extras.getString("recipeCategory")
             recipeHour = extras.getInt("recipeHour")
-            recipeMinute = extras.getInt("recipeminute")
+            recipeMinute = extras.getInt("recipeMinute")
+            recipePeople = extras.getInt("recipePeople")
             recipePreparation = extras.getString("recipePreparation")
             recipeId = extras.getString("recipeId")
 
@@ -68,6 +70,7 @@ class ShowRecipeActivity : AppCompatActivity() {
         tv_category_name.text = recipeCategory
         tv_hour.text = "$recipeHour h"
         tv_minute.text = "$recipeMinute m"
+        tv_people.text = "$recipePeople"
         tv_preparation_content.text = recipePreparation
 
         ingredientsFirebase.whereEqualTo("idRecipe", recipeId).get().addOnSuccessListener {
@@ -93,10 +96,8 @@ class ShowRecipeActivity : AppCompatActivity() {
             backToView()
         }
 
-        //  Contiene el valor representativo de una receta marcada como favorita(1), desmarcada como favorita(-1) o si no ha sido marcada(0)
-        val isFavorite = dbHandler!!.getFavoriteRecipe(dbHandler!!.getUserId(), recipeId)
-
-        when (isFavorite) {
+        //  Contiene el valor representativo de una receta marcada como favorita(1)
+        when (dbHandler!!.getFavoriteRecipe(dbHandler!!.getUserId(), recipeId)) {
             0 -> {
                 img_favorite_No.visibility = View.VISIBLE
                 img_favorite_Yes.visibility = View.GONE

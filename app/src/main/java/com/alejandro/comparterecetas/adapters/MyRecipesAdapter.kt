@@ -84,6 +84,7 @@ class MyRecipesAdapter(private val items: MutableList<RecipesModel>, val context
                             intent.putExtra("type", items[position].type)
                             intent.putExtra("hours", items[position].timeH)
                             intent.putExtra("minutes", items[position].timeM)
+                            intent.putExtra("people", items[position].people)
                             intent.putExtra("preparation", items[position].preparation)
                             intent.putExtra("createOrEdit", "Editar receta")
                             context.startActivity(intent)
@@ -125,6 +126,7 @@ class MyRecipesAdapter(private val items: MutableList<RecipesModel>, val context
                             intent.putExtra("type", items[position].type)
                             intent.putExtra("hours", items[position].timeH)
                             intent.putExtra("minutes", items[position].timeM)
+                            intent.putExtra("people", items[position].people)
                             intent.putExtra("preparation", items[position].preparation)
                             intent.putExtra("createOrEdit", "Editar receta")
                             context.startActivity(intent)
@@ -152,7 +154,8 @@ class MyRecipesAdapter(private val items: MutableList<RecipesModel>, val context
             intent.putExtra("recipeName", items[position].name)
             intent.putExtra("recipeCategory", items[position].category)
             intent.putExtra("recipeHour", items[position].timeH)
-            intent.putExtra("recipeminute", items[position].timeM)
+            intent.putExtra("recipeMinute", items[position].timeM)
+            intent.putExtra("recipePeople", items[position].people)
             intent.putExtra("recipePreparation", items[position].preparation)
             intent.putExtra("recipeId", items[position].id)
             intent.putExtra("fromFragment", "profile")
@@ -171,8 +174,7 @@ class MyRecipesAdapter(private val items: MutableList<RecipesModel>, val context
                 items[position].preparation,
                 items[position].timeH,
                 items[position].timeM,
-                items[position].positive,
-                items[position].negative,
+                items[position].people,
                 items[position].category,
                 type,
                 items[position].date,
