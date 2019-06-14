@@ -43,11 +43,10 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/divider16"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            />
+                            app:layout_constraintTop_toTopOf="parent"/>
 
                     <ImageView
-                            android:src="@drawable/lunch_black"
+                            android:src="@drawable/lunch"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:id="@+id/lunch_logo"
@@ -72,7 +71,7 @@
                             android:visibility="invisible"/>
 
                     <ImageView
-                            android:src="@drawable/chevron_right"
+                            android:src="@drawable/chevron_right_grey"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:id="@+id/lunch_next"
@@ -88,7 +87,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:id="@+id/tv_lunch_recipes"
-                            android:gravity="bottom|start"
+                            android:gravity="center|start"
                             android:textColor="@color/blackLetters"
                             android:textSize="30sp"
                             android:paddingEnd="16dp"
@@ -101,7 +100,6 @@
                             android:layout_marginStart="16dp"
                             android:fontFamily="@font/open_sans_light"
                             android:layout_marginBottom="8dp"
-                            android:paddingBottom="8dp"
                             android:layout_marginTop="8dp"/>
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
@@ -132,7 +130,7 @@
                             />
 
                     <ImageView
-                            android:src="@drawable/dinner_black"
+                            android:src="@drawable/dinner"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:id="@+id/dinner_logo"
@@ -157,7 +155,7 @@
                             android:visibility="invisible"/>
 
                     <ImageView
-                            android:src="@drawable/chevron_right"
+                            android:src="@drawable/chevron_right_grey"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:id="@+id/dinner_next"
@@ -175,7 +173,7 @@
                             android:id="@+id/tv_dinner_recipes"
                             android:textColor="@color/blackLetters"
                             android:textSize="30sp"
-                            android:gravity="bottom|start"
+                            android:gravity="center|start"
                             android:paddingEnd="16dp"
                             android:layout_marginEnd="8dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -215,7 +213,7 @@
                             app:layout_constraintTop_toTopOf="parent"/>
 
                     <ImageView
-                            android:src="@drawable/afternoon_snack_black"
+                            android:src="@drawable/afternoon_snack"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:id="@+id/afternoonSnack_logo"
@@ -240,7 +238,7 @@
                             android:visibility="invisible"/>
 
                     <ImageView
-                            android:src="@drawable/chevron_right"
+                            android:src="@drawable/chevron_right_grey"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:id="@+id/afternoonSnack_next"
@@ -258,7 +256,7 @@
                             android:id="@+id/tv_afternoonSnack_recipes"
                             android:textColor="@color/blackLetters"
                             android:textSize="30sp"
-                            android:gravity="bottom|start"
+                            android:gravity="center|start"
                             android:paddingEnd="16dp"
                             android:layout_marginEnd="8dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -298,7 +296,7 @@
                             app:layout_constraintTop_toTopOf="parent"/>
 
                     <ImageView
-                            android:src="@drawable/dessert_black"
+                            android:src="@drawable/dessert"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:id="@+id/dessert_logo"
@@ -323,7 +321,7 @@
                             android:visibility="invisible"/>
 
                     <ImageView
-                            android:src="@drawable/chevron_right"
+                            android:src="@drawable/chevron_right_grey"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:id="@+id/dessert_next"
@@ -341,7 +339,7 @@
                             android:id="@+id/tv_dessert_recipes"
                             android:textColor="@color/blackLetters"
                             android:textSize="30sp"
-                            android:gravity="bottom|start"
+                            android:gravity="center|start"
                             android:paddingEnd="16dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:paddingStart="16dp"
@@ -379,7 +377,7 @@
                             app:layout_constraintTop_toTopOf="parent"/>
 
                     <ImageView
-                            android:src="@drawable/all_recipes_black"
+                            android:src="@drawable/all_recipes"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:id="@+id/allRecipes_logo"
@@ -404,7 +402,7 @@
                             android:visibility="invisible"/>
 
                     <ImageView
-                            android:src="@drawable/chevron_right"
+                            android:src="@drawable/chevron_right_grey"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:id="@+id/allRecipes_next"
@@ -423,7 +421,7 @@
                             android:layout_weight="1"
                             android:textColor="@color/blackLetters"
                             android:textSize="30sp"
-                            android:gravity="bottom|start"
+                            android:gravity="center|start"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:layout_marginEnd="8dp"
                             android:paddingEnd="16dp"

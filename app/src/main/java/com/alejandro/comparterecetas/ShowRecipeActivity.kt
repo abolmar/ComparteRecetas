@@ -66,10 +66,18 @@ class ShowRecipeActivity : AppCompatActivity() {
             position = extras.getInt("position")
         }
 
+        when(toCategory){
+            "Comida" -> tv_backTo.text = "Volver a Comidas"
+            "Cena" -> tv_backTo.text = "Volver a \"Cenas\""
+            "Merienda" -> tv_backTo.text = "Volver a Meriendas"
+            "Postre" -> tv_backTo.text = "Volver a Postres"
+            "Todas" -> tv_backTo.text = "Volver a Todas mis favoritas"
+        }
+
         tv_title.text = recipeName
         tv_category_name.text = recipeCategory
-        tv_hour.text = "$recipeHour h"
-        tv_minute.text = "$recipeMinute m"
+        tv_hour.text = "$recipeHour"+"h"
+        tv_minute.text = "$recipeMinute"+"m"
         tv_people.text = "$recipePeople"
         tv_preparation_content.text = recipePreparation
 
@@ -82,14 +90,21 @@ class ShowRecipeActivity : AppCompatActivity() {
         }
 
 
-        if (toFragment != "profile"){
+        if (toFragment == "recipes"){
+            tv_backTo.text = "Volver a Recetas"
             imagesFirebase.whereEqualTo("recipeId", recipeId).get().addOnSuccessListener {
                 val imagesRecipeFirebase = it.toObjects(ImagesModel::class.java)
                 showImagesRecipe(imagesRecipeFirebase, "x")
             }
-        } else {
+        } else if (toFragment == "profile"){
+            tv_backTo.text = "Volver a Perfil"
             val myRecipeImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
             showImagesRecipe(myRecipeImages, "profile")
+        } else {
+            imagesFirebase.whereEqualTo("recipeId", recipeId).get().addOnSuccessListener {
+                val imagesRecipeFirebase = it.toObjects(ImagesModel::class.java)
+                showImagesRecipe(imagesRecipeFirebase, "x")
+            }
         }
 
         btn_show_recipe_back.setOnClickListener {
@@ -230,8 +245,8 @@ class ShowRecipeActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-    }
+//    override fun onPause() {
+//        super.onPause()
+//        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+//    }
 }

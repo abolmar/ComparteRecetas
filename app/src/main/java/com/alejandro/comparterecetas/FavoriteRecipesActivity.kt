@@ -43,31 +43,31 @@ class FavoriteRecipesActivity : AppCompatActivity() {
         if (extras != null) {
             allCategories = extras.getString("ALL")
             if (allCategories != null){
-                categoryOfRecipesFavorites("Todas mis favoritas", dbHandler!!.getAllMyFavoriteRecipes(dbHandler!!.getUserId()), "Añade recetas a tus favoritos!")
+                categoryOfRecipesFavorites("Todas mis favoritas", dbHandler!!.getAllMyFavoriteRecipes(dbHandler!!.getUserId()), "¡Añade recetas a tus favoritos!")
                 passCategory = allCategories!!
             }
 
             lunch = extras.getString("LUNCH")
             if (lunch != null){
-                categoryOfRecipesFavorites("Comidas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), lunch), "Añade comidas a tus favoritos!")
+                categoryOfRecipesFavorites("Comidas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), lunch), "¡Añade comidas a tus favoritos!")
                 passCategory = lunch!!
             }
 
             dinner = extras.getString("DINNER")
             if (dinner != null){
-                categoryOfRecipesFavorites("Cenas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), dinner), "Añade cenas a tus favoritos!")
+                categoryOfRecipesFavorites("Cenas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), dinner), "¡Añade cenas a tus favoritos!")
                 passCategory = dinner!!
             }
 
             afternoonSnack = extras.getString("AFTERNOONSNACK")
             if (afternoonSnack != null){
-                categoryOfRecipesFavorites("Meriendas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), afternoonSnack), "Añade meriendas a tus favoritos!")
+                categoryOfRecipesFavorites("Meriendas", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), afternoonSnack), "¡Añade meriendas a tus favoritos!")
                 passCategory = afternoonSnack!!
             }
 
             dessert = extras.getString("DESSERT")
             if (dessert != null){
-                categoryOfRecipesFavorites("Postres", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), dessert), "Añade postres a tus favoritos!")
+                categoryOfRecipesFavorites("Postres", dbHandler!!.getMyFavoriteRecipes(dbHandler!!.getUserId(), dessert), "¡Añade postres a tus favoritos!")
                 passCategory = dessert!!
             }
         }

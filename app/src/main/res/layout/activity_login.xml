@@ -20,6 +20,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/recipe_icon"
+                    android:id="@+id/imageView4"
+                    android:layout_marginTop="64dp"/>
+
             <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -28,7 +35,7 @@
                     android:id="@+id/et_login_email"
                     android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="150dp"
+                    android:layout_marginTop="64dp"
                     android:hint="@string/mail"
                     android:textColor="@color/recipeContent"
                     android:textSize="20sp"/>
@@ -38,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:id="@+id/et_login_passwd"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
                     android:hint="@string/passwd"
@@ -51,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/btn_login"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/rounded_corner"
@@ -62,8 +69,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_login_to_register"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
                     android:paddingBottom="10dp"
                     android:paddingLeft="20dp"

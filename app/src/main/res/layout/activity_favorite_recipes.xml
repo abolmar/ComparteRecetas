@@ -80,9 +80,10 @@
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@+id/rv_favorite_recipes"
             android:textSize="18sp"
-            android:textColor="@color/blackLetters"
+            android:textColor="#27555A"
             android:padding="16dp"
             android:textAlignment="center"
-            android:fontFamily="@font/open_sans_light"/>
+            android:fontFamily="@font/open_sans_light"
+            android:background="#D1EBF0"/>
 
 </android.support.constraint.ConstraintLayout>

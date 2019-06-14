@@ -119,9 +119,9 @@ class RecipesFragment : Fragment() {
             search_open_view,
             (view.open_search_button.right + view.open_search_button.left) / 2,
             (view.open_search_button.top + view.open_search_button.bottom) / 2,
-            0f, 150f
+            0f, 100f
         )
-        circularReveal.duration = 300
+        circularReveal.duration = 200
         circularReveal.start()
 
 
@@ -160,10 +160,10 @@ class RecipesFragment : Fragment() {
             search_open_view,
             (view.open_search_button.right + view.open_search_button.left) / 2,
             (view.open_search_button.top + view.open_search_button.bottom) / 2,
-            150f, 0f
+            100f, 0f
         )
 
-        circularConceal.duration = 300
+        circularConceal.duration = 200
         circularConceal.start()
         circularConceal.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) = Unit

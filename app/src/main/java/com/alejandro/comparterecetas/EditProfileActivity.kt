@@ -185,6 +185,11 @@ class EditProfileActivity : AppCompatActivity() {
         return cm.activeNetworkInfo != null
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        backProfile()
+    }
+
     private fun backProfile() {
         dbHandler!!.close()
         val intent = Intent(this, MainActivity::class.java)

@@ -88,6 +88,7 @@ class AllRecipesAdapter(private val items: MutableList<RecipesModel>, private va
         holder.tvRecipeName.text = items[position].name
         holder.tvHours.text = items[position].timeH.toString()
         holder.tvMinutes.text = items[position].timeM.toString()
+        holder.tvPeople.text = items[position].people.toString()
 
         holder.container.setOnClickListener {
             val intent = Intent(context, ShowRecipeActivity::class.java)
@@ -118,6 +119,7 @@ class ViewHolderAllRecipes(view: View) : RecyclerView.ViewHolder(view) {
     val tvHours = view.tv_adapter_all_recipes_add_hours!!
     val tvMinutes = view.tv_adapter_all_recipes_add_minutes!!
     val tvUserName = view.tv_adapter_all_recipes_user_name!!
+    val tvPeople = view.tv_adapter_all_recipes_people!!
 
     var container = view.cv_all_recipes!!
 
