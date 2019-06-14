@@ -54,7 +54,7 @@ class RecipesFragment : Fragment() {
             //init db
             dbHandler = DataBaseHandler(this.context!!)
 
-            view.swipeRefreshLayout.setOnRefreshListener {
+            view.swipeRefreshLayout_recipes.setOnRefreshListener {
 
                 initRecipesRecyclerView(view, 0)
 
@@ -84,7 +84,7 @@ class RecipesFragment : Fragment() {
         } else {
             view.textView_offInternet.visibility = View.VISIBLE
             view.rv_all_users_recipes.visibility = View.GONE
-            view.swipeRefreshLayout.visibility = View.INVISIBLE
+            view.swipeRefreshLayout_recipes.visibility = View.INVISIBLE
         }
 
         return view
@@ -104,7 +104,7 @@ class RecipesFragment : Fragment() {
 
                 view.rv_all_users_recipes.scrollToPosition(position!!)
 
-                view.swipeRefreshLayout.isRefreshing = false
+                view.swipeRefreshLayout_recipes.isRefreshing = false
 
             } catch (e: KotlinNullPointerException){}
 

@@ -78,21 +78,23 @@ class FavoriteRecipesActivity : AppCompatActivity() {
 
             // Pasamos el contenido de las recetas favoritas al recycler view
             for (i in myFavorites){
-                recipesFirebase.whereEqualTo("id", i.recipeId).whereEqualTo("type", 1).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
+                recipesFirebase.whereEqualTo("id", i.recipeId).orderBy("date", Query.Direction.DESCENDING).get().addOnSuccessListener { documentSnapshot ->
 
                     val usersRecipesFirebase: MutableList<RecipesModel> = documentSnapshot.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
 
                     myRecipesFavorites.addAll(usersRecipesFirebase)
 
-                    try {
-                        rv_favorite_recipes.layoutManager = LinearLayoutManager(this)
-                        rv_favorite_recipes.layoutManager = GridLayoutManager(this, 1)
-                        rv_favorite_recipes?.adapter = AllRecipesAdapter(myRecipesFavorites, "favorites", passCategory, this)
-                    } catch (e: KotlinNullPointerException){}
+                    // Para recargar el contenido de la vista
+                    swipeRefreshLayout_favorites.setOnRefreshListener {
+                        initAllRecipesAdapter(myRecipesFavorites, "favorites", passCategory)
+                    }
 
+                    initAllRecipesAdapter(myRecipesFavorites, "favorites", passCategory)
                 }
             }
+
         } else {
+            swipeRefreshLayout_favorites.visibility = View.GONE
             rv_favorite_recipes.visibility = View.GONE
             addToFavorites.visibility = View.GONE
             lostConection.visibility = View.VISIBLE
@@ -104,15 +106,27 @@ class FavoriteRecipesActivity : AppCompatActivity() {
         }
     }
 
+    private fun initAllRecipesAdapter(myFavorites: ArrayList<RecipesModel>, favorites: String, category: String){
+        try {
+            rv_favorite_recipes.layoutManager = LinearLayoutManager(this)
+            rv_favorite_recipes.layoutManager = GridLayoutManager(this, 1)
+            rv_favorite_recipes?.adapter = AllRecipesAdapter(myFavorites, favorites, category, this)
+        } catch (e: KotlinNullPointerException){}
+
+        swipeRefreshLayout_favorites.isRefreshing = false
+    }
+
     private fun categoryOfRecipesFavorites(categoryTitle:String, arrayListMyFavorites: ArrayList<FavoritesModel>, addRecipe: String){
         tv_title_category.text = categoryTitle
 
         myFavorites = arrayListMyFavorites
 
         if (myFavorites.size == 0){
+            swipeRefreshLayout_favorites.visibility = View.GONE
             addToFavorites.visibility = View.VISIBLE
             addToFavorites.text = addRecipe
         } else {
+            swipeRefreshLayout_favorites.visibility = View.VISIBLE
             addToFavorites.visibility = View.GONE
         }
     }

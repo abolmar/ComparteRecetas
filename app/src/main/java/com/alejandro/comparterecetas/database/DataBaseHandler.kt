@@ -422,7 +422,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return data
     }
 
-    //  Retorna todas las recetas de un usuario que no han sido "eliminadas" (remove = 0)
+    //  Retorna todas las recetas favoritas de un usuario
     fun getAllMyFavoriteRecipes(userid: String): ArrayList<FavoritesModel> {
         val data: ArrayList<FavoritesModel> = ArrayList()
         val db = readableDatabase
@@ -454,7 +454,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return data
     }
 
-    //  Retorna todas las recetas de un usuario que no han sido "eliminadas" (remove = 0)
+    //  Retorna todas las recetas favoritas de un usuario correspondientes a una categoría en concreto
     fun getMyFavoriteRecipes(userid: String, recipetype: String?): ArrayList<FavoritesModel> {
         val data: ArrayList<FavoritesModel> = ArrayList()
         val db = readableDatabase
@@ -702,7 +702,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
         return (Integer.parseInt("$success") != -1)
     }
 
-    //  Actualiza el tipo de receta (Eliminar = 1)
+    //  Actualiza la receta para ser eliminada (Eliminar = 1)
     fun updateUserRecipeRemove(id: String, remove:Int, date: String){
         val db = writableDatabase
         val values = ContentValues()

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alejandro.comparterecetas.FavoriteRecipesActivity
+import com.alejandro.comparterecetas.MainActivity
 import com.alejandro.comparterecetas.R
 import kotlinx.android.synthetic.main.fragment_favorites.view.*
 
@@ -16,6 +17,12 @@ import kotlinx.android.synthetic.main.fragment_favorites.view.*
  */
 class FavoritesFragment : Fragment() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

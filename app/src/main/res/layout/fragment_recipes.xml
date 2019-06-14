@@ -93,7 +93,7 @@
             android:layout_marginTop="?actionBarSize">
 
         <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipeRefreshLayout"
+                android:id="@+id/swipeRefreshLayout_recipes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -116,7 +116,7 @@
 
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="0dp"
-                android:layout_alignBottom="@+id/swipeRefreshLayout"
+                android:layout_alignBottom="@+id/swipeRefreshLayout_recipes"
                 android:textAlignment="center"
                 android:layout_marginStart="0dp"
 
@@ -124,9 +124,9 @@
 
                 android:gravity="center"
                 tools:visibility="gone"
-                android:layout_alignTop="@+id/swipeRefreshLayout"
-                android:layout_alignEnd="@+id/swipeRefreshLayout"
-                android:layout_alignStart="@+id/swipeRefreshLayout"/>
+                android:layout_alignTop="@+id/swipeRefreshLayout_recipes"
+                android:layout_alignEnd="@+id/swipeRefreshLayout_recipes"
+                android:layout_alignStart="@+id/swipeRefreshLayout_recipes"/>
     </RelativeLayout>
 
 </FrameLayout>

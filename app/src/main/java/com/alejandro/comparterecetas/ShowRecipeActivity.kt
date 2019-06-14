@@ -81,29 +81,42 @@ class ShowRecipeActivity : AppCompatActivity() {
         tv_people.text = "$recipePeople"
         tv_preparation_content.text = recipePreparation
 
-        ingredientsFirebase.whereEqualTo("idRecipe", recipeId).get().addOnSuccessListener {
-            val ingredientsRecipeFirebase = it.toObjects(IngredientsModel::class.java)
 
-            rv_ingredients.layoutManager = LinearLayoutManager(this)
-            rv_ingredients.layoutManager = GridLayoutManager(this, 1)
-            rv_ingredients.adapter = ShowIngredientsAdapter(ingredientsRecipeFirebase, this)
-        }
+        when (toFragment) {
+            "recipes" -> {
+                tv_backTo.text = "Volver a Recetas"
 
+                ingredientsFirebase.whereEqualTo("idRecipe", recipeId).get().addOnSuccessListener {
+                    val ingredientsRecipeFirebase = it.toObjects(IngredientsModel::class.java)
+                    showIngredientsRecipe(ingredientsRecipeFirebase)
+                }
 
-        if (toFragment == "recipes"){
-            tv_backTo.text = "Volver a Recetas"
-            imagesFirebase.whereEqualTo("recipeId", recipeId).get().addOnSuccessListener {
-                val imagesRecipeFirebase = it.toObjects(ImagesModel::class.java)
-                showImagesRecipe(imagesRecipeFirebase, "x")
+                imagesFirebase.whereEqualTo("recipeId", recipeId).get().addOnSuccessListener {
+                    val imagesRecipeFirebase = it.toObjects(ImagesModel::class.java)
+                    showImagesRecipe(imagesRecipeFirebase, "x")
+                }
+
             }
-        } else if (toFragment == "profile"){
-            tv_backTo.text = "Volver a Perfil"
-            val myRecipeImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
-            showImagesRecipe(myRecipeImages, "profile")
-        } else {
-            imagesFirebase.whereEqualTo("recipeId", recipeId).get().addOnSuccessListener {
-                val imagesRecipeFirebase = it.toObjects(ImagesModel::class.java)
-                showImagesRecipe(imagesRecipeFirebase, "x")
+            "profile" -> {
+                tv_backTo.text = "Volver a Perfil"
+
+                val myIngredients: ArrayList<IngredientsModel> = dbHandler!!.getAllMyIngredients(recipeId)
+                showIngredientsRecipe(myIngredients)
+
+                val myRecipeImages: ArrayList<ImagesModel> = dbHandler!!.getAllMyImages(recipeId)
+                showImagesRecipe(myRecipeImages, "profile")
+
+            }
+            else -> {
+                ingredientsFirebase.whereEqualTo("idRecipe", recipeId).get().addOnSuccessListener {
+                    val ingredientsRecipeFirebase = it.toObjects(IngredientsModel::class.java)
+                    showIngredientsRecipe(ingredientsRecipeFirebase)
+                }
+
+                imagesFirebase.whereEqualTo("recipeId", recipeId).get().addOnSuccessListener {
+                    val imagesRecipeFirebase = it.toObjects(ImagesModel::class.java)
+                    showImagesRecipe(imagesRecipeFirebase, "x")
+                }
             }
         }
 
@@ -142,6 +155,12 @@ class ShowRecipeActivity : AppCompatActivity() {
             img_favorite_No.visibility = View.VISIBLE
             img_favorite_Yes.visibility = View.GONE
         }
+    }
+
+    private fun showIngredientsRecipe(ingredients: MutableList<IngredientsModel>){
+        rv_ingredients.layoutManager = LinearLayoutManager(this)
+        rv_ingredients.layoutManager = GridLayoutManager(this, 1)
+        rv_ingredients.adapter = ShowIngredientsAdapter(ingredients,this)
     }
 
     @SuppressLint("SetTextI18n")
@@ -244,9 +263,4 @@ class ShowRecipeActivity : AppCompatActivity() {
             }
         }
     }
-
-//    override fun onPause() {
-//        super.onPause()
-//        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-//    }
 }

@@ -270,6 +270,9 @@ class MainActivity : AppCompatActivity() {
                     recipesFirebase.document(recipe.id).delete()
                     dbHandler!!.removeRecipe(recipe.id)
 
+                    // Elimina la receta de favoritos
+                    dbHandler!!.removeFavoriteRecipe(recipe.id)
+
                     for (ingredient in userIngredients){
                         // Elimina los ingredientes de la receta
                         ingredientsFirebase.document(ingredient.id).delete()
