@@ -92,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
                                         Toast.makeText(
                                             baseContext,
                                             "El email es incorrecto o no se encuentra registrado.",
-                                            Toast.LENGTH_SHORT
+                                            Toast.LENGTH_LONG
                                         ).show()
                                     }
                                 }

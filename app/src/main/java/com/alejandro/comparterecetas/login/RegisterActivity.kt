@@ -83,6 +83,11 @@ class RegisterActivity : AppCompatActivity() {
                                     Toast.makeText(baseContext, "El email ya se encuentra registrado por otro usuario.", Toast.LENGTH_LONG)
                                         .show()
                                 }
+
+                                if (task.exception.toString().contains("FirebaseAuthInvalidCredentialsException")) {
+                                    Toast.makeText(baseContext, "El email está mal formado.", Toast.LENGTH_LONG)
+                                        .show()
+                                }
                             }
                         }
                 }
