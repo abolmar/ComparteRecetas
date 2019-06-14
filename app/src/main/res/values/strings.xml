@@ -34,4 +34,7 @@
     <string name="searchRecipe">Buscar receta</string>
     <string name="peopleNumber">Número de personas</string>
     <string name="ingredientsFor">Ingredientes para:</string>
+    <string name="createAccount">Crear cuenta</string>
+    <string name="subTitleRegister">Accede fácilmente a nuestra comunidad</string>
+    <string name="backToLogin">Volver atrás</string>
 </resources>

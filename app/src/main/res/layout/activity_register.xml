@@ -16,8 +16,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="gone"
-            android:layout_marginTop="164dp"
-            android:elevation="5dp"/>
+            android:elevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ScrollView
             android:layout_width="match_parent"
@@ -33,12 +33,23 @@
                 android:orientation="vertical">
 
 
-            <ImageView
+            <TextView
+                    android:text="@string/createAccount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/recipe_icon"
-                    android:id="@+id/imageView5"
-                    android:layout_marginTop="64dp"/>
+                    android:id="@+id/textView4"
+                    android:layout_marginTop="64dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/blackLetters"
+                    android:textSize="30sp"/>
+
+            <TextView
+                    android:text="@string/subTitleRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView6"
+                    android:gravity="center"/>
 
             <EditText
                     android:layout_width="match_parent"
@@ -94,7 +105,7 @@
                     android:textColor="@color/whiteBackground"/>
 
             <TextView
-                    android:text="@string/toLogin"
+                    android:text="@string/backToLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_reg_to_login"
