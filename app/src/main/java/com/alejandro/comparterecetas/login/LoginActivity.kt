@@ -80,11 +80,21 @@ class LoginActivity : AppCompatActivity() {
 
                                 } else {
                                     progressBar_login.visibility = View.GONE
-                                    Toast.makeText(
-                                        baseContext,
-                                        "Error en la autentificación.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    if (task.exception.toString().contains("FirebaseAuthInvalidCredentialsException")){
+                                        Toast.makeText(
+                                            baseContext,
+                                            "La contraseña es incorrecta.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                    if (task.exception.toString().contains("FirebaseAuthInvalidUserException")){
+                                        Toast.makeText(
+                                            baseContext,
+                                            "El email es incorrecto o no se encuentra registrado.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             }
 

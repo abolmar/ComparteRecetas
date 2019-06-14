@@ -2,9 +2,11 @@ package com.alejandro.comparterecetas.login
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.alejandro.comparterecetas.MainActivity
@@ -37,10 +39,10 @@ class RegisterActivity : AppCompatActivity() {
         //init db
         dbHandler = DataBaseHandler(this)
 
-
         btn_register.setOnClickListener {
             if (isNetworkConnected()) {
                 if (validation()) {
+                    progressBar_register.visibility = View.VISIBLE
                     auth.createUserWithEmailAndPassword(et_reg_email.text.toString(), et_reg_passwd.text.toString())
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
@@ -64,7 +66,6 @@ class RegisterActivity : AppCompatActivity() {
                                     usersLogin.document(uid).set(usersModel)
 
                                     if (successUsers) {
-                                        progressBar_register.visibility = View.VISIBLE
                                         val intent = Intent(this, MainActivity::class.java)
                                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                                         startActivity(intent)
@@ -72,13 +73,21 @@ class RegisterActivity : AppCompatActivity() {
                                 }
 
                             } else {
-                                Toast.makeText(baseContext, "El email ya se encuentra registrado.", Toast.LENGTH_SHORT)
-                                    .show()
+                                progressBar_register.visibility = View.GONE
+                                if (task.exception.toString().contains("FirebaseAuthWeakPasswordException")){
+                                    Toast.makeText(baseContext, "La contraseña debe tener al menos 6 caracteres.", Toast.LENGTH_LONG)
+                                        .show()
+                                }
+
+                                if (task.exception.toString().contains("FirebaseAuthUserCollisionException")) {
+                                    Toast.makeText(baseContext, "El email ya se encuentra registrado por otro usuario.", Toast.LENGTH_LONG)
+                                        .show()
+                                }
                             }
                         }
-
                 }
             } else {
+                progressBar_register.visibility = View.GONE
                 Toast.makeText(this, "Comprueba tu conexión a Internet", Toast.LENGTH_SHORT).show()
             }
         }
