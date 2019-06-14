@@ -55,7 +55,6 @@ class RegisterActivity : AppCompatActivity() {
                                     usersModel.id = uid
                                     usersModel.email = email.toString()
                                     usersModel.name = et_reg_name.text.toString()
-//                                    usersModel.passwd = et_reg_passwd.text.toString()
                                     usersModel.login = 1
                                     usersModel.imagePath = "123"
                                     usersModel.imageName = "0"
@@ -65,10 +64,10 @@ class RegisterActivity : AppCompatActivity() {
                                     usersLogin.document(uid).set(usersModel)
 
                                     if (successUsers) {
+                                        progressBar_register.visibility = View.VISIBLE
                                         val intent = Intent(this, MainActivity::class.java)
                                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                                         startActivity(intent)
-                                        progressBar.visibility = View.VISIBLE
                                     }
                                 }
 
@@ -85,9 +84,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         tv_reg_to_login.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+            backLogin()
         }
     }
 
@@ -109,6 +106,18 @@ class RegisterActivity : AppCompatActivity() {
     private fun isNetworkConnected(): Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return cm.activeNetworkInfo != null
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        backLogin()
+    }
+
+    private fun backLogin() {
+        dbHandler!!.close()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
 

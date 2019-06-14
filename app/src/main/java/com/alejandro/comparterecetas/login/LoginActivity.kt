@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.alejandro.comparterecetas.MainActivity
 import com.alejandro.comparterecetas.R
@@ -32,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
 
 
         if (dbHandler!!.getLoginTableUserLogin()) {
+            progressBar_login.visibility = View.VISIBLE
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -42,6 +44,7 @@ class LoginActivity : AppCompatActivity() {
             btn_login.setOnClickListener {
                 if (validation()) {
                     if (isNetworkConnected()) {
+                        progressBar_login.visibility = View.VISIBLE
                         auth.signInWithEmailAndPassword(et_login_email.text.toString(), et_login_passwd.text.toString())
                             .addOnCompleteListener(this) { task ->
                                 if (task.isSuccessful) {
@@ -66,6 +69,7 @@ class LoginActivity : AppCompatActivity() {
                                                     startActivity(intent)
                                                 }
                                         } else {
+                                            progressBar_login.visibility = View.GONE
                                             Toast.makeText(
                                                 this,
                                                 "Debes haberte registrado desde este dispositivo para poder iniciar sesión",
@@ -75,6 +79,7 @@ class LoginActivity : AppCompatActivity() {
                                     }
 
                                 } else {
+                                    progressBar_login.visibility = View.GONE
                                     Toast.makeText(
                                         baseContext,
                                         "Error en la autentificación.",

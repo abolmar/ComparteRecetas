@@ -67,11 +67,11 @@ class ShowRecipeActivity : AppCompatActivity() {
         }
 
         when(toCategory){
-            "Comida" -> tv_backTo.text = "Volver a Comidas"
-            "Cena" -> tv_backTo.text = "Volver a \"Cenas\""
-            "Merienda" -> tv_backTo.text = "Volver a Meriendas"
-            "Postre" -> tv_backTo.text = "Volver a Postres"
-            "Todas" -> tv_backTo.text = "Volver a Todas mis favoritas"
+            "Comida" -> tv_backTo.text = "Volver a las comidas"
+            "Cena" -> tv_backTo.text = "Volver a las cenas"
+            "Merienda" -> tv_backTo.text = "Volver a las meriendas"
+            "Postre" -> tv_backTo.text = "Volver a los postres"
+            "Todas" -> tv_backTo.text = "Volver a todas mis favoritas"
         }
 
         tv_title.text = recipeName

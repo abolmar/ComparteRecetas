@@ -33,7 +33,6 @@
             android:elevation="9dp"/>
 
     <TextView
-            android:text="TextView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/tv_backTo"
@@ -277,7 +276,9 @@
                         android:layout_marginStart="16dp"
                         android:textColor="@color/blackLetters"
                         android:textSize="20sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:paddingBottom="16dp"
+                        android:paddingTop="16dp"/>
 
                 <android.support.v7.widget.RecyclerView
                         android:layout_width="0dp"
@@ -303,7 +304,9 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:background="@color/greyBackground"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:paddingBottom="16dp"
+                        android:paddingTop="16dp"/>
 
                 <TextView
                         android:layout_width="0dp"
@@ -319,7 +322,8 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:paddingBottom="16dp"
-                        android:paddingTop="16dp"/>
+                        android:paddingTop="16dp"
+                        />
 
             </android.support.constraint.ConstraintLayout>
         </LinearLayout>
