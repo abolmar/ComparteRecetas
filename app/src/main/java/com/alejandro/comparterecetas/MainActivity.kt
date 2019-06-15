@@ -10,10 +10,7 @@ import com.alejandro.comparterecetas.database.DataBaseHandler
 import com.alejandro.comparterecetas.fragments.FavoritesFragment
 import com.alejandro.comparterecetas.fragments.ProfileFragment
 import com.alejandro.comparterecetas.fragments.RecipesFragment
-import com.alejandro.comparterecetas.models.ImagesModel
-import com.alejandro.comparterecetas.models.IngredientsModel
-import com.alejandro.comparterecetas.models.RecipesModel
-import com.alejandro.comparterecetas.models.UsersModel
+import com.alejandro.comparterecetas.models.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -333,5 +330,29 @@ class MainActivity : AppCompatActivity() {
                 .addOnSuccessListener {}
 
         } catch (e: ClassCastException){}
+    }
+
+    // Elimina la receta favorita guardada por el usuario y que previamente han sido eliminada por su creador
+    fun updateFavoritesRecipes(){
+        recipesFirebase.get().addOnSuccessListener {
+            val userRecipesFirebase = it.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios
+            val userRecipesFavorites: ArrayList<FavoritesModel> = dbHandler!!.getAllMyFavoriteRecipes(dbHandler!!.getUserId()) // Mis recetas favoritas
+            var remove = true
+            var recipeId = ""
+            for (j in userRecipesFavorites){
+                for (i in userRecipesFirebase){
+                    if (i.id == j.recipeId){
+                        remove = false
+                    } else {
+                        recipeId = j.recipeId
+                    }
+                }
+
+                if (remove){
+                    dbHandler!!.removeFavoriteRecipe(recipeId)
+                }
+                remove = true
+            }
+        }
     }
 }

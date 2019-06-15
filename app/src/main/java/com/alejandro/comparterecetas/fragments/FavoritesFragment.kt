@@ -21,7 +21,10 @@ class FavoritesFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase()
+        if ((activity as MainActivity).isNetworkConnected()){
+            (activity as MainActivity).updateFirebase()
+            (activity as MainActivity).updateFavoritesRecipes()
+        }
     }
 
     override fun onCreateView(
