@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.alejandro.comparterecetas.CreateOrEditRecipeActivity
+import com.alejandro.comparterecetas.MainActivity
 import com.alejandro.comparterecetas.R
 import com.alejandro.comparterecetas.ShowRecipeActivity
 import com.alejandro.comparterecetas.database.DataBaseHandler
@@ -134,6 +135,7 @@ class MyRecipesAdapter(private val items: MutableList<RecipesModel>, val context
                         }
                         R.id.my_recipe_delete -> {
                             removeRecipe(position)
+                            (context as MainActivity).updateFirebase()
                             true
                         }
                         else -> false

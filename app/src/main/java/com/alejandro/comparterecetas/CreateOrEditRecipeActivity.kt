@@ -153,7 +153,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
 
 
         //  Regresa al menú "perfil"
-        btn_crud_back.setOnClickListener {
+        btn_create_edit_back.setOnClickListener {
             backtoProfile()
         }
 
@@ -199,7 +199,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
         }
 
         //  Guarda la receta
-        btn_crud_save.setOnClickListener {
+        btn_create_edit_save.setOnClickListener {
             if (this.validation()!! && imageSelected()) {
                 if (!selectedCategory.contentEquals(" -- Elije una categoría -- ")) {
                     val recipe = RecipesModel()
@@ -235,7 +235,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             }
 
                         } else {
-                            // Actualiza la receta selecccionada
+                            // Actualizar la receta
                             successRecipe = dbHandler!!.updateUserRecipe(recipeId,
                                 et_recipe_name.text.toString(),
                                 selectedCategory,
@@ -278,7 +278,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             .show()
 
                     } else if (et_hours.text.toString() == "") {
-
+                        // Crea una nueva receta
                         if (addOrEdit != "edit"){
                             recipe.id = "recipe-$date"
                             recipe.name = et_recipe_name.text.toString()
@@ -307,7 +307,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             }
 
                         } else {
-                            // ACTUALIZAR LA RECETA, LOS INGREDIENTES Y LAS FOTOS!!!
+                            /// Actualizar la receta
                             successRecipe = dbHandler!!.updateUserRecipe(recipeId,
                                 et_recipe_name.text.toString(),
                                 selectedCategory,
@@ -347,7 +347,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
 
 
                     } else if (et_minutes.text.toString() == "") {
-
+                        // Crea una nueva receta
                         if (addOrEdit != "edit"){
                             recipe.id = "recipe-$date"
                             recipe.name = et_recipe_name.text.toString()
@@ -375,7 +375,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             }
 
                         } else {
-                            // ACTUALIZAR LA RECETA, LOS INGREDIENTES Y LAS FOTOS!!!
+                            // Actualizar la receta
                             successRecipe = dbHandler!!.updateUserRecipe(recipeId,
                                 et_recipe_name.text.toString(),
                                 selectedCategory,
@@ -413,7 +413,6 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    
                 } else {
                     Toast.makeText(this, "Selecciona una categoría", Toast.LENGTH_SHORT).show()
                 }
@@ -464,6 +463,8 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
 
             Glide.with(this)
                 .load(stream.toByteArray())
+                .fitCenter()
+                .centerCrop()
                 .into(imageView_I)
 
             btn_del_imageView_I.visibility = View.VISIBLE
@@ -477,6 +478,8 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
 
             Glide.with(this)
                 .load(stream.toByteArray())
+                .fitCenter()
+                .centerCrop()
                 .into(imageView_II)
 
             btn_del_imageView_II.visibility = View.VISIBLE
@@ -490,6 +493,8 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
 
             Glide.with(this)
                 .load(stream.toByteArray())
+                .fitCenter()
+                .centerCrop()
                 .into(imageView_III)
 
             btn_del_imageView_III.visibility = View.VISIBLE
@@ -503,6 +508,8 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
 
             Glide.with(this)
                 .load(stream.toByteArray())
+                .fitCenter()
+                .centerCrop()
                 .into(imageView_IV)
 
             btn_del_imageView_IV.visibility = View.VISIBLE
@@ -586,11 +593,11 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(R.layout.spinner_item)
 
         // Finally, data bind the spinner object with dapter
-        spn_crud_categories.adapter = adapter
+        spn_create_edit_categories.adapter = adapter
 
         if (addOrEdit != "edit") {
             // Set an on item selected listener for spinner object
-            spn_crud_categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            spn_create_edit_categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     // Display the selected item text on text view
                     selectedCategory = parent.getItemAtPosition(position).toString()
@@ -602,20 +609,20 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
         } else {
             when (recipeCategory) {
                 "Comida" -> {
-                    spn_crud_categories.setSelection(1)
+                    spn_create_edit_categories.setSelection(1)
                 }
                 "Cena" -> {
-                    spn_crud_categories.setSelection(2)
+                    spn_create_edit_categories.setSelection(2)
                 }
                 "Merienda" -> {
-                    spn_crud_categories.setSelection(3)
+                    spn_create_edit_categories.setSelection(3)
                 }
                 "Postre" -> {
-                    spn_crud_categories.setSelection(4)
+                    spn_create_edit_categories.setSelection(4)
                 }
             }
 
-            spn_crud_categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            spn_create_edit_categories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     // Display the selected item text on text view
                     selectedCategory = parent.getItemAtPosition(position).toString()

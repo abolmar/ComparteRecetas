@@ -162,7 +162,6 @@ class MainActivity : AppCompatActivity() {
                         val storageRef = storage.reference
                         val desertRef = storageRef.child("Images/profiles/${auth.currentUser!!.uid}/$oldImageName.png")
                         desertRef.delete()
-
                     }
                 }
 

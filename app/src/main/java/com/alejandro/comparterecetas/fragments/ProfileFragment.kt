@@ -38,7 +38,7 @@ class ProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase()
+//        if ((activity as MainActivity).isNetworkConnected()) (activity as MainActivity).updateFirebase()
     }
 
     override fun onCreateView(
