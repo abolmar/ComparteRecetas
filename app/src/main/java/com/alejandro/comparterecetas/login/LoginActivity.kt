@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.alejandro.comparterecetas.MainActivity
@@ -20,6 +19,7 @@ class LoginActivity : AppCompatActivity() {
     private var dbHandler: DataBaseHandler? = null
     private lateinit var auth: FirebaseAuth
     private var dbFirebase = FirebaseFirestore.getInstance()
+    private var usersLogin = dbFirebase.collection("usersLogin")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
                             .addOnCompleteListener(this) { task ->
                                 if (task.isSuccessful) {
 
+                                    var successUsers: Boolean
                                     val user = auth.currentUser
 
                                     user?.let {
@@ -57,8 +58,8 @@ class LoginActivity : AppCompatActivity() {
 
                                         // Una vez iniciada la sesión, comprobamos que el usuario exista en el dispositivo
                                         if (uid == dbHandler!!.getAllUsersId()){
-                                        // Actualizar la tabla usersLogin con login = 1 cuando se inicie sesion
-                                            dbFirebase.collection("usersLogin").document(uid)
+                                            // Actualiza la tabla usersLogin con login = 1 cuando se inicie sesion
+                                            usersLogin.document(uid)
                                                 .update("login", 1)
                                                 .addOnSuccessListener {
                                                     // Loguea al usuario e inicia sesion, la cuenta seguirá abierta hasta que el usuario la cierre

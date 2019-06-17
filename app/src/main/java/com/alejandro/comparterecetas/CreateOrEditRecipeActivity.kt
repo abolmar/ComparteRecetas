@@ -224,7 +224,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             //  Guarda los ingredientes de la receta
                             saveIngredientsTable()
 
-                            //  Guarda las imagenes de la receta
+                            //  Guarda las imágenes de la receta
                             saveImagesTable()
 
                             if (successRecipe) {
@@ -251,7 +251,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             editIngredientsTable()
                             saveIngredientsTable()
 
-                            //  Edita y guarda las imagenes de la receta
+                            //  Edita y guarda las imágenes de la receta
                             editImagesTable()
                             saveImagesTable()
 
@@ -295,7 +295,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             //  Guarda los ingredientes de la receta
                             saveIngredientsTable()
 
-                            //  Guarda las imagenes de la receta
+                            //  Guarda las imágenes de la receta
                             saveImagesTable()
 
                             if (successRecipe) {
@@ -323,7 +323,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             editIngredientsTable()
                             saveIngredientsTable()
 
-                            //  Edita y guarda las imagenes de la receta
+                            //  Edita y guarda las imágenes de la receta
                             editImagesTable()
                             saveImagesTable()
 
@@ -364,7 +364,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             //  Guarda los ingredientes de la receta
                             saveIngredientsTable()
 
-                            //  Guarda las imagenes de la receta
+                            //  Guarda las imágenes de la receta
                             saveImagesTable()
 
                             if (successRecipe) {
@@ -391,7 +391,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
                             editIngredientsTable()
                             saveIngredientsTable()
 
-                            //  Edita y guarda las imagenes de la receta
+                            //  Edita y guarda las imágenes de la receta
                             editImagesTable()
                             saveImagesTable()
 
@@ -455,7 +455,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
-            //  Procedemos a chequear qué imágen fué seleccionada...
+            //  Procedemos a chequear qué imagen fué seleccionada...
             selectedPhotoUri0 = data.data
 
             val stream = ByteArrayOutputStream()
@@ -546,7 +546,7 @@ class CreateOrEditRecipeActivity : AppCompatActivity() {
         val validate: Boolean
         if (selectedPhotoUri0 == null && selectedPhotoUri1 == null && selectedPhotoUri2 == null && selectedPhotoUri3 == null ){
             validate = false
-            Toast.makeText(this, "Selecciona al menos una imágen para la receta", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Selecciona al menos una imagen para la receta", Toast.LENGTH_LONG).show()
         } else {
             validate = true
         }
