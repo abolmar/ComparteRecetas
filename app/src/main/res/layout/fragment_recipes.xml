@@ -115,18 +115,20 @@
                 android:id="@+id/textView_offInternet"
 
                 android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp"
-                android:layout_alignBottom="@+id/swipeRefreshLayout_recipes"
-                android:textAlignment="center"
                 android:layout_marginStart="0dp"
 
                 android:layout_marginEnd="0dp"
 
                 android:gravity="center"
-                tools:visibility="gone"
                 android:layout_alignTop="@+id/swipeRefreshLayout_recipes"
                 android:layout_alignEnd="@+id/swipeRefreshLayout_recipes"
-                android:layout_alignStart="@+id/swipeRefreshLayout_recipes"/>
+                android:layout_alignStart="@+id/swipeRefreshLayout_recipes"
+                android:textColor="#27555A"
+                android:background="#D1EBF0"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:fontFamily="@font/open_sans_light"
+                android:visibility="visible"/>
     </RelativeLayout>
 
 </FrameLayout>
