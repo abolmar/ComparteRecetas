@@ -110,7 +110,7 @@
 
         <TextView
                 android:text="@string/lostConnection"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_offInternet"
 
@@ -128,7 +128,7 @@
                 android:padding="16dp"
                 android:textSize="18sp"
                 android:fontFamily="@font/open_sans_light"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
     </RelativeLayout>
 
 </FrameLayout>
