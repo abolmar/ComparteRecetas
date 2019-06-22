@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
         recipesFirebase.whereEqualTo("userId", auth.currentUser!!.uid).get().addOnSuccessListener { userRecipe ->
             val userRecipesRemove: ArrayList<RecipesModel> = dbHandler!!.getAllMyRecipesRemoved(dbHandler!!.getUserId()) // Recetas "eliminadas" del usuario actual
             val userRecipes: ArrayList<RecipesModel> = dbHandler!!.getAllMyRecipes(dbHandler!!.getUserId()) // Recetas del usuario actual
-            val userRecipesFirebase = userRecipe.toObjects(RecipesModel::class.java) // Recetas del usuario actual
+            val userRecipesFirebase = userRecipe.toObjects(RecipesModel::class.java) // Recetas del usuario actual en Firebase
 
             var insertRecipe = true
             var countRecipe = 0
@@ -313,7 +313,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: ClassCastException){}
     }
 
-    // Actualiza o inserta imágenes en la carpeta del perfil
+    // Actualiza o inserta imágenes en la carpeta del perfil de usuario en Firebase
     private fun updateSaveImageUserProfile(imagePath: String, userId: String, imageName: String){
         try{
             val ref = FirebaseStorage.getInstance().getReference("/Images/profile/$userId/$imageName.png")
@@ -331,7 +331,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: ClassCastException){}
     }
 
-    // Elimina la receta favorita guardada por el usuario y que previamente han sido eliminada por su creador
+    // Elimina la receta favorita guardada por un usuario y que previamente haya sido eliminada por su creador
     fun updateFavoritesRecipes(){
         recipesFirebase.get().addOnSuccessListener {
             val userRecipesFirebase = it.toObjects(RecipesModel::class.java) // Recetas de todos los usuarios

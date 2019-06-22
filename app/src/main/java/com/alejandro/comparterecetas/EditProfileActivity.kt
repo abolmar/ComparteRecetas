@@ -157,6 +157,14 @@ class EditProfileActivity : AppCompatActivity() {
 
             //  Sube las imágenes selecionadas a firebase
             if (isNetworkConnected()) {
+                // Si ya hay una imagen guardada en Firestore, se elimina la antigua
+                if (oldImageName != "0") {
+                    val storage = FirebaseStorage.getInstance()
+                    val storageRef = storage.reference
+                    val desertRef = storageRef.child("Images/profile/${dbHandler!!.getUserId()}/$oldImageName.png")
+                    desertRef.delete()
+                }
+
                 // Guarda la imagen de perfil en FIrestore
                 val ref = FirebaseStorage.getInstance().getReference("/Images/profile/${dbHandler!!.getUserId()}/$date.png")
                 val baos = ByteArrayOutputStream()
@@ -167,14 +175,6 @@ class EditProfileActivity : AppCompatActivity() {
                 // Actualiza la base de datos de Firebase
                 usersLogin.document(dbHandler!!.getUserId()).update("imageName", date)
                 usersLogin.document(dbHandler!!.getUserId()).update("imagePath", "${this.filesDir}/Images/profile/${dbHandler!!.getUserId()}/$date.png")
-
-                // Si ya hay una imagen guardada en Firestore, se elimina la antigua
-                if (oldImageName != "0") {
-                    val storage = FirebaseStorage.getInstance()
-                    val storageRef = storage.reference
-                    val desertRef = storageRef.child("Images/profile/${dbHandler!!.getUserId()}/$oldImageName.png")
-                    desertRef.delete()
-                }
             }
         }
     }

@@ -49,7 +49,6 @@ class LoginActivity : AppCompatActivity() {
                             .addOnCompleteListener(this) { task ->
                                 if (task.isSuccessful) {
 
-                                    var successUsers: Boolean
                                     val user = auth.currentUser
 
                                     user?.let {
@@ -115,8 +114,6 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-
-
     }
 
     private fun validation(): Boolean {
