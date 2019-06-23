@@ -54,9 +54,17 @@ class LoginActivity : AppCompatActivity() {
                                     user?.let {
 
                                         val uid = user.uid
+                                        var userExist = false
+
+                                        //  Comprueba si el usuario está registrado en el dispositivo
+                                        for (i in dbHandler!!.getAllUsersId()){
+                                            if (uid == i){
+                                                userExist = true
+                                            }
+                                        }
 
                                         // Una vez iniciada la sesión, comprobamos que el usuario exista en el dispositivo
-                                        if (uid == dbHandler!!.getAllUsersId()){
+                                        if (userExist){
                                             // Actualiza la tabla usersLogin con login = 1 cuando se inicie sesion
                                             usersLogin.document(uid)
                                                 .update("login", 1)

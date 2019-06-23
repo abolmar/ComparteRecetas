@@ -307,8 +307,8 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
     }
 
     //  Retorna todos los posibles usuarios registrados en un dispositivo
-    fun getAllUsersId(): String{
-        var id = ""
+    fun getAllUsersId(): ArrayList<String>{
+        val id: ArrayList<String> = ArrayList()
         val db = readableDatabase
         val selectQuery = "SELECT $usersLoginId FROM $tableUsersLogin WHERE $usersLoginLogin = 0"
         val cursor = db.rawQuery(selectQuery, null)
@@ -317,7 +317,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, "DataBaseRec
             if (cursor.moveToFirst()) {
                 do {
                     val data = cursor.getString(cursor.getColumnIndex(usersLoginId))
-                    id = data
+                    id.add(data)
                 } while (cursor.moveToNext())
             }
         }
